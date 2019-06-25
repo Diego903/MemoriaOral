@@ -47,7 +47,7 @@ class ApiController extends Controller
 	            $data = $response->getContent();
 
 	            $expire = null;
-	            if($request->has('remember_me') && $request->remember_me){
+	            if($request->has('rememberMe') && $request->rememberMe){
 	            	$expire = env('COOKIE_AUTH_EXPIRE');
 	            }
 
