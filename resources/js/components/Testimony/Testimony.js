@@ -15,6 +15,9 @@ const Testimony = ({ }) => {
         <Btn.Accept />
         <Btn.No />
         <Btn.Yes />
+            <Segment>
+                <p>Ejemplo prueba</p>
+            </Segment>
         </Segment>
     );
 };
