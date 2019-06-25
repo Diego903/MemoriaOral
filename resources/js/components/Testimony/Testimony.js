@@ -14,7 +14,6 @@ const Testimony = ({ }) => {
         <Btn.Cancel />
         <Btn.Accept />
         <Btn.No />
-        <Btn.Yes />
         </Segment>
     );
 };
