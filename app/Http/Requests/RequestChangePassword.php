@@ -26,6 +26,7 @@ class RequestChangePassword extends FormRequest
         return [
             "password"=>"required|min:8|max:60",
             "new_password"=>"required|min:8|max:60|confirmed",
+
         ];
     }
 }
