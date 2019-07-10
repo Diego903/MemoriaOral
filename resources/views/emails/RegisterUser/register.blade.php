@@ -2,7 +2,7 @@
 
 The body of your message.
 
-@component('mail::button', ['url' => '','color'=>'success'])
+@component('mail::button', ['url' => url('/account_activation/'.$user->id.'/'.$user->token_),'color'=>'success'])
 Button Text
 @endcomponent
 

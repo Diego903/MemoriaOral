@@ -44,10 +44,16 @@ class UserController extends Controller
 
     public function register(RequestRegisterUser $request)
     {
+
        // DB::beginTransaction();
+        $str_random = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     	$user = new User();
     	$user->fill($request->all());
         $user->password = Hash::make($request->password);
+
+        for($i = 0; $i < rand(30,45);$i++){
+            $user->token_ .= $str_random[rand(0, (strlen($str_random)-1))];
+        }
     	$user->save();
 
         Mail::to($user)->send(new RegisterUser($user));
@@ -72,7 +78,7 @@ class UserController extends Controller
     }
 
     public function accountActivation(Request $request){
-    	$user = User::where('token',$request->token)->first();
+    	$user = User::where('token_',$request->token)->first();
 
     	if($user && $user->id == $request->id && $user->estado == "Inactivo" && Hash::check($request->password, $user->password)){
     		$creationDate = new Carbon($user->created_at,"America/Bogota");
@@ -85,7 +91,7 @@ class UserController extends Controller
     			return response(['error'=>'ERROR!! Esta url ha expirado, para más información comuniquese con el admnistrador.'], 422);
     		}
 
-    		$user->token = NULL;
+    		$user->token_ = NULL;
 			$user->estado = "Activo";
 			$user->save();
 

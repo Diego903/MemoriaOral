@@ -24,6 +24,11 @@ class User extends Component {
 
         this.handleToggleLock = this.handleToggleLock.bind(this);
         this.handleConfirmToggleLock = this.handleConfirmToggleLock.bind(this);
+        this.handleClickBtnUpdate = this.handleClickBtnUpdate.bind(this);
+    }
+
+    handleClickBtnUpdate(e, {user}){
+        this.props.history.push("user/update/"+user);
     }
 
     handleToggleLock(e,{user, action}){
@@ -80,7 +85,7 @@ class User extends Component {
                     data:[],
                     assignValueCell:(header, row, value) => {
                     	if(header.name == 'opciones'){
-                    		const btnUpdate = <Btn.UpdateOnlyIcon size="mini"/>
+                    		const btnUpdate = <Btn.UpdateOnlyIcon size="mini" user={row.id} onClick={this.handleClickBtnUpdate}/>
                     		let btnToggleLock = <Btn.LockOnlyIcon size="mini" action="bloquear" user={row.id} onClick={this.handleToggleLock}/>
                     		if(row.estado == "Inactivo"){
                     			btnToggleLock = <Btn.UnlockOnlyIcon size="mini" action="desbloquear" user={row.id} onClick={this.handleToggleLock}/>
