@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Municipio;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -17,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'numero_identificacion','nombres','apellidos', 'email','genero', 'password','telefono','nivel_estudio','fecha_nacimiento','direccion','municipio_id',
     ];
 
     /**
@@ -37,4 +38,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function municipio(){
+        return $this->belongsTo(Municipio::class);
+    }
 }

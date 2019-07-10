@@ -9,7 +9,12 @@ export default {
 		item:'testimony',
 		path:'/testimony'
 	},
-	storie_conflict:{
+    registerUser:{
+        name:'Registrar usuarios',
+        item:'registerUser',
+        path:'/user/register'
+    },
+    storie_conflict:{
 		name:'Historias del conflicto',
 		item:'storie_conflict',
 		path:'/storie_conflict'
