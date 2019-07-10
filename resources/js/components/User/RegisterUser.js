@@ -18,13 +18,13 @@ class RegisterUser extends Component {
 
     onActionSuccess(){
     	this.setState({
+    		
     		success:["El usuario se ha creado con éxito, para activar la cuenta debe ingresar a su correo electrónico e ingresar al link enviado."],
     	})
     }
 
     render() {    	
     	const {success} = this.state;
-
         return (
         	<Container>
         		<GeneralMessage success messages={success} onDismiss={()=>this.setState({success:[]})}/>
