@@ -10,8 +10,6 @@ import { Provider } from 'react-redux';
 import store from '../redux/store';
 import { actLogout } from '../redux/app/actions';
 
-
-
 export default class App extends Component {
     constructor(props)
     {

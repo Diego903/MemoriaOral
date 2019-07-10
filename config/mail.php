@@ -1,10 +1,7 @@
 <?php
 
 return [
-    'to' => [
-        'address' => 'dachavez438@misena.edu.co',
-        'name' => 'Example'
-    ],
+
     /*
     |--------------------------------------------------------------------------
     | Mail Driver

@@ -11,14 +11,13 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'numero_identificacion','nombres','apellidos', 'email','genero', 'password','telefono','nivel_estudio','fecha_nacimiento','direccion','municipio_id',
+        'name', 'email', 'password',
     ];
 
     /**
@@ -38,8 +37,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function municipio(){
-        return $this->belongsTo(Municio::class);
-    }
 }
