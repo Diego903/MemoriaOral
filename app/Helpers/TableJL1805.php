@@ -16,7 +16,10 @@ class TableJL1805
 				'last_name',
 				'age',
 				'date'
-			]
+			],
+            'having' => [
+                'age'=>true
+            ]
 	];
 
     public function __construct($query, $config)
@@ -30,11 +33,38 @@ class TableJL1805
     	{
     		$search = '%'.$this->config['search_value'].'%';
     		$headers = $this->config['headers'];
+            $name_columns = array_key_exists('name_columns', $this->config)?$this->config['name_columns']:[];
 
-    		$q->where($headers[0],'like', $search);
+            if(array_key_exists($headers[0], $name_columns)){
+                if(is_array($name_columns[$headers[0]])){
+                    $concat = 'CONCAT(';
+                    for($i = 0;$i < count($name_columns[$headers[0]]);$i++)
+                        $concat .= $name_columns[$headers[0]][$i].'," ",';
+
+                    $concat = trim($concat, '," ",').')';
+                    $q->where(DB::raw($concat),'like', $search);
+                }else{
+                    $q->where($name_columns[$headers[0]],'like', $search);
+                }
+            }else{
+                $q->where($headers[0],'like', $search);
+            }
 
 			for ($i = 1; $i < count($headers); $i++) {
-				$q->orWhere($headers[$i],'like', $search);				
+                if(array_key_exists($headers[$i], $name_columns)){
+                    if(is_array($name_columns[$headers[$i]])){
+                        $concat = 'CONCAT(';
+                        for($i_ = 0;$i_ < count($name_columns[$headers[$i]]);$i_++)
+                            $concat .= $name_columns[$headers[$i]][$i_].'," ",';
+
+                        $concat = trim($concat, '," ",').')';
+                        $q->orWhere(DB::raw($concat),'like', $search);
+                    }else{
+                        $q->orWhere($name_columns[$headers[$i]],'like', $search);
+                    }
+                }else{
+                    $q->orWhere($headers[$i],'like', $search);
+                }
 			}
     	});
 

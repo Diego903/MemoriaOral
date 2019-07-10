@@ -14,6 +14,10 @@ const actInitTableJL1805 = (id_table, config) => {
     return initTable(id_table, config);
 }
 
+const actUpdateTableJL1805 = (id_table) => {
+    return initTable(id_table, store.getState().tableJl1805.config_tables[id_table]);
+}
+
 const actSortTableJL1805 = (id_table, clicked_column) => {
     showLoadTable(id_table)();
     return sortTable(id_table, clicked_column, hideLoadTable(id_table));
@@ -34,7 +38,7 @@ const actChangePageTableJL1805 = (id_table, page) => {
     return changePage(id_table, page, hideLoadTable(id_table));
 }
 
-export { actInitTableJL1805, actSortTableJL1805, actSearchTableJL1805, actChangeRowsTableJL1805, actChangePageTableJL1805 };
+export { actInitTableJL1805, actUpdateTableJL1805, actSortTableJL1805, actSearchTableJL1805, actChangeRowsTableJL1805, actChangePageTableJL1805 };
 
 /*=====  End of actions  ======*/
 
@@ -349,7 +353,7 @@ export { actInitTableJL1805, actSortTableJL1805, actSearchTableJL1805, actChange
                     
                 })
                 .catch((error) => {
-                    console.log(error.response);
+                    //console.log(error.response);
                 });
             }
         }
@@ -364,10 +368,15 @@ export { actInitTableJL1805, actSortTableJL1805, actSearchTableJL1805, actChange
             //almacena los encabezados (permitidos) de la tabla
             //para enviarlos al servidor con el fin de poder filtrar la información
             let headers_server = [];
+            let name_columns = {};
 
             config.headers.map(function(el, i) {
-                if(!el.no_server)
+                if(!el.no_server){
                     headers_server.push(el.name);
+                    if(el.name_column){
+                        name_columns[el.name] = el.name_column;
+                    }
+                }
             })
 
             return {
@@ -375,7 +384,8 @@ export { actInitTableJL1805, actSortTableJL1805, actSearchTableJL1805, actChange
                 search_value:config.search_value,
                 column:config.column,//columna por la cual se está ordenando
                 direction:config.direction == 'ascending'?'asc':(config.direction == 'descending'?'desc':null),//direccion de ordenamiento//desc, asc
-                headers:headers_server
+                headers:headers_server,
+                name_columns
             }           
         }
     

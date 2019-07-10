@@ -53,6 +53,9 @@ class ApiController extends Controller
 
 	            $user = User::where('email', $username)->first();
 
+	            if($user->estado == 'Inactivo')
+	            	return response(['message'=>'El usuario ingresado no se encuentra activo'],401);
+
 	            //se retorna una respuesta correcta y se agrega la cookie
 	            return response(['login'=>'success', 'user'=>$user])
 	            		->cookie(env('COOKIE_AUTH_NAME'), encrypt($data), $expire, null, '', url('/'), true);

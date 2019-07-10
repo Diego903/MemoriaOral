@@ -10,7 +10,9 @@ import store from '../redux/store';
 
 import Home from '../components/Home/Home';
 import Testimony from '../components/Testimony/Testimony';
+
 import User from '../components/User/User';
+import AccountActivation from '../components/User/AccountActivation';
 
 import Login from '../components/Auth/Login/Login';
 import PasswordResetRequest from '../components/Auth/PasswordResetRequest/PasswordResetRequest';
@@ -122,12 +124,14 @@ class Routes extends Component
         const { app } = this.state;
         return <BrowserRouter>
             <div className="">
-                <Header name_one="jjjjjj"/>
+                <Header/>
                 <Switch>
                     <FreeRoute exact path={config_routes.home.path} component={Home} />
                     <FreeRoute exact path={config_routes.testimony.path} component={Testimony} />
+
                     <AuthRoute exact path={config_routes.user.path} component={User} />
-                    
+                    <GuestRoute exact path={config_routes.account_activation.path} component={AccountActivation} />
+
                     <GuestRoute exact path={config_routes.login.path} component={Login} />
                     <GuestRoute exact path={config_routes.password_reset_request.path} component={PasswordResetRequest} />
                     <GuestRoute exact path={config_routes.reset_password.path} component={ResetPassword} />

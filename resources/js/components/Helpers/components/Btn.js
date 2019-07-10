@@ -2,57 +2,93 @@ import React, { Component } from 'react';
 
 import { Button, Icon } from 'semantic-ui-react';
 
-const  Save = (props) => {                        
+const Save = (props) => {                        
     return (
         <Button {...props} primary><Icon name="save"/> Guardar</Button>
     );
 }
 
-const  Close = (props) => {
+const Close = (props) => {
     return (
         <Button {...props}><Icon name="remove"/> Cerrar</Button>
     );
 }
 
-const  Update = (props) => {
+const Update = (props) => {
     return (
         <Button {...props} primary><Icon name="pencil alternate"/> Actualizar</Button>
     );
 }
 
-const  Delete = (props) => {
+const UpdateOnlyIcon = (props) => {
+    return (
+        <Button {...props} primary icon="pencil alternate"/>
+    );
+}
+
+const Delete = (props) => {
     return (
         <Button {...props} negative><Icon name="trash alternate"/> Eliminar</Button>
     );
 }
 
-const  Add = (props) => {
+const Add = (props) => {
     return (
         <Button {...props} positive><Icon name="plus"/> Agregar</Button>
     );
 }
 
-const  Accept = (props) => {
+const Accept = (props) => {
     return (
         <Button {...props} positive><Icon name="check"/> Aceptar</Button>
     );
 }
 
-const  Cancel = (props) => {
+const Cancel = (props) => {
     return (
         <Button {...props}><Icon name="remove"/> Cancelar</Button>
     );
 }
 
-const  Yes = (props) => {
+const Yes = (props) => {
     return (
         <Button {...props} positive><Icon name="check"/> Si</Button>
     );
 }
 
-const  No = (props) => {
+const No = (props) => {
     return (
         <Button {...props}><Icon name="remove"/> No</Button>
+    );
+}
+
+const Lock = (props) => {
+    return (
+        <Button {...props} color="orange"><Icon name="lock"/> Bloquear</Button>
+    );
+}
+
+const Unlock = (props) => {
+    return (
+        <Button {...props} color="orange"><Icon name="lock open"/> Desbloquear</Button>
+    );
+}
+
+const LockOnlyIcon = (props) => {
+    return (
+        <Button {...props} color="orange" icon="lock"/>
+    );
+}
+
+const UnlockOnlyIcon = (props) => {
+    return (
+        <Button {...props} color="orange" icon="lock open"/>
+    );
+}
+
+const Send = (props) => {
+    return (
+        <Button {...props} primary><Icon name="send"/> Enviar</Button>
     );
 }
 
@@ -66,6 +102,12 @@ class Btn extends Component {
     static Cancel = Cancel;
     static Yes = Yes;
     static No = No;
+    static UpdateOnlyIcon = UpdateOnlyIcon;
+    static Lock = Lock;
+    static Unlock = Unlock;
+    static LockOnlyIcon = LockOnlyIcon;
+    static UnlockOnlyIcon = UnlockOnlyIcon;
+    static Send = Send;
 
     render() {
         return (

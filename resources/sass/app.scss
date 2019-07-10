@@ -11,3 +11,8 @@
 @import '../css/slider.css';
 
 @import '../../semantic/dist/semantic.min.css';
+
+.search .results{
+	overflow-y: auto;
+    max-height: 400px;
+}

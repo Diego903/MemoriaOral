@@ -24,6 +24,11 @@ export default {
 		item:'user',
 		path:'/user'
 	},
+	account_activation:{
+		name:'Activación de cuenta',
+		item:'account_activation',
+		path:'/account_activation/:id/:token'
+	},
 	login:{
 		name:'Ingresar',
 		item:'',
