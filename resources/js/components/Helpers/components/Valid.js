@@ -398,8 +398,8 @@ class Input extends React.Component {
 
 	render(){
 		//se sacan las propiedades admitidas para Form.Input
-		const {id, name, type, value, label, required, placeholder} = this.props;
-		const propsInput = {id, name, type, value, label, required, placeholder};
+		const {id, name, type, value, label, required, placeholder, max} = this.props;
+		const propsInput = {id, name, type, value, label, required, placeholder, max};
 
 		let errors = "";
 		if(!("noRenderFails" in this.props)){

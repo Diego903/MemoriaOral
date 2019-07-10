@@ -82,6 +82,7 @@ const actSendPassResetRequest = (identificationNumber) => {
     }
 }
 
+
 /**
  * Acción para restablecer la contraseña de un usuario
  * @param  {Oobject} data Datos necesarios para restablecimiento de contraseña

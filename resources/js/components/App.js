@@ -8,6 +8,8 @@ import Routes from '../routes/routes';
 import { Provider } from 'react-redux';
 import store from '../redux/store';
 
+
+
 export default class App extends Component {
     constructor(props)
     {

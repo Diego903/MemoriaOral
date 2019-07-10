@@ -11,6 +11,7 @@ import store from '../redux/store';
 import Home from '../components/Home/Home';
 import Testimony from '../components/Testimony/Testimony';
 import User from '../components/User/User';
+import RegisterUser from '../components/User/RegisterUser';
 
 import Login from '../components/Auth/Login/Login';
 import PasswordResetRequest from '../components/Auth/PasswordResetRequest/PasswordResetRequest';
@@ -127,6 +128,7 @@ class Routes extends Component
                     <FreeRoute exact path={config_routes.home.path} component={Home} />
                     <FreeRoute exact path={config_routes.testimony.path} component={Testimony} />
                     <AuthRoute exact path={config_routes.user.path} component={User} />
+                    <FreeRoute exact path={config_routes.registerUser.path} component={RegisterUser} />
                     
                     <GuestRoute exact path={config_routes.login.path} component={Login} />
                     <GuestRoute exact path={config_routes.password_reset_request.path} component={PasswordResetRequest} />

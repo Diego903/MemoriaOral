@@ -23,9 +23,14 @@ Route::middleware('auth:api')->group(function(){
 });
 
 Route::prefix('v1')->group(function(){
-	Route::middleware('auth:api')->group(function(){
+	
 		Route::prefix('user')->group(function(){
-			Route::post('list', 'API\v1\UserController@list');
+			Route::middleware('auth:api')->group(function(){
+				Route::post('list', 'API\v1\UserController@list');
+				Route::post('update', 'API\v1\UserController@update');
+			});
+
+			Route::post('register', 'API\v1\UserController@register');
 		});
-	});
+	
 });
