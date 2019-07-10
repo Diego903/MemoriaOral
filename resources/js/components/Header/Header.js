@@ -11,6 +11,7 @@ import { actChangeActiveItem } from '../../redux/header/actions';
 import { actLogout } from '../../redux/app/actions';
 
 class Header extends React.Component {
+
 	constructor(props) {
 	  super(props);
 
