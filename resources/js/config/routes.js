@@ -14,6 +14,11 @@ export default {
         item:'registerUser',
         path:'/user/register'
     },
+    updateUser:{
+        name:'Actualizar usuario',
+        item:'updateUser',
+        path:'/user/update/:id'
+    },
     storie_conflict:{
 		name:'Historias del conflicto',
 		item:'storie_conflict',

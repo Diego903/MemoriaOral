@@ -27,7 +27,8 @@ Route::prefix('v1')->group(function(){
     Route::prefix('user')->group(function(){
         Route::middleware('auth:api')->group(function(){
             Route::post('list', 'API\v1\UserController@list')->middleware('role_is:Administrador');
-            Route::post('update', 'API\v1\UserController@update');
+            Route::post('update/{user}', 'API\v1\UserController@update');
+            Route::post('show/{user}', 'API\v1\UserController@show');
             Route::post('toggle-lock', 'API\v1\UserController@toggleLock')->middleware('role_is:Administrador');
         });
 

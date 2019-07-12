@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { actRegisterUser } from '../../redux/RegisterUser/actions';
+import { actRegisterUser, actUpdateUser } from '../../redux/RegisterUser/actions';
+import axios from 'axios';
+import params from '../../config/params';
 
 import { Grid, Form, Checkbox, Button, Icon, Segment, Container,Select,Message } from 'semantic-ui-react';
 import GeneralMessage from '../Helpers/components/GeneralMessage';
-import { Btn, Valid } from '../Helpers/Helpers';
+import { Btn, Valid, SearchServer } from '../Helpers/Helpers';
 
 const options = [
   { key: 'm', text: 'Masculino', value: 'Masculino' },
@@ -44,18 +46,18 @@ class FormUser extends Component {
 			municipio_id:"",
 			loading:false,
 			formValidations:{
-	        	numero_identificacion:false,
-	        	nombres:false,
-	        	apellidos:false,
-	        	email:false,
-	        	//genero:false,
-	        	password:false,
-	        	password_confirmation:false,
-	        	telefono:false,
-				//nivel_estudio:false,
-				fecha_nacimiento:false,
-				direccion:false,
-				municipio_id:false					
+	        	numero_identificacion:("userId" in this.props)?true:false,
+	        	nombres:("userId" in this.props)?true:false,
+	        	apellidos:("userId" in this.props)?true:false,
+	        	email:("userId" in this.props)?true:false,
+	        	//genero:("userId" in this.props)?true:false,
+	        	password:("userId" in this.props)?true:false,
+	        	password_confirmation:("userId" in this.props)?true:false,
+	        	telefono:("userId" in this.props)?true:false,
+				//nivel_estudio:("userId" in this.props)?true:false,
+				fecha_nacimiento:("userId" in this.props)?true:false,
+				direccion:("userId" in this.props)?true:false,
+				municipio_id:("userId" in this.props)?true:false					
 			},
 			formErrors:{
 				numero_identificacion:[],
@@ -72,15 +74,53 @@ class FormUser extends Component {
 				municipio_id:[]	
 			},
 			loading:false,
-			fomsIsValid:false
+			formIsValid:false
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleSubmitFormRegister = this.handleSubmitFormRegister.bind(this);
         this.onTrueValid = this.onTrueValid.bind(this);
         this.handleFocus = this.handleFocus.bind(this);        
-        this.onFalseValid = this.onFalseValid.bind(this);        
+        this.onFalseValid = this.onFalseValid.bind(this);
+        this.setFormIsValid = this.setFormIsValid.bind(this);        
+        this.handleSearchServerSelect = this.handleSearchServerSelect.bind(this);        
+        this.handleSearchChange = this.handleSearchChange.bind(this);        
 
+    }
+
+    componentDidMount() {
+    	//indica que es una actualización
+        if("userId" in this.props){
+        	this.setState({
+        		loading:true
+        	});
+
+        	axios.post(params.URL_API+"user/show/"+this.props.userId)
+        	.then(
+        		(response) => {        			
+        			this.setState({
+		        		formIsValid:true,
+		        		loading:false,
+		        		numero_identificacion:response.data.numero_identificacion?response.data.numero_identificacion:"",
+		        		nombres:response.data.nombres?response.data.nombres:"",
+		        		apellidos:response.data.apellidos?response.data.apellidos:"",
+		        		fecha_nacimiento:response.data.fecha_nacimiento?response.data.fecha_nacimiento:"",
+		        		genero:response.data.genero?response.data.genero:"",
+		        		email:response.data.email?response.data.email:"",
+		        		telefono:response.data.telefono?response.data.telefono:"",
+		        		nivel_estudio:response.data.nivel_estudio?response.data.nivel_estudio:"",
+		        		municipio_id:response.data.municipio_id?response.data.municipio_id:"",
+		        		direccion:response.data.direccion?response.data.direccion:""
+		        	});
+        		}, 
+        		(error) => {        			
+        			console.log(error);
+        			this.setState({
+		        		loading:false
+		        	});
+        		}
+    		)
+        }
     }
 
     handleInputChange(e, {name}){
@@ -112,7 +152,8 @@ class FormUser extends Component {
 
             this.setState({
                 formIsValid:isValid
-            })    
+            })   
+
         }, 10)
     }
 
@@ -138,6 +179,16 @@ class FormUser extends Component {
 
 	/*=====  Fin de Estado de validaciòn de formulario  ======*/
 
+	handleSearchServerSelect(e, {input, result}){
+		this.setState({[input.name]:result.key})
+		this.onTrueValid(input);
+	}
+	
+
+	handleSearchChange(e, {input, result}){
+		this.setState({[input.name]:null})
+		this.onFalseValid(input);
+	}
 	
 	/*==============================================
 	=            Manejadores de eventos            =
@@ -190,13 +241,44 @@ class FormUser extends Component {
 		    	}
 	    	});
     	}else if(this.props.action == "update"){
-    		///actualizar
+    		this.props.sendUpdateUser(this.state, this.props.userId)
+	    	.then((response) => {
+	    		if(response.status == 200){                  			
+					this.setState({			
+						loading:false,
+						errors:[],
+						formIsValid:false
+					})
+
+					if("onActionSuccess" in this.props){
+						this.props.onActionSuccess();
+					}
+	    		}else{
+
+	                let errors = {};
+	                _.map(response.data.errors, (el, i) => {
+	                    errors[i] = el;
+	                });
+	                this.setState((oldState, props) => {
+	                    return {
+	                    	formErrors: Object.assign({}, oldState.formErrors, errors),
+			    			loading:false,
+			    			success:[]
+	                    };
+	                })  
+
+		    		this.setState({
+		    		})
+		    	}
+	    	});
+    		
     	}    	
     }
 
 
     render() {
     	const {numero_identificacion, nombres, apellidos, email,genero,password,password_confirmation,telefono,nivel_estudio,fecha_nacimiento,direccion,municipio_id,terminos_condiciones,loading, formIsValid,formErrors,success} = this.state;
+    	
     	let limiteFechaNacimiento = new Date();
     	limiteFechaNacimiento.setFullYear(limiteFechaNacimiento.getFullYear() - 18);
 
@@ -205,6 +287,50 @@ class FormUser extends Component {
     	const dd = limiteFechaNacimiento.getDate() < 10?"0"+limiteFechaNacimiento.getDate():limiteFechaNacimiento.getDate();
 
     	limiteFechaNacimiento = yyyy+"-"+mm+"-"+dd;
+
+    	let fieldPassword = <Valid.Input	      		                    
+	                    id="password" 
+	                    name="password" 
+	                    value={password} 
+	                    label="Contraseña" 
+	                    type="password" 
+	                    onChange={this.handleInputChange} 
+	                    onTrueValid={this.onTrueValid} 
+	                    onFalseValid={this.onFalseValid}
+	                    onFocus={this.handleFocus}
+	                    required
+	                    min_length={8} 
+	                    max_length={60}  
+	                    errors={formErrors.password}
+	                    wrapperColumn
+	                />;
+
+	    let fieldpassword_confirmation = <Valid.Input	      		                    
+	                    id="password_confirmation" 
+	                    name="password_confirmation" 
+	                    value={password_confirmation} 
+	                    label="Confirme su contraseña" 
+	                    type="password" 
+	                    onChange={this.handleInputChange} 
+	                    onTrueValid={this.onTrueValid} 
+	                    onFalseValid={this.onFalseValid}
+	                    onFocus={this.handleFocus}
+	                    required
+	                    min_length={8} 
+	                    max_length={60}  
+	                    errors={formErrors.password_confirmation}
+	                    wrapperColumn
+	                />;
+	    let fielterminos_condiciones = <Grid.Column width={16} textAlign="center">			               					   
+						  					<Form.Checkbox name="terminos_condiciones" inline label='Estoy de acuerdo con los Términos y Condiciones' required />							
+		            					</Grid.Column>;
+
+
+	    if("userId" in this.props){
+	    	fieldPassword = "";
+	    	fieldpassword_confirmation="";
+	    	fielterminos_condiciones="";
+	    }
     	
         return (
         	<Form loading={loading} style={{marginTop: "40px"}}>
@@ -221,7 +347,7 @@ class FormUser extends Component {
 		                    onFocus={this.handleFocus} 				                    			                    
 		                    required
 		                    numeric
-		                    min_length={7}
+		                    min_length={6}
 		                    max_length={10}
 		                    wrapperColumn
 		                    errors={formErrors.numero_identificacion}
@@ -260,6 +386,7 @@ class FormUser extends Component {
 		                	max_length={60}			                
 		                    wrapperColumn
 		                    errors={formErrors.apellidos}
+		                    alphabeticalSpace
 		                />
 
 	                <Valid.Input  
@@ -301,6 +428,7 @@ class FormUser extends Component {
                         errors={formErrors.email}
 	                />	
 
+
 	                <Valid.Input 
 	                    type="text" 
 	                    name="telefono" 
@@ -317,27 +445,18 @@ class FormUser extends Component {
 	                    wrapperColumn
 	                    errors={formErrors.telefono}
 	                /> 	
-	                
-		                
+	                		                
         			<Grid.Column>
 		        		<Segment basic style={{padding:'0px', marginTop:'-10px', marginBottom:'30px'}}>
 		        			<Form.Select required name="nivel_estudio" fluid label="Nivel de estudios" options={options_nivel_estudios} placeholder="Seleccione" value={nivel_estudio} onChange={this.handleSelectChange} errors={formErrors.nivel_estudio}/>
 	        		 	</Segment>
-		        	</Grid.Column>
+		        	</Grid.Column>	         
 
-	                <Valid.Input 
-	                    type="text" 
-	                    name="municipio_id" 
-	                    id="municipio_id" 
-	                    value={municipio_id} 
-	                    label='Municipio' 
-	                    onTrueValid={this.onTrueValid} 
-	                    onFalseValid={this.onFalseValid}		                    
-	                    onChange={this.handleInputChange}
-	                    onFocus={this.handleFocus} 
-	                    required
-	                    wrapperColumn
-	                />	
+	                <Grid.Column>
+	                	<Segment basic style={{padding:'0px', marginTop:'-10px', marginBottom:'30px'}}>
+	                		<SearchServer required name="municipio_id" label="Municipio" predetermined={municipio_id} url={params.URL_API+"query/municipios"} handleResultSelect={this.handleSearchServerSelect} handleSearchChange={this.handleSearchChange}/>
+	                	</Segment>	                	
+	                </Grid.Column>
 
 	                <Valid.Input  
 	                    type="text" 
@@ -356,45 +475,10 @@ class FormUser extends Component {
 	                    wrapperColumn
 	                /> 			                	                		                	                                
 
-	                <Valid.Input	      		                    
-	                    id="password" 
-	                    name="password" 
-	                    value={password} 
-	                    label="Contraseña" 
-	                    type="password" 
-	                    onChange={this.handleInputChange} 
-	                    onTrueValid={this.onTrueValid} 
-	                    onFalseValid={this.onFalseValid}
-	                    onFocus={this.handleFocus}
-	                    required
-	                    min_length={8} 
-	                    max_length={60}  
-	                    errors={formErrors.password}
-	                    wrapperColumn
-	                />
-
-	                <Valid.Input	      		                    
-	                    id="password_confirmation" 
-	                    name="password_confirmation" 
-	                    value={password_confirmation} 
-	                    label="Confirme su contraseña" 
-	                    type="password" 
-	                    onChange={this.handleInputChange} 
-	                    onTrueValid={this.onTrueValid} 
-	                    onFalseValid={this.onFalseValid}
-	                    onFocus={this.handleFocus}
-	                    required
-	                    min_length={8} 
-	                    max_length={60}  
-	                    errors={formErrors.password_confirmation}
-	                    wrapperColumn
-	                />
-
-	                <Grid.Column width={16} textAlign="center">			               
-					   
-						  <Form.Checkbox inline label='Estoy de acuerdo con los Términos y Condiciones' required />
-							
-		            </Grid.Column>
+	                {fieldPassword}
+	                {fieldpassword_confirmation}
+	                {fielterminos_condiciones}
+	             
 
 					<Grid.Column width={16} textAlign="center">	
 						<Btn.Cancel onClick={this.close} href="{{url()->previous()}}"/>
@@ -415,6 +499,9 @@ const mapDispatchToProps = (dispatch) => {
 	return {
 		sendRegisterUser:(data) => {
 			return dispatch(actRegisterUser(data));
+		},
+		sendUpdateUser:(data, userId)=>{
+			return dispatch(actUpdateUser(data, userId));
 		}
 	}
 }

@@ -27,8 +27,10 @@ class User extends Component {
         this.handleClickBtnUpdate = this.handleClickBtnUpdate.bind(this);
     }
 
-    handleClickBtnUpdate(e, {user}){
+    handleClickBtnUpdate(e, {user, action}){
         this.props.history.push("user/update/"+user);
+        
+            
     }
 
     handleToggleLock(e,{user, action}){

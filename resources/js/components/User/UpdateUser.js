@@ -15,20 +15,20 @@ class UpdateUser extends Component {
         }
         this.onActionSuccess = this.onActionSuccess.bind(this);
     }
-
     onActionSuccess(){
     	this.setState({
-    		success:["El usuario se ha creado con éxito, para activar la cuenta debe ingresar a su correo electrónico e ingresar al link enviado."],
+    		success:["Usuario actualizado con éxito."],
     	})
     }
 
     render() {    	
+        /*const user=('user' in this.props)?this.props.user:false;*/
     	const {success} = this.state;
 
         return (
         	<Container>
         		<GeneralMessage success messages={success} onDismiss={()=>this.setState({success:[]})}/>
-	        	<FormUser action="register" onActionSuccess={this.onActionSuccess}/>
+	        	<FormUser action="update" onActionSuccess={this.onActionSuccess} userId={this.props.match.params.id}/>
             </Container>
         );
     }
@@ -41,21 +41,10 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		sendRegisterUser:(data) => {
-			return dispatch(actRegisterUser(data));
+		sendUtdateUser:(data) => {
+			return dispatch(actUpdateUser(data));
 		},
-
-		addNotificationChangePasswordSuccess:() => {
-			const notification = {
-	    		header:"Confirmación",
-	    		message:"Se ha creado un nuevo usuario exitosamente.",
-	    		closeIn:7,
-	    		showButtonClose:true
-	    	}
-
-	    	dispatch(actAddNotification(notification));
-		}
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterUser);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateUser);

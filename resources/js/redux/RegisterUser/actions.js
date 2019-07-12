@@ -38,10 +38,10 @@ const actRegisterUser = (data) => {
     }
 }
 
-const actUpdateUser =(data)=>{
+const actUpdateUser =(data, userId)=>{
 
     return dispatch => {
-        return axios.post(params.URL_API+'user/update',{
+        return axios.post(params.URL_API+'user/update/'+userId,{
             numero_identificacion:data.numero_identificacion,
             nombres:data.nombres,
             apellidos:data.apellidos,

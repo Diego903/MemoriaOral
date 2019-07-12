@@ -23,14 +23,11 @@ class RequestUpdateUser extends FormRequest
     public function rules()
     {
         return [
-            "numero_identificacion"=>"required|min:6|max:10|numeric",
+            "numero_identificacion"=>"required|min:6|max:10|digits_between:6,10",
             "nombres"=>"required|min:3|max:60",
             "apellidos"=>"required|min:3|max:60",
             "email"=>"required|min:7|max:100|email",
-            "genero"=>"required",
-            "password"=>"required|min:8|max:60|confirmed",
-            "password_confirmation"=>"required|min:8|max:60",            
-            "telefono"=>"min:10|max:15|numeric",
+            "genero"=>"required",            
             "nivel_estudio"=>"required",
             "fecha_nacimiento"=>"required|Date",
             "direccion"=>"required|min:3|max:60",

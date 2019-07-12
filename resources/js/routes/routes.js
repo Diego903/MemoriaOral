@@ -13,6 +13,7 @@ import Testimony from '../components/Testimony/Testimony';
 
 import User from '../components/User/User';
 import RegisterUser from '../components/User/RegisterUser';
+import UpdateUser from '../components/User/UpdateUser';
 import AccountActivation from '../components/User/AccountActivation';
 
 import Login from '../components/Auth/Login/Login';
@@ -130,7 +131,9 @@ class Routes extends Component
                     <FreeRoute exact path={config_routes.home.path} component={Home} />
                     <FreeRoute exact path={config_routes.testimony.path} component={Testimony} />
 
-                    <AuthRoute exact path={config_routes.user.path} component={User} />
+                    <AuthRoute exact userType="Administrador" path={config_routes.user.path} component={User} />
+                    <AuthRoute exact userType="Administrador" path={config_routes.updateUser.path} component={UpdateUser} />
+
                     <FreeRoute exact path={config_routes.registerUser.path} component={RegisterUser} />
 
                     <GuestRoute exact path={config_routes.account_activation.path} component={AccountActivation} />

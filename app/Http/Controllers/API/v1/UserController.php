@@ -48,33 +48,68 @@ class UserController extends Controller
        // DB::beginTransaction();
         $str_random = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     	$user = new User();
+        $version_previa = $user->toJson();
     	$user->fill($request->all());
         $user->password = Hash::make($request->password);
 
         for($i = 0; $i < rand(30,45);$i++){
             $user->token_ .= $str_random[rand(0, (strlen($str_random)-1))];
         }
+        $user->estado = $user->estado == "Activo"?"Inactivo":"Activo";
     	$user->save();
+        $version_nueva = $user->toJson();
+
+        $log = new GestionUsuario();
+
+        $log->fill([
+            "fecha" => date("Y-m-d"),
+            "accion" => "Crear",
+            "version_previa" =>$version_previa,
+            "version_nueva" => $version_nueva,
+            "usuario_admin_id" =>null,
+            "usuario_id" => $user->id,
+        ]);
+
+        $log->save();        
 
         Mail::to($user)->send(new RegisterUser($user));
         //DB::commit();
-    	return response(["success"=>true], 200);
+    	return response(["success"=>true], 200);                
+        }
+
+
+    public function show(User $user)
+    {
+        return $user;
     }
 
-    public function show($id)
+
+    public function update(RequestUpdateUser $request, User $user)
     {
-        $user = User::findOrFail($id);
+        if ($user) {
+            $version_previa = $user->toJson();
+            
+            $user->fill($request->all());
+            $user->save();
 
-        return view ("user.show", compact("user"));
-    }
+            $version_nueva = $user->toJson();
 
+            $log = new GestionUsuario();
 
-    public function update(RequestUpdateUser $request, $id)
-    {
-        $user=User::findOrFail($id);
-        $user->update($request->all());
+            $log->fill([
+                "fecha" => date("Y-m-d"),
+                "accion" => $user->estado=="Activo"?"Desbloquear":"Bloquear",
+                "version_previa" => $version_previa,
+                "version_nueva" => $version_nueva,
+                "usuario_admin_id" => Auth::user()->id,
+                "usuario_id" => $user->id,
+            ]);
 
-        return view("user.update", compact("user"));
+            $log->save();
+        }
+        
+
+        return response(["success"=>true], 200); 
     }
 
     public function accountActivation(Request $request){
