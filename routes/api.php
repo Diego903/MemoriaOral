@@ -32,6 +32,7 @@ Route::prefix('v1')->group(function(){
             Route::post('toggle-lock', 'API\v1\UserController@toggleLock')->middleware('role_is:Administrador');
         });
 
+        
         Route::post('register', 'API\v1\UserController@register');
         Route::post('account-activation', 'API\v1\UserController@accountActivation');
     });
@@ -39,5 +40,13 @@ Route::prefix('v1')->group(function(){
 	Route::prefix('query')->group(function(){
 		Route::post('municipios','API\v1\QueryController@municipios');
     });
+
+    Route::prefix('storie_conflict')->group(function(){
+        Route::middleware('auth:api')->group(function(){
+     
+        });  
+        Route::post('register', 'API\v1\StorieConflictController@register');      
+        
+    });    
 
 });

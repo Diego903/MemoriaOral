@@ -14,7 +14,9 @@ class RegisterUser extends Component {
         	success:[]
         }
         this.onActionSuccess = this.onActionSuccess.bind(this);
+
     }
+    
 
     onActionSuccess(){
     	this.setState({
@@ -28,7 +30,7 @@ class RegisterUser extends Component {
         return (
         	<Container>
         		<GeneralMessage success messages={success} onDismiss={()=>this.setState({success:[]})}/>
-	        	<FormUser action="register" onActionSuccess={this.onActionSuccess}/>
+	        	<FormUser action="register" onActionSuccess={this.onActionSuccess} onCancel={() => {this.props.history.goBack()}}/>
             </Container>
         );
     }

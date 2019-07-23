@@ -85,6 +85,7 @@ class FormUser extends Component {
         this.setFormIsValid = this.setFormIsValid.bind(this);        
         this.handleSearchServerSelect = this.handleSearchServerSelect.bind(this);        
         this.handleSearchChange = this.handleSearchChange.bind(this);        
+        this.handleCancel = this.handleCancel.bind(this);        
 
     }
 
@@ -156,6 +157,7 @@ class FormUser extends Component {
 
         }, 10)
     }
+
 
     onTrueValid({name}){
         this.setState((oldState, props) => {
@@ -275,6 +277,11 @@ class FormUser extends Component {
     	}    	
     }
 
+    handleCancel(){
+    	if('onCancel' in this.props){
+    		this.props.onCancel();
+    	}
+    }
 
     render() {
     	const {numero_identificacion, nombres, apellidos, email,genero,password,password_confirmation,telefono,nivel_estudio,fecha_nacimiento,direccion,municipio_id,terminos_condiciones,loading, formIsValid,formErrors,success} = this.state;
@@ -481,7 +488,7 @@ class FormUser extends Component {
 	             
 
 					<Grid.Column width={16} textAlign="center">	
-						<Btn.Cancel onClick={this.close} href="{{url()->previous()}}"/>
+						<Btn.Cancel onClick={this.handleCancel}/>
 						<Btn.Save disabled={(!formIsValid || loading)} onClick={this.handleSubmitFormRegister}/>		                   
 		            </Grid.Column>
 	            </Grid>  	            

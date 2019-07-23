@@ -55,7 +55,7 @@ class UserController extends Controller
         for($i = 0; $i < rand(30,45);$i++){
             $user->token_ .= $str_random[rand(0, (strlen($str_random)-1))];
         }
-        $user->estado = $user->estado == "Activo"?"Inactivo":"Activo";
+        
     	$user->save();
         $version_nueva = $user->toJson();
 
@@ -82,7 +82,6 @@ class UserController extends Controller
     {
         return $user;
     }
-
 
     public function update(RequestUpdateUser $request, User $user)
     {
