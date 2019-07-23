@@ -11,10 +11,18 @@ class SearchServer extends Component {
         this.state = {
         	results:[],
         	isLoading:false,
-        	value:""
+        	value:"",
+        	errors:[],
+        	selected:false
         }
 
         this.selectPredeterminate = this.selectPredeterminate.bind(this);
+        this.clearError = this.clearError.bind(this);
+        this.clearAllErrors = this.clearAllErrors.bind(this);
+        this.setError = this.setError.bind(this);
+        this.handleBlur = this.handleBlur.bind(this);
+
+        this.countSelectedPredeterminate = 0;
     }
 
     componentDidMount() {
@@ -26,7 +34,8 @@ class SearchServer extends Component {
     }
 
     selectPredeterminate(props_){    	
-        if("predetermined" in props_ && props_.predetermined){
+        if("predetermined" in props_ && props_.predetermined && this.countSelectedPredeterminate < 1){
+        	this.countSelectedPredeterminate++;
         	axios({
 				method:props_.method?props_.method:"post",
 				url:props_.url,
@@ -35,7 +44,8 @@ class SearchServer extends Component {
 			.then((response) => {
 				this.setState({
 					value:response.data[0].title,
-					results:response.data
+					results:response.data,
+					selected:true
 				});
 			})
 
@@ -43,7 +53,7 @@ class SearchServer extends Component {
     }
 
     handleResultSelect = (e, data) => {
-    	this.setState({ value: data.result.title })
+    	this.setState({ value: data.result.title, selected:true })
 
     	if('handleResultSelect' in this.props){
     		this.props.handleResultSelect(e, data)
@@ -51,7 +61,7 @@ class SearchServer extends Component {
     }
 
 	handleSearchChange = (e, data) => {
-		this.setState({ isLoading: true, value:data.value })
+		this.setState({ isLoading: true, value:data.value, selected:false })
 
 		if('handleSearchChange' in this.props){
     		this.props.handleSearchChange(e, data);
@@ -75,8 +85,53 @@ class SearchServer extends Component {
 		}
 	}
 
+	/**
+	 * Deja en null un error en la lista de errores del campo
+	 * @param  {String} name Nombre identificador del error
+	 */
+	clearError(name){
+		this.setError(name, null);
+	}
+
+	clearAllErrors(){
+		this.setState({errors:{}});
+	}
+
+	/**
+	 * Asigna el valor a un error
+	 * @param {String} name    Nombre identificador del error
+	 * @param {String} message Mensaje a mostrar en el error
+	 */
+	setError(name, message){
+		this.setState((oldState, props) => {
+			return {
+				errors:Object.assign({},oldState.errors,{[name]:message})
+			}
+		})
+	}
+
+	handleBlur(e, data){
+		if(!this.state.selected)
+			this.setError("required","Este campo es obligatorio");
+	}
+
     render() {
-    	const {results, isLoading, value} = this.state;
+    	const {results, isLoading, value, errors} = this.state;
+
+    	let errors_ = "";
+		if(!("noRenderFails" in this.props)){
+			errors_ = _.map(this.state.errors, (el, i) => {
+						if(typeof el === "string")
+		                	return <p key={i} style={{color:"#9f3a38", marginBottom:"0px"}}>{el}</p>
+	                });
+
+			//une los mensajes enviados desde el componente que instancia
+			_.map(this.state.otherErrors, (el, i) => {
+				if(typeof el === "string")
+                	errors_.push(<p key={i} style={{color:"#9f3a38", marginBottom:"0px"}}>{el}</p>)
+            });
+		}
+
         return (
         	<Segment basic style={{padding:"0px"}}>
         		<div className={"field "+("required" in this.props?"required":"")}>
@@ -98,7 +153,12 @@ class SearchServer extends Component {
 			            value={value}
 			            noResultsMessage="Sin resultados."
 			            size={this.props.size}
+			            onFocus={this.clearAllErrors}
+			            onBlur={this.handleBlur}
 			          />
+			       	<Segment basic style={{padding:'0px', marginTop:'5px'}}>
+						{ errors_ }
+					</Segment>
 	          	</div>
           	</Segment>
         );

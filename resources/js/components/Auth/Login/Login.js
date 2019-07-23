@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import store from '../../../redux/store';
 import { withRouter, Link } from 'react-router-dom';
 
-import { Grid, Form, Checkbox, Button, Icon, Segment } from 'semantic-ui-react';
+import { Grid, Form, Checkbox, Button, Icon, Segment, Container } from 'semantic-ui-react';
 import { GeneralMessage, Valid, Btn, SearchServer } from '../../Helpers/Helpers';
 
 import config_routes from '../../../config/routes';
@@ -116,8 +116,9 @@ class Login extends React.Component {
         const {username, password, remember, loading, error} = this.state;
 
         return (
+            <Container>
         	<Grid centered>
-            	<Grid.Column computer={5} tablet={10} mobile={14}>
+            	<Grid.Column computer={6} tablet={10} mobile={14}>
                   	<Form loading={loading}>
 
                         <Valid.Input 
@@ -161,9 +162,14 @@ class Login extends React.Component {
                         <Segment basic textAlign='center'>
                             <Link to={config_routes.password_reset_request.path}>¿Olvidaste tu contraseña?</Link>
                         </Segment>
+
+                        <p>
+                            Si aún no tiene una cuenta de usuario, haga <Link to={config_routes.registerUser.path}>click aquí</Link> para registrarse.
+                        </p>
                     </Form>
                 </Grid.Column>
             </Grid>
+            </Container>
         );
     }
 }

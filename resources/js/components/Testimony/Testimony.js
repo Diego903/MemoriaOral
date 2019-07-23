@@ -1,23 +1,19 @@
 import React, { PropTypes } from 'react';
-import { Segment, Header } from 'semantic-ui-react';
+import { Segment, Header, Container, Divider } from 'semantic-ui-react';
 import { Btn } from '../Helpers/Helpers';
+import Template1 from './Templates/Template1';
+import Template2 from './Templates/Template2';
+import Template3 from './Templates/Template3';
+import Template4 from './Templates/Template4';
 
 const Testimony = ({ }) => {
+
     return (
-    	<Segment>
-        <Header>Vista principal de testimonio</Header>
-        <Btn.Save />
-        <Btn.Close />
-        <Btn.Update />
-        <Btn.Delete />
-        <Btn.Add />
-        <Btn.Cancel />
-        <Btn.Accept />
-        <Btn.No />
+    	<Container>
             <Segment>
-                <p>Ejemplo prueba</p>
+                <p>Template</p>
             </Segment>
-        </Segment>
+        </Container>
     );
 };
 

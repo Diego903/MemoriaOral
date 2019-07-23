@@ -54,8 +54,8 @@ class HandleAuthCookie extends Component
             }
         }else{
             this.props.cookies.remove(params.COOKIE_AUTH_STATE);
-            this.props.cookies.remove(params.COOKIE_AUTH_REMEMBER);
             this.props.cookies.remove(params.COOKIE_AUTH_USER);
+            this.props.cookies.remove(params.COOKIE_AUTH_REMEMBER);
         }
     }
 

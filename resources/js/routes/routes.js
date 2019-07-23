@@ -134,7 +134,7 @@ class Routes extends Component
                     <AuthRoute exact userType="Administrador" path={config_routes.user.path} component={User} />
                     <AuthRoute exact userType="Administrador" path={config_routes.updateUser.path} component={UpdateUser} />
 
-                    <FreeRoute exact path={config_routes.registerUser.path} component={RegisterUser} />
+                    <GuestRoute exact path={config_routes.registerUser.path} component={RegisterUser} />
 
                     <GuestRoute exact path={config_routes.account_activation.path} component={AccountActivation} />
 

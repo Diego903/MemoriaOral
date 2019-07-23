@@ -42,6 +42,7 @@ const actUpdateUser =(data, userId)=>{
 
     return dispatch => {
         return axios.post(params.URL_API+'user/update/'+userId,{
+            id:data.id,
             numero_identificacion:data.numero_identificacion,
             nombres:data.nombres,
             apellidos:data.apellidos,

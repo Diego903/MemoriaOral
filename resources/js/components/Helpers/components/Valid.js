@@ -286,6 +286,16 @@ class Input extends React.Component {
 			this.props.onTrueValid(this.inputEvent.target);
 			return	
 		}
+
+		//si el input esta vacio y no es requerido
+		if (
+				(this.inputEvent.target.value.length == 0 && !("required" in this.props))
+				&& ("onTrueValid" in this.props)
+			){
+			this.props.onTrueValid(this.inputEvent.target);
+			return	
+		}
+
 	}
 
 	/**
@@ -343,7 +353,11 @@ class Input extends React.Component {
 			this.validationInput();		
 		}else{
 			this.clearAllErrors();
-			this.setValidState(false);
+			if("required" in this.props){
+				this.setValidState(false, true);
+			}else{
+				this.setValidState(true, true);
+			}
 		}
 
 		if(this.stopEvent)return

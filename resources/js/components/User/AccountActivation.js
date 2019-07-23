@@ -83,7 +83,7 @@ class AccountActivation extends Component {
     					password:password,
     					rememberMe:false
     				});
-		        }, 3000)
+		        }, 5000)
 
     		}, 
     		({response}) => {
@@ -181,7 +181,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return {
 		login:(data) => {
-			console.log(data);
 			return dispatch(actLogin(data));
 		}
 	}

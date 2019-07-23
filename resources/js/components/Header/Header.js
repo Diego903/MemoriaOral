@@ -119,14 +119,14 @@ class Header extends React.Component {
 		          </Button>
 		        </Menu.Menu>
 
-        const optionRegisterUser = <Menu.Item
+        const optionRegisterUser = !userAuth?<Menu.Item
 			key={8}
 			name={routes.registerUser.name}
 			item={routes.registerUser.item}
 			path={routes.registerUser.path}
 			active={activeItem === routes.registerUser.item}
 			onClick={handleItemClick}
-		/>
+		/>:""
 
         /*=====  Fin de Items del menú  ======*/
 

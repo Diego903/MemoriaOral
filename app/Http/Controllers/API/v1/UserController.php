@@ -55,7 +55,6 @@ class UserController extends Controller
         for($i = 0; $i < rand(30,45);$i++){
             $user->token_ .= $str_random[rand(0, (strlen($str_random)-1))];
         }
-        $user->estado = $user->estado == "Activo"?"Inactivo":"Activo";
     	$user->save();
         $version_nueva = $user->toJson();
 
@@ -114,7 +113,6 @@ class UserController extends Controller
 
     public function accountActivation(Request $request){
     	$user = User::where('token_',$request->token)->first();
-
     	if($user && $user->id == $request->id && $user->estado == "Inactivo" && Hash::check($request->password, $user->password)){
     		$creationDate = new Carbon($user->created_at,"America/Bogota");
     		$currentDate = Carbon::now();
@@ -123,7 +121,7 @@ class UserController extends Controller
 
     		//han pasado más de dos semanas
     		if($creationDate <= $currentDate){
-    			return response(['error'=>'ERROR!! Esta url ha expirado, para más información comuniquese con el admnistrador.'], 422);
+    			return response(['error'=>'ERROR!! Esta url ha expirado, para más información comuníquese con el administrador.'], 422);
     		}
 
     		$user->token_ = NULL;

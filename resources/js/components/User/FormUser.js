@@ -14,7 +14,6 @@ const options = [
 ]
 
 const options_nivel_estudios = [
-  { key: 'ninguno', text: 'Ninguno', value: 'Ninguno'},
   { key: 'primaria', text: 'Básica primaria', value: 'Básica primaria'},
   { key: 'secundaria', text: 'Básica secundaria', value: 'Básica secundaria'},
   { key: 'tecnico', text: 'Técnico profesional', value: 'Técnico profesional'},
@@ -32,6 +31,7 @@ class FormUser extends Component {
         super(props);
 
         this.state={
+        	id:"userId" in this.props?this.props.userId:false,
         	numero_identificacion:"",
         	nombres:"",
         	apellidos:"",
@@ -44,20 +44,22 @@ class FormUser extends Component {
 			fecha_nacimiento:"",
 			direccion:"",
 			municipio_id:"",
+			terminos_condiciones:("userId" in this.props)?true:false,
 			loading:false,
 			formValidations:{
 	        	numero_identificacion:("userId" in this.props)?true:false,
 	        	nombres:("userId" in this.props)?true:false,
 	        	apellidos:("userId" in this.props)?true:false,
 	        	email:("userId" in this.props)?true:false,
-	        	//genero:("userId" in this.props)?true:false,
+	        	genero:("userId" in this.props)?true:false,
 	        	password:("userId" in this.props)?true:false,
 	        	password_confirmation:("userId" in this.props)?true:false,
-	        	telefono:("userId" in this.props)?true:false,
-				//nivel_estudio:("userId" in this.props)?true:false,
+	        	telefono:true,
+				nivel_estudio:("userId" in this.props)?true:false,
 				fecha_nacimiento:("userId" in this.props)?true:false,
 				direccion:("userId" in this.props)?true:false,
-				municipio_id:("userId" in this.props)?true:false					
+				municipio_id:("userId" in this.props)?true:false,					
+				terminos_condiciones:("userId" in this.props)?true:false					
 			},
 			formErrors:{
 				numero_identificacion:[],
@@ -123,14 +125,22 @@ class FormUser extends Component {
         }
     }
 
-    handleInputChange(e, {name}){
-        let value = (e.target.type == 'checkbox')?e.target.checked:e.target.value;
-        
-        this.setState({ [name]:  value});
+    handleInputChange(e, props_){
+        let value = (props_.type == 'checkbox')?(props_.checked?true:false):props_.value;
+        this.setState({ [props_.name]:  value});
+
+        //acepta terminos y condiciones
+        if(props_.type == 'checkbox'){
+        	if(value)
+        		this.onTrueValid({name:props_.name});
+    		else
+    			this.onFalseValid({name:props_.name});
+        }
     }
 
     handleSelectChange(e, {name, value}){
         this.setState({ [name]:  value});
+        this.onTrueValid({name});
     }
 
     handleFocus(e, {name}){
@@ -153,7 +163,6 @@ class FormUser extends Component {
             this.setState({
                 formIsValid:isValid
             })   
-
         }, 10)
     }
 
@@ -322,7 +331,7 @@ class FormUser extends Component {
 	                    wrapperColumn
 	                />;
 	    let fielterminos_condiciones = <Grid.Column width={16} textAlign="center">			               					   
-						  					<Form.Checkbox name="terminos_condiciones" inline label='Estoy de acuerdo con los Términos y Condiciones' required />							
+						  					<Form.Checkbox name="terminos_condiciones" inline label='Estoy de acuerdo con los Términos y Condiciones' required onChange={this.handleInputChange}/>							
 		            					</Grid.Column>;
 
 
@@ -425,6 +434,7 @@ class FormUser extends Component {
 	                    email
 	                    wrapperColumn
 	                    max_length={100}
+	                    min_length={7}
                         errors={formErrors.email}
 	                />	
 

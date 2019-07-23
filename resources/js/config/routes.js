@@ -10,7 +10,7 @@ export default {
 		path:'/testimony'
 	},
     registerUser:{
-        name:'Registrar usuarios',
+        name:'Registrarse',
         item:'registerUser',
         path:'/user/register'
     },

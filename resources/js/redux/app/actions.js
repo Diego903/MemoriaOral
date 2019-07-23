@@ -49,13 +49,15 @@ const actLogout = () => {
     return dispatch => {
         return axios.post(params.URL+'/api/logout')
         .then((response) => {
-            //se despacha la acción para cambiar los valores de los datos de estado
-            //de autenticación en el store
-            dispatch({
-                type:types.LOGOUT
-            });
+            setTimeout(() => {
+                //se despacha la acción para cambiar los valores de los datos de estado
+                //de autenticación en el store
+                dispatch({
+                    type:types.LOGOUT
+                });
 
-            dispatch(actRemoveAllNotifications());
+                dispatch(actRemoveAllNotifications());
+            }, 100);
         })
         .catch((error) => {
             console.log(error.response);

@@ -23,15 +23,22 @@ class RequestUpdateUser extends FormRequest
     public function rules()
     {
         return [
-            "numero_identificacion"=>"required|min:6|max:10|digits_between:6,10",
+            "numero_identificacion"=>"required|min:6|max:10|digits_between:6,10|unique:users,numero_identificacion,".$this->id.",id",
             "nombres"=>"required|min:3|max:60",
             "apellidos"=>"required|min:3|max:60",
-            "email"=>"required|min:7|max:100|email",
+            "email"=>"required|min:7|max:100|email|unique:users,email,".$this->id.",id",
             "genero"=>"required",            
             "nivel_estudio"=>"required",
             "fecha_nacimiento"=>"required|Date",
             "direccion"=>"required|min:3|max:60",
             "municipio_id"=>"required",
+        ];
+    }
+
+    public function messages(){
+        return [
+            "numero_identificacion.unique"=>"Ya existe un usuario con este número de identificación",
+            "email.unique"=>"Ya existe un usuario con este correo electrónico",
         ];
     }
 }
