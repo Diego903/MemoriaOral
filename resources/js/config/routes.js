@@ -22,7 +22,7 @@ export default {
     storie_conflict:{
 		name:'Historias del conflicto',
 		item:'storie_conflict',
-		path:'/storie_conflict'
+		path:'/stories/storie_conflict'
 	},
 	investigation_request:{
 		name:'Solicitudes de investigación',

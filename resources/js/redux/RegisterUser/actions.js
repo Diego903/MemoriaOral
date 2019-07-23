@@ -10,6 +10,7 @@ import params from '../../config/params';
  * @return {Object}      Respuesta del servidor
  */
 
+
 const actRegisterUser = (data) => {
     //console.log(data);
     return dispatch => {
