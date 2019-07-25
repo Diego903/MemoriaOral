@@ -160,7 +160,7 @@ class Login extends React.Component {
                         </Button>
 
                         <Segment basic textAlign='center'>
-                            <Link to={config_routes.password_reset_request.path}>¿Olvidaste tu contraseña?</Link>
+                            <Link to={config_routes.password_reset_request.path}>¿Olvidó su contraseña?</Link>
                         </Segment>
 
                         <p>

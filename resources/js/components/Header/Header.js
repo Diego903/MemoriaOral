@@ -102,7 +102,7 @@ class Header extends React.Component {
 		const buttonShowChangePassword = <ModalChangeComponent buttonShow={<Dropdown.Item>Cambiar contraseña</Dropdown.Item>} />
 		//Muestra botón para navegar a ingreso o opciones de usuario si esta logueado
 		const optionAuth = userAuth?
-				<Menu.Menu position="right" key={7} style={{marginRight:"10px"}}>
+				<Menu.Menu position="right" key={7}>
 					<Dropdown item text={user.nombres+' '+user.apellidos}>
 						<Dropdown.Menu>
 							<Dropdown.Item>Perfil</Dropdown.Item>
@@ -143,7 +143,7 @@ class Header extends React.Component {
 	    ];
 
 	    return (
-	    	<Segment style={{padding:"0px", borderBottom:"2px solid #6435c9", marginBottom:"30px"}}>
+	    	<Segment className="margin-bottom-30 no-padding" style={{borderBottom:"2px solid #01579b"}}>
 	    		<Grid columns={1}>
 					<Grid.Column only="mobile tablet">
 						<Segment textAlign = 'right'>
@@ -153,7 +153,7 @@ class Header extends React.Component {
 						{
 							this.state.showMenuMobile?
 							<Grid.Column>				
-								<Menu stackable vertical fluid={true} color="violet" style={{paddingTop:'12px'}}>
+								<Menu stackable vertical fluid={true} style={{paddingTop:'12px'}}>
 									{optionsMenu}
 								</Menu>
 							</Grid.Column>:""
@@ -163,7 +163,7 @@ class Header extends React.Component {
 				
 				<Grid columns={1}>
 					<Grid.Column only="computer">
-						<Menu secondary stackable color="violet">
+						<Menu secondary stackable>
 							{optionsMenu}
 						</Menu>
 					</Grid.Column>

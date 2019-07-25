@@ -49,7 +49,7 @@ class Template4 extends Component {
             <Segment basic>
 
                 <Segment basic>
-                    <Header as="h2">
+                    <Header as="h2" dividing>
                         {titulo}
                         <Header.Subheader>
                             <Icon name="male"/> Jose Luis Capote Mosquera
@@ -66,7 +66,7 @@ class Template4 extends Component {
 						Descripción
 					</Accordion.Title>
 					<Accordion.Content active={activeIndex === 0}>
-                        <Segment basic style={{textAlign:"justify"}}>
+                        <Segment basic className="justify">
                             {descripcion}
                         </Segment>
 					</Accordion.Content>

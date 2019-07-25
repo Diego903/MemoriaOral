@@ -4,9 +4,11 @@ import { actRegisterUser, actUpdateUser } from '../../redux/RegisterUser/actions
 import axios from 'axios';
 import params from '../../config/params';
 
-import { Grid, Form, Checkbox, Button, Icon, Segment, Container,Select,Message } from 'semantic-ui-react';
+import { Grid, Form, Checkbox, Button, Icon, Segment, Container,Select,Message, Modal, Header } from 'semantic-ui-react';
 import GeneralMessage from '../Helpers/components/GeneralMessage';
 import { Btn, Valid, SearchServer } from '../Helpers/Helpers';
+
+import {animateScroll} from 'react-scroll';
 
 const options = [
   { key: 'm', text: 'Masculino', value: 'Masculino' },
@@ -224,15 +226,18 @@ class FormUser extends Component {
 						nivel_estudio:'',
 						fecha_nacimiento:'',
 						direccion:'',
-						municipio_id:'',    				
+						municipio_id:-1,    				
 						loading:false,
 						errors:[],
-						formIsValid:false
+						formIsValid:false,
+						showModalTyC:false
 					})
 
 					if("onActionSuccess" in this.props){
 						this.props.onActionSuccess();
 					}
+
+    				animateScroll.scrollToTop();
 	    		}else{
 
 	                let errors = {};
@@ -247,8 +252,7 @@ class FormUser extends Component {
 	                    };
 	                })  
 
-		    		this.setState({
-		    		})
+					animateScroll.scrollToTop();
 		    	}
 	    	});
     	}else if(this.props.action == "update"){
@@ -264,6 +268,7 @@ class FormUser extends Component {
 					if("onActionSuccess" in this.props){
 						this.props.onActionSuccess();
 					}
+					animateScroll.scrollToTop();
 	    		}else{
 
 	                let errors = {};
@@ -278,8 +283,7 @@ class FormUser extends Component {
 	                    };
 	                })  
 
-		    		this.setState({
-		    		})
+		    		animateScroll.scrollToTop();
 		    	}
 	    	});
     		
@@ -293,7 +297,7 @@ class FormUser extends Component {
     }
 
     render() {
-    	const {numero_identificacion, nombres, apellidos, email,genero,password,password_confirmation,telefono,nivel_estudio,fecha_nacimiento,direccion,municipio_id,terminos_condiciones,loading, formIsValid,formErrors,success} = this.state;
+    	const {numero_identificacion, nombres, apellidos, email,genero,password,password_confirmation,telefono,nivel_estudio,fecha_nacimiento,direccion,municipio_id,terminos_condiciones,loading, formIsValid, formErrors, success, showModalTyC} = this.state;
     	
     	let limiteFechaNacimiento = new Date();
     	limiteFechaNacimiento.setFullYear(limiteFechaNacimiento.getFullYear() - 18);
@@ -338,7 +342,7 @@ class FormUser extends Component {
 	                    wrapperColumn
 	                />;
 	    let fielterminos_condiciones = <Grid.Column width={16} textAlign="center">			               					   
-						  					<Form.Checkbox name="terminos_condiciones" inline label='Estoy de acuerdo con los Términos y Condiciones' required onChange={this.handleInputChange}/>							
+						  					<Form.Checkbox name="terminos_condiciones" inline label='Estoy de acuerdo con los Términos y Condiciones. Vea términos y condiciones con el botón [ Ver términos y condiciones ]' required onChange={this.handleInputChange}/>
 		            					</Grid.Column>;
 
 
@@ -349,7 +353,7 @@ class FormUser extends Component {
 	    }
     	
         return (
-        	<Form loading={loading} style={{marginTop: "40px"}}>
+        	<Form loading={loading} className="margin-top-40">
 	        	<Grid stackable doubling columns={3}>	
 	          		<Valid.Input 		                    
 		                    type="text" 
@@ -422,7 +426,7 @@ class FormUser extends Component {
 	                /> 			                
 
 		        	<Grid.Column required>
-		        		<Segment basic style={{padding:'0px', marginTop:'-10px', marginBottom:'30px'}}>
+		        		<Segment basic className="no-padding margin-bottom-30" style={{marginTop:'-10px'}}>
 		        			<Form.Select required name="genero" fluid label="Genero" options={options} placeholder="Seleccione" value={genero} onChange={this.handleSelectChange} errors={formErrors.genero}/>
 	        		 	</Segment>
 		        	</Grid.Column>	
@@ -464,13 +468,13 @@ class FormUser extends Component {
 	                /> 	
 	                		                
         			<Grid.Column>
-		        		<Segment basic style={{padding:'0px', marginTop:'-10px', marginBottom:'30px'}}>
+		        		<Segment basic className="no-padding margin-bottom-30" style={{marginTop:'-10px'}}>
 		        			<Form.Select required name="nivel_estudio" fluid label="Nivel de estudios" options={options_nivel_estudios} placeholder="Seleccione" value={nivel_estudio} onChange={this.handleSelectChange} errors={formErrors.nivel_estudio}/>
 	        		 	</Segment>
 		        	</Grid.Column>	         
 
 	                <Grid.Column>
-	                	<Segment basic style={{padding:'0px', marginTop:'-10px', marginBottom:'30px'}}>
+	                	<Segment basic className="no-padding margin-bottom-30" style={{marginTop:'-10px'}}>
 	                		<SearchServer required name="municipio_id" label="Municipio" predetermined={municipio_id} url={params.URL_API+"query/municipios"} handleResultSelect={this.handleSearchServerSelect} handleSearchChange={this.handleSearchChange}/>
 	                	</Segment>	                	
 	                </Grid.Column>
@@ -498,6 +502,22 @@ class FormUser extends Component {
 	             
 
 					<Grid.Column width={16} textAlign="center">	
+						{
+							!("userId" in this.props)?
+							<Modal open={showModalTyC} trigger={<Button type="button" icon="certificate" content="Ver términos y condiciones" onClick={() => this.setState({showModalTyC:true})}/>}>
+								<Modal.Header className="text-center">Términos y condiciones</Modal.Header>
+								<Modal.Content image>
+									<Modal.Description>
+										<Header>Default Profile Image</Header>
+										<p>We've found the following gravatar image associated with your e-mail address.</p>
+										<p>Is it okay to use this photo?</p>
+									</Modal.Description>
+								</Modal.Content>
+								<Modal.Actions>
+									<Btn.Close onClick={() => this.setState({showModalTyC:false})}/>
+								</Modal.Actions>
+							</Modal>:""
+						}
 						<Btn.Cancel onClick={this.handleCancel}/>
 						<Btn.Save disabled={(!formIsValid || loading)} onClick={this.handleSubmitFormRegister}/>		                   
 		            </Grid.Column>

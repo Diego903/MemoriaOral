@@ -19,14 +19,14 @@ class Gallery extends Component {
     		return <Dimmer.Dimmable
 		        as={Image}
 		        dimmed={false}
-		        dimmer={{ active:(i == indexShow?true:false), inverted:true, content:<Icon name="image" color="green" style={{fontSize:"3rem"}}/>}}
+		        dimmer={{ active:(i == indexShow?true:false), inverted:true, content:<Icon name="image" color="violet" style={{fontSize:"3rem"}}/>}}
 		        size='small'
 		        src={el.url}
 		        key={i}
 		        onClick={() => this.setState({indexShow:i})}
 		      />
-    		return <Dimmer active key={i}>
-    				<Image src={el.url} onClick={() => this.setState({indexShow:i})} style={{cursor:"pointer"}}/>
+    		return <Dimmer active key={i} className="cursor_pointer">
+    				<Image src={el.url} onClick={() => this.setState({indexShow:i})}/>
     			</Dimmer>
     	})
         return (
@@ -35,7 +35,7 @@ class Gallery extends Component {
 				<Image src={images[indexShow].url} fluid/>            
 
 				<Segment basic textAlign="center">
-					<Image.Group size="small" style={{marginTop:"10px"}}>
+					<Image.Group size="small" className="margin-top-10">
 						{imagesList}
 					</Image.Group>
 				</Segment>

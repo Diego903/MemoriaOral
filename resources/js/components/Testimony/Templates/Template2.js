@@ -38,7 +38,7 @@ class Template2 extends Component {
         return (
             <Segment basic>
             	<Segment basic>
-	            	<Header as="h2">
+	            	<Header as="h2" dividing>
 	            		{titulo}
 	            		<Header.Subheader>
 	            			<Icon name="male"/> Jose Luis Capote Mosquera
@@ -49,7 +49,7 @@ class Template2 extends Component {
 	            	</Header>
             	</Segment>
 
-				<Segment basic style={{textAlign:"justify"}}>
+				<Segment basic className="justify">
 					{descripcion}
 				</Segment>
 

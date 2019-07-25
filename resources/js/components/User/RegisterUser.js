@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import { Container } from 'semantic-ui-react';
+import { Container, Header } from 'semantic-ui-react';
 import GeneralMessage from '../Helpers/components/GeneralMessage';
 import FormUser from './FormUser';
 
@@ -29,6 +29,7 @@ class RegisterUser extends Component {
 
         return (
         	<Container>
+                <Header as="h2" dividing>Registro de usuarios</Header>
         		<GeneralMessage success messages={success} onDismiss={()=>this.setState({success:[]})}/>
 	        	<FormUser action="register" onActionSuccess={this.onActionSuccess} onCancel={() => {this.props.history.goBack()}}/>
             </Container>

@@ -93,7 +93,7 @@ class User extends Component {
                     			btnToggleLock = <Btn.UnlockOnlyIcon size="mini" action="desbloquear" user={row.id} onClick={this.handleToggleLock}/>
                     		}
 
-                    		return <Segment basic style={{padding:"0px"}}>
+                    		return <Segment basic className="no-padding">
                     			{btnUpdate}
                     			{btnToggleLock}
                     		</Segment>

@@ -29,6 +29,7 @@ class RegisterUser extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.RegisterUser.register');
+        return $this->subject("Registro de usuario")
+            ->markdown("emails.RegisterUser.register");
     }
 }

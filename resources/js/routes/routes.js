@@ -25,6 +25,8 @@ import ResetPassword from '../components/Auth/ResetPassword/ResetPassword';
 import E404 from '../components/Errors/E404';
 
 import { Notifications } from '../components/Helpers/Helpers';
+
+import Footer from '../components/Footer/Footer';
 /*----------  Componentes del sistema  ----------*/
 
 const redirect_no_auth = '/login';//donde redireccionar cuando acceda a url
@@ -149,6 +151,7 @@ class Routes extends Component
                 </Switch>
                 <Notifications/>
             </div>
+            <Footer/>
         </BrowserRouter>;    
     }
 }

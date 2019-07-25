@@ -9,6 +9,7 @@ import axios from 'axios';
 import { Provider } from 'react-redux';
 import store from '../redux/store';
 import { actLogout } from '../redux/app/actions';
+import { Segment } from 'semantic-ui-react';
 
 export default class App extends Component {
     constructor(props)
@@ -32,12 +33,14 @@ export default class App extends Component {
     render() 
     {
         return (
-            <Provider store={store}>
-                <CookiesProvider>
-                    <HandleAuthCookie store={store}/>
-                    <Routes store={store}/>
-                </CookiesProvider>
-            </Provider>
+            <Segment style={{padding:"0px"}}>
+                <Provider store={store}>
+                    <CookiesProvider>
+                        <HandleAuthCookie store={store}/>
+                        <Routes store={store}/>
+                    </CookiesProvider>
+                </Provider>
+            </Segment>
         );
     }
 }

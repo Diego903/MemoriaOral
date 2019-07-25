@@ -127,7 +127,7 @@ class FormStories extends Component {
     	this.setState({
 						titulo:'',
 						texto:'',
-						municipio_id:'',    				
+						municipio_id:-1,    				
 						loading:false,
 						errors:[],
 						formIsValid:false
@@ -302,7 +302,7 @@ class FormStories extends Component {
 
 					<Grid.Column width={16} textAlign="center">	
 						<Btn.Cancel onClick={this.close} href="{{url()->previous()}}"/>
-						<Btn.Save disabled={(!formIsValid && loading)} onClick={this.handleSubmitFormRegisterStories}/>		                   
+						<Btn.Save type="button" disabled={(!formIsValid && loading)} onClick={this.handleSubmitFormRegisterStories}/>		                   
 		            </Grid.Column>
 	            </Grid>  	            
             </Form>

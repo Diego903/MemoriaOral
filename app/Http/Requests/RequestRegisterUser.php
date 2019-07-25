@@ -32,7 +32,7 @@ class RequestRegisterUser extends FormRequest
             "password"=>"required|min:8|max:60|confirmed",
             "password_confirmation"=>"required|min:8|max:60",
             "nivel_estudio"=>"required",
-            "fecha_nacimiento"=>"required|Date",
+            "fecha_nacimiento"=>"required|Date|before_or_equal:".date("Y-m-d",strtotime("-18 Years")),
             "direccion"=>"required|min:3|max:60",
             "municipio_id"=>"required",
         ];

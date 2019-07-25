@@ -10,9 +10,7 @@ const Testimony = ({ }) => {
 
     return (
     	<Container>
-            <Segment>
-                <p>Template</p>
-            </Segment>
+            <Template3/>
         </Container>
     );
 };

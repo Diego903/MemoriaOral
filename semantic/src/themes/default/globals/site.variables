@@ -227,7 +227,7 @@
 @green            : #21BA45;
 @teal             : #00B5AD;
 @blue             : #2185D0;
-@violet           : #6435C9;
+@violet           : #01579b;
 @purple           : #A333C8;
 @pink             : #E03997;
 @brown            : #A5673F;
@@ -437,7 +437,7 @@
 @unselectedTextColor         : rgba(0, 0, 0, 0.4);
 @hoveredTextColor            : rgba(0, 0, 0, 0.8);
 @pressedTextColor            : rgba(0, 0, 0, 0.9);
-@selectedTextColor           : rgba(0, 0, 0, 0.95);
+@selectedTextColor           : #01579b;
 @disabledTextColor           : rgba(0, 0, 0, 0.2);
 
 @invertedTextColor           : rgba(255, 255, 255, 0.9);

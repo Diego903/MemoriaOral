@@ -42,7 +42,7 @@ class Template3 extends Component {
           {
             menuItem: { key: 'description', icon: 'align left', content: 'Descripción' },
             render: () =><Tab.Pane> 
-                        <Segment basic style={{textAlign:"justify"}}>
+                        <Segment basic className="justify">
                             <Header as="h3">Descripción del testimonio</Header>
                             {descripcion}
                         </Segment>
@@ -79,7 +79,7 @@ class Template3 extends Component {
             <Segment basic>
 
                 <Segment basic>
-                    <Header as="h2">
+                    <Header as="h2" dividing>
                         {titulo}
                         <Header.Subheader>
                             <Icon name="male"/> Jose Luis Capote Mosquera

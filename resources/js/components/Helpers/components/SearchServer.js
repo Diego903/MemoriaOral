@@ -16,12 +16,15 @@ class SearchServer extends Component {
         	selected:false
         }
 
+        //indica si un valor se debe encontrar seleccionado 
+        //este valor se busca automaticamente en el servidor si se asigna y es diferente
+        //de null y de -1
         this.selectPredeterminate = this.selectPredeterminate.bind(this);
         this.clearError = this.clearError.bind(this);
         this.clearAllErrors = this.clearAllErrors.bind(this);
         this.setError = this.setError.bind(this);
         this.handleBlur = this.handleBlur.bind(this);
-
+        //indica la cantidad de veces que se seleccionó un calor predeterminado
         this.countSelectedPredeterminate = 0;
     }
 
@@ -33,21 +36,39 @@ class SearchServer extends Component {
         this.selectPredeterminate(nextProps);
     }
 
-    selectPredeterminate(props_){    	
-        if("predetermined" in props_ && props_.predetermined && this.countSelectedPredeterminate < 1){
-        	this.countSelectedPredeterminate++;
-        	axios({
-				method:props_.method?props_.method:"post",
-				url:props_.url,
-				data:{search:props_.predetermined}
-			})
-			.then((response) => {
-				this.setState({
-					value:response.data[0].title,
-					results:response.data,
-					selected:true
-				});
-			})
+    /**
+     * Selecciona un valor por defecto
+     */
+    selectPredeterminate(props_){ 
+    	//si existe un valor predeterminado
+        if("predetermined" in props_){
+        	//si el valor predeterminado es -1 se restablecen los valores
+        	//esto limpirá el input en la interaz de usuario
+        	if(props_.predetermined == -1){
+        		this.setState({
+		        	results:[],
+		        	isLoading:false,
+		        	value:"",
+		        	errors:[],
+		        	selected:false
+		        });
+
+	        //si se seleccionó un valor predeterminado yna vez, no se puede dos veces
+        	}else if(this.countSelectedPredeterminate < 1 && props_.predetermined){
+	        	this.countSelectedPredeterminate++;
+	        	axios({
+					method:props_.method?props_.method:"post",
+					url:props_.url,
+					data:{search:props_.predetermined}
+				})
+				.then((response) => {
+					this.setState({
+						value:response.data[0].title,
+						results:response.data,
+						selected:true
+					});
+				})
+			}
 
         }
     }
