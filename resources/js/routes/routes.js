@@ -9,7 +9,9 @@ import store from '../redux/store';
 /*----------  Componentes del sistema  ----------*/
 
 import Home from '../components/Home/Home';
+
 import Testimony from '../components/Testimony/Testimony';
+import RegisterTestimony from '../components/Testimony/RegisterTestimony';
 
 import User from '../components/User/User';
 import RegisterUser from '../components/User/RegisterUser';
@@ -23,10 +25,10 @@ import PasswordResetRequest from '../components/Auth/PasswordResetRequest/Passwo
 import ResetPassword from '../components/Auth/ResetPassword/ResetPassword';
 
 import E404 from '../components/Errors/E404';
+import Footer from '../components/Footer/Footer';
 
 import { Notifications } from '../components/Helpers/Helpers';
 
-import Footer from '../components/Footer/Footer';
 /*----------  Componentes del sistema  ----------*/
 
 const redirect_no_auth = '/login';//donde redireccionar cuando acceda a url
@@ -133,15 +135,16 @@ class Routes extends Component
                 <Header/>
                 <Switch>
                     <FreeRoute exact path={config_routes.home.path} component={Home} />
+                    
                     <FreeRoute exact path={config_routes.testimony.path} component={Testimony} />
+                    <AuthRoute exact path={config_routes.register_testimony.path} component={RegisterTestimony} />
 
                     <AuthRoute exact userType="Administrador" path={config_routes.user.path} component={User} />
                     <AuthRoute exact userType="Administrador" path={config_routes.updateUser.path} component={UpdateUser} />
+                    <GuestRoute exact path={config_routes.registerUser.path} component={RegisterUser} />
+                    <GuestRoute exact path={config_routes.account_activation.path} component={AccountActivation} />
 
                     <FreeRoute exact path={config_routes.storie_conflict.path} component={RegisterStories} />
-                    <GuestRoute exact path={config_routes.registerUser.path} component={RegisterUser} />
-
-                    <GuestRoute exact path={config_routes.account_activation.path} component={AccountActivation} />
 
                     <GuestRoute exact path={config_routes.login.path} component={Login} />
                     <GuestRoute exact path={config_routes.password_reset_request.path} component={PasswordResetRequest} />

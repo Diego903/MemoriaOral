@@ -4,10 +4,28 @@ export default {
 		item:'home',
 		path:'/'
 	},
+
 	testimony:{
 		name:'Testimonios',
 		item:'testimony',
 		path:'/testimony'
+	},
+
+	register_testimony:{
+		name:'Registrar testimonio',
+		item:'register_testimony',
+		path:'/testimony/register'
+	},
+
+	user:{
+		name:'Usuarios',
+		item:'user',
+		path:'/user'
+	},
+	account_activation:{
+		name:'Activación de cuenta',
+		item:'account_activation',
+		path:'/account_activation/:id/:token'
 	},
     registerUser:{
         name:'Registrarse',
@@ -19,26 +37,19 @@ export default {
         item:'updateUser',
         path:'/user/update/:id'
     },
+    
     storie_conflict:{
 		name:'Historias del conflicto',
 		item:'storie_conflict',
 		path:'/stories/storie_conflict'
 	},
+	
 	investigation_request:{
 		name:'Solicitudes de investigación',
 		item:'investigation_request',
 		path:'/investigation_request'
 	},
-	user:{
-		name:'Usuarios',
-		item:'user',
-		path:'/user'
-	},
-	account_activation:{
-		name:'Activación de cuenta',
-		item:'account_activation',
-		path:'/account_activation/:id/:token'
-	},
+	
 	login:{
 		name:'Ingresar',
 		item:'',
