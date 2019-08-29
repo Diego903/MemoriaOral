@@ -2,6 +2,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RequestRegisterStories extends FormRequest
 {
@@ -26,7 +27,8 @@ class RequestRegisterStories extends FormRequest
         return [
             "titulo"=>"required|min:6|max:250",
             "texto"=>"required|min:6|max:2000",
-            "municipio_id"=>"required",
+            "municipio_id"=>"required_without_all:departamento_id",
+            "departamento_id"=>"required_without_all:municipio_id",
         ];
     }
 }

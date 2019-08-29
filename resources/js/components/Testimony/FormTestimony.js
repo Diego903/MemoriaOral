@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { actRegisterStories, actUpdateStories } from '../../redux/Stories/actions';
 import axios from 'axios';
 import params from '../../config/params';
 
@@ -29,7 +28,7 @@ class FormTestimony extends Component {
 			
 			dataTestimony:null,
 			stateFormTestimony:false,
-			formTestimonyErrors:{				
+			formTestimonyErrors:{
 	        	titulo:[],
 	        	descripcionCorta:[],
 	        	fechaEvento:[],
@@ -38,11 +37,11 @@ class FormTestimony extends Component {
 	        	ubicacion:[],
 	        	tipoTestimonio:[]
 			},
-			
+
 			dataUser:props.userType == "Administrador"?{}:props.user,
 			stateFormUser:props.userType == "Administrador"?false:true,
 			formUserErrors:[],
-			
+
 			activeStep:props.userType == "Administrador"?"user":"testimony",
 			template:1,
 			resetForms:false,
@@ -51,7 +50,7 @@ class FormTestimony extends Component {
 
         this.setActiveStep = this.setActiveStep.bind(this);
         this.send = this.send.bind(this);
-    }	
+    }
 
     setActiveStep(e, {step}){
     	this.setState({
@@ -76,10 +75,10 @@ class FormTestimony extends Component {
 		formData.append("descripcion_lugar", this.state.dataTestimony.descripcionLugar);
 		formData.append("municipio", this.state.dataTestimony.municipioTestimonio);
 		formData.append("descripcion_detallada", this.state.dataTestimony.descripcionDetallada);
-		
+
 		if(this.state.dataTestimony.annexes && this.state.dataTestimony.annexes.length){
 			formData.append("anexos", JSON.stringify(this.state.dataTestimony.annexes));
-			
+
 			_.map(this.state.dataTestimony.annexes, (el, i) => {
 	    		formData.append("anexos_datos_"+el.name, JSON.stringify(this.state.dataTestimony.annexesData["data_"+el.name]));
 	    		formData.append("anexos_valores_"+el.name, this.state.dataTestimony.annexesValues["value_"+el.name]);
@@ -148,7 +147,7 @@ class FormTestimony extends Component {
 	    	if("onRegister" in this.props){
 	    		return this.props.onRegister();
 	    	}
-        
+
         })
         .catch((error) => {
         	this.setState({
@@ -159,18 +158,18 @@ class FormTestimony extends Component {
 
 
 	    	const errorsUser = {
-		    	numero_identificacion: error.response.data.errors.numero_identificacion, 
-				nombres: error.response.data.errors.nombres, 
-				apellidos: error.response.data.errors.apellidos, 
-				fecha_nacimiento: error.response.data.errors.fecha_nacimiento, 
-				genero: error.response.data.errors.genero, 
-				email: error.response.data.errors.email, 
-				telefono: error.response.data.errors.telefono, 
-				nivel_estudio: error.response.data.errors.nivel_estudio, 
-				municipio_id: error.response.data.errors.municipio_id, 
-				direccion: error.response.data.errors.direccion, 
-				certificadoVictima: error.response.data.errors.certificado_victima, 
-				consentimientoInformado: error.response.data.errors.consentimiento_informado, 
+		    	numero_identificacion: error.response.data.errors.numero_identificacion,
+				nombres: error.response.data.errors.nombres,
+				apellidos: error.response.data.errors.apellidos,
+				fecha_nacimiento: error.response.data.errors.fecha_nacimiento,
+				genero: error.response.data.errors.genero,
+				email: error.response.data.errors.email,
+				telefono: error.response.data.errors.telefono,
+				nivel_estudio: error.response.data.errors.nivel_estudio,
+				municipio_id: error.response.data.errors.municipio_id,
+				direccion: error.response.data.errors.direccion,
+				certificadoVictima: error.response.data.errors.certificado_victima,
+				consentimientoInformado: error.response.data.errors.consentimiento_informado,
 				victima_minas: error.response.data.errors.victima_minas
 			}
 
@@ -273,7 +272,7 @@ class FormTestimony extends Component {
 	        	<Form className="margin-top-20 no-padding">
 
         			<Segment className={activeStep != "user"?"d-none":""}>
-		        		<User 
+		        		<User
 		        			noRenderPassword
 		        			noRenderPasswordConfirmation
 		        			noRenderTyC
@@ -303,7 +302,7 @@ class FormTestimony extends Component {
     				</Segment>
 
         			<Segment className={activeStep != "testimony"?"d-none":""}>
-	        			<Testimony 
+	        			<Testimony
 	        				onUpdate={(dataTestimony) => {
 		        					this.setState({
 		        						dataTestimony:dataTestimony,

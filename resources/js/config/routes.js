@@ -37,13 +37,25 @@ export default {
         item:'updateUser',
         path:'/user/update/:id'
     },
-    
+
     storie_conflict:{
 		name:'Historias del conflicto',
-		item:'storie_conflict',
-		path:'/stories/storie_conflict'
+		item:'stories_conflict',
+		path:'/storie-conflict'
+	},    
+    
+    storie_conflict_register:{
+		name:'Registro de historias del conflicto',
+		item:'storie_conflict_register',
+		path:'/storie-conflict/register'
 	},
-	
+
+    storie_conflict_update:{
+		name:'Registro de historias del conflicto',
+		item:'storie_conflict_register',
+		path:'/storie-conflict/update/:id'
+	},	
+
 	investigation_request:{
 		name:'Solicitudes de investigación',
 		item:'investigation_request',

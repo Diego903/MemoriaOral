@@ -39,22 +39,26 @@ Route::prefix('v1')->group(function(){
 
 	Route::prefix('query')->group(function(){
 		Route::post('municipios','API\v1\QueryController@municipios');
+        Route::post('departamentos','API\v1\QueryController@departamentos');
     });
 
     Route::prefix('storie_conflict')->group(function(){
         Route::middleware('auth:api')->group(function(){
-     
-        });  
-        Route::post('register', 'API\v1\StorieConflictController@register');      
+            Route::post('register', 'API\v1\StorieConflictController@register');
+        });
+        Route::post('show/{storie_conflict}', 'API\v1\StorieConflictController@show');
         
+        Route::post('list', 'API\v1\StorieConflictController@list');
+        Route::post('update/{storie_conflict}', 'API\v1\StorieConflictController@update');
+        Route::get('get-annexed/{historyConflictId}/{annexedId}', 'API\v1\StorieConflictController@getAnnexed');
     });
 
     Route::prefix('testimony')->group(function(){
         Route::middleware('auth:api')->group(function(){
-            Route::post('register', 'API\v1\TestimonyController@register');      
+            Route::post('register', 'API\v1\TestimonyController@register');
         });
         Route::post('list', 'API\v1\TestimonyController@list');
         Route::get('annexed/{testimony}/{type}/{idAnnexed}', 'API\v1\TestimonyController@annexed');
-    });    
+    });
 
 });

@@ -7,11 +7,13 @@ import header from './header/reducer';
 import notifications from './notifications/reducer';
 import tableJl1805 from './tableJL1805/reducer';
 import testimony from './testimony/reducer';
+import StorieConflict from './StorieConflict/reducer';
 
 export default createStore(combineReducers({
 	app,
 	header,
 	notifications,
 	tableJl1805,
-	testimony
+	testimony,
+	StorieConflict
 }), applyMiddleware(thunk));

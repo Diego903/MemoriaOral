@@ -2,14 +2,11 @@ import types from './const';
 import axios from 'axios';
 import params from '../../config/params';
 
-
-
 /**
  * Acción para registrar un usuario en el sistema
  * @param  {Oobject} data Datos necesarios para registrar un nuevo usuario en el sistema
  * @return {Object}      Respuesta del servidor
  */
-
 
 const actRegisterUser = (data) => {
     //console.log(data);
