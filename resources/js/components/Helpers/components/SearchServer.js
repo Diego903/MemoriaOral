@@ -155,7 +155,7 @@ class SearchServer extends Component {
 
         return (
         	<Segment basic style={{padding:"0px"}}>
-        		<div className={"field "+("required" in this.props?"required":"")}>
+        		<div className={"field "+("required" in this.props?"required":"")+("disabled" in this.props?(this.props.disabled?"disabled":""):"")}>
         			
 	        		{
 	        			"label" in this.props?
@@ -165,7 +165,7 @@ class SearchServer extends Component {
 	        		}
         		
 		            <Search
-		            	input={{ icon: 'search', fluid: true, name:('name' in this.props)?this.props.name:""}}
+		            	input={{ icon: ('noRenderIcon' in this.props?<i></i>:'search'), fluid: true, name:('name' in this.props)?this.props.name:"", placeholder:('placeholder' in this.props)?this.props.placeholder:""}}
 		            	fluid
 			            loading={isLoading}
 			            onResultSelect={this.handleResultSelect}
@@ -176,6 +176,7 @@ class SearchServer extends Component {
 			            size={this.props.size}
 			            onFocus={this.clearAllErrors}
 			            onBlur={this.handleBlur}
+			            disabled={"disabled" in this.props?this.props.disabled:false}
 			          />
 			       	<Segment basic style={{padding:'0px', marginTop:'5px'}}>
 						{ errors_ }

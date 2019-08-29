@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-import { Image, Segment, Dimmer, Icon } from 'semantic-ui-react';
+import { Image, Segment, Dimmer, Icon, Header, Grid } from 'semantic-ui-react';
 
 class Gallery extends Component {
     constructor(props) {
@@ -24,21 +24,36 @@ class Gallery extends Component {
 		        src={el.url}
 		        key={i}
 		        onClick={() => this.setState({indexShow:i})}
+                className="cursor_pointer"
 		      />
     		return <Dimmer active key={i} className="cursor_pointer">
     				<Image src={el.url} onClick={() => this.setState({indexShow:i})}/>
     			</Dimmer>
     	})
+
         return (
         	<div>
+                <Header inverted={("inverted" in this.props)}>
+                    {images[indexShow].title}
+                    <Header.Subheader inverted={("inverted" in this.props)}>
+                        {images[indexShow].date}
+                    </Header.Subheader>
+                </Header>
 	        	<p>{images[indexShow].description}</p>
-				<Image src={images[indexShow].url} fluid/>            
 
-				<Segment basic textAlign="center">
-					<Image.Group size="small" className="margin-top-10">
-						{imagesList}
-					</Image.Group>
-				</Segment>
+                <Grid>
+                    <Grid.Column computer={12} mobile={16}>
+				        <Image src={images[indexShow].url} fluid/>            
+                    </Grid.Column>
+
+                    <Grid.Column computer={4} mobile={16}>
+                        <Segment basic textAlign="center" className="no-padding no-margin" style={{maxHeight:'300px', overflowX:'hidden', overflowY:'auto'}}>
+                            <Image.Group size="small" className="">
+                                {imagesList}
+                            </Image.Group>
+                        </Segment>
+                    </Grid.Column>
+                </Grid>
 			</div>
         );
     }

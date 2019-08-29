@@ -4,9 +4,19 @@ import { actRegisterStories, actUpdateStories } from '../../redux/Stories/action
 import axios from 'axios';
 import params from '../../config/params';
 
-import { Grid, Form, Button,TextArea, Segment, Container,Select,Message, Input, Header } from 'semantic-ui-react';
+import { Step, Grid, Form, Confirm, Button,TextArea, Segment, Container,Select,Message, Input, Header, Menu, Tab, Label, Icon } from 'semantic-ui-react';
 import GeneralMessage from '../Helpers/components/GeneralMessage';
-import { Btn, Valid, SearchServer} from '../Helpers/Helpers';
+import { Btn, Valid, SearchServer, ImageCheck, RecordAudio } from '../Helpers/Helpers';
+
+import Testimony from './DataForm/Testimony';
+import User from '../User/DataForm/User';
+
+import Template1 from './Templates/Template1';
+import Template2 from './Templates/Template2';
+import Template3 from './Templates/Template3';
+import Template4 from './Templates/Template4';
+
+import {animateScroll} from 'react-scroll';
 
 class FormTestimony extends Component {
     
@@ -14,313 +24,345 @@ class FormTestimony extends Component {
         super(props);
 
         this.state={
-        	titulo:"",
-        	descripcionCorta:"",
-        	descripcionDetallada:"",
-        	fechaEvento:"",
-			municipio_id:null,
-        	descripcionLugar:"",
-        	ubicacion:{latitud:0,longitud:0},
-        	tipoTestimonio:"",
-        	plantilla:1,
 			loading:false,
-
-			annexes:[],//almacena la información de los anexos existentes
-			annexesValues:{},//almacena los valores de los anexos existentes
+			confirmModalState:false,
 			
-			formValidations:{
-	        	titulo:false,
-	        	texto:false,
-	        	municipio_id:false					
+			dataTestimony:null,
+			stateFormTestimony:false,
+			formTestimonyErrors:{				
+	        	titulo:[],
+	        	descripcionCorta:[],
+	        	fechaEvento:[],
+				municipioTestimonio:[],
+	        	descripcionLugar:[],
+	        	ubicacion:[],
+	        	tipoTestimonio:[]
 			},
-			formErrors:{
-				titulo:[],
-				texto:[],
-				municipio_id:[]
-			},
-			loading:false,
-			formIsValid:false
-        };
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSelectChange = this.handleSelectChange.bind(this);
-        this.handleSubmitFormRegisterStories = this.handleSubmitFormRegisterStories.bind(this);
-        this.onTrueValid = this.onTrueValid.bind(this);
-        this.handleFocus = this.handleFocus.bind(this);        
-        this.onFalseValid = this.onFalseValid.bind(this);
-        this.setFormIsValid = this.setFormIsValid.bind(this);        
-        this.handleSearchServerSelect = this.handleSearchServerSelect.bind(this);        
-        this.handleSearchChange = this.handleSearchChange.bind(this);        
-        this.addAnnexed = this.addAnnexed.bind(this);        
-        this.removeAnnexed = this.removeAnnexed.bind(this);        
-        this.handleChangeInputFile = this.handleChangeInputFile.bind(this);        
+			
+			dataUser:props.userType == "Administrador"?{}:props.user,
+			stateFormUser:props.userType == "Administrador"?false:true,
+			formUserErrors:[],
+			
+			activeStep:props.userType == "Administrador"?"user":"testimony",
+			template:1,
+			resetForms:false,
+			errors:[]
+        }
 
+        this.setActiveStep = this.setActiveStep.bind(this);
+        this.send = this.send.bind(this);
     }	
 
-    componentWillMount() {
-        this.addAnnexed();
+    setActiveStep(e, {step}){
+    	this.setState({
+    		activeStep:step
+    	});
+		animateScroll.scrollToTop();
     }
 
-    handleInputChange(e, {name}){
-        let value = (e.target.type == 'checkbox')?e.target.checked:e.target.value;
+    send(){
+    	this.setState({
+    		loading:true,
+    		confirmModalState:false
+    	})
+
+    	const formData = new FormData();
+
+    	//datos del testimonio
+    	formData.append("tipo", this.state.dataTestimony.tipoTestimonio);
+		formData.append("titulo", this.state.dataTestimony.titulo);
+		formData.append("descripcion_corta", this.state.dataTestimony.descripcionCorta);
+		formData.append("fecha_evento", this.state.dataTestimony.fechaEvento);
+		formData.append("descripcion_lugar", this.state.dataTestimony.descripcionLugar);
+		formData.append("municipio", this.state.dataTestimony.municipioTestimonio);
+		formData.append("descripcion_detallada", this.state.dataTestimony.descripcionDetallada);
+		
+		if(this.state.dataTestimony.annexes && this.state.dataTestimony.annexes.length){
+			formData.append("anexos", JSON.stringify(this.state.dataTestimony.annexes));
+			
+			_.map(this.state.dataTestimony.annexes, (el, i) => {
+	    		formData.append("anexos_datos_"+el.name, JSON.stringify(this.state.dataTestimony.annexesData["data_"+el.name]));
+	    		formData.append("anexos_valores_"+el.name, this.state.dataTestimony.annexesValues["value_"+el.name]);
+	    	});
+		}
+
+		if(this.state.dataTestimony.video)
+			formData.append("video", this.state.dataTestimony.video);
+
+		if(this.state.dataTestimony.audio || this.state.dataTestimony.audioRecord){
+			if(this.state.dataTestimony.audio)
+				formData.append("audio", this.state.dataTestimony.audio);
+			else
+				formData.append("audio", this.state.dataTestimony.audioRecord, this.state.dataTestimony.titulo+".webm");
+		}
+
+		formData.append("plantilla", this.state.dataTestimony.plantilla);
+
+		//Datos del usuario
+		if(this.props.userType == "Administrador"){
+			formData.append("numero_identificacion", this.state.dataUser.numero_identificacion);
+			formData.append("nombres", this.state.dataUser.nombres);
+			formData.append("apellidos", this.state.dataUser.apellidos);
+			formData.append("fecha_nacimiento", this.state.dataUser.fecha_nacimiento);
+			formData.append("genero", this.state.dataUser.genero);
+			formData.append("email", this.state.dataUser.email);
+			formData.append("telefono", this.state.dataUser.telefono);
+			formData.append("nivel_estudio", this.state.dataUser.nivel_estudio);
+			formData.append("municipio_id", this.state.dataUser.municipio_id);
+			formData.append("direccion", this.state.dataUser.direccion);
+			formData.append("certificado_victima", this.state.dataUser.certificadoVictima);
+			formData.append("consentimiento_informado", this.state.dataUser.consentimientoInformado);
+			formData.append("victima_minas", this.state.dataUser.victima_minas);
+		}
+
+        axios.post(params.URL_API+'testimony/register',formData,
+        {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        }
+        )
+        .then((response) => {
+
+	    	animateScroll.scrollToTop();
+            //console.log(response);
+            //se reinician los datos del estado
+            this.setState({
+	    		loading:false,
+	    		resetForms:true,
+	    		dataTestimony:null,
+				stateFormTestimony:false,
+				dataUser:this.props.userType == "Administrador"?{}:this.props.user,
+				stateFormUser:this.props.userType == "Administrador"?false:true,
+				activeStep:this.props.userType == "Administrador"?"user":"testimony",
+				template:1,
+				resetForms:true
+	    	})
+
+	    	setTimeout(() => {
+	    		this.setState({
+		    		resetForms:false
+		    	})
+	    	}, 10);
+
+	    	if("onRegister" in this.props){
+	    		return this.props.onRegister();
+	    	}
         
-        this.setState({ [name]:  value});
-    }    
-
-    handleSelectChange(e, {name, value}){
-        this.setState({ [name]:  value});
-    }
-
-    handleFocus(e, {name}){
-        this.setState((oldState, props) => {
-            return {formErrors: Object.assign({}, oldState.formErrors, {[name]:[]})}
         })
-    }
+        .catch((error) => {
+        	this.setState({
+	    		loading:false,
+	    		activeStep:this.props.userType == "Administrador"?"user":"testimony",
+	    		errors:["El registro del testimonio no se pudo completar, revise y corrija cada uno de los errores que pueden aparecer en cada pestaña."]
+	    	});
 
-    /*=========================================================
-    =            Estado de validaciòn de formulario            =
-    =========================================================*/    
 
-    setFormIsValid(){
-        setTimeout(() => {
-            let isValid = true;
-            _.map(this.state.formValidations, (value, key) => {
-                if(!value)isValid = false;
-            });
+	    	const errorsUser = {
+		    	numero_identificacion: error.response.data.errors.numero_identificacion, 
+				nombres: error.response.data.errors.nombres, 
+				apellidos: error.response.data.errors.apellidos, 
+				fecha_nacimiento: error.response.data.errors.fecha_nacimiento, 
+				genero: error.response.data.errors.genero, 
+				email: error.response.data.errors.email, 
+				telefono: error.response.data.errors.telefono, 
+				nivel_estudio: error.response.data.errors.nivel_estudio, 
+				municipio_id: error.response.data.errors.municipio_id, 
+				direccion: error.response.data.errors.direccion, 
+				certificadoVictima: error.response.data.errors.certificado_victima, 
+				consentimientoInformado: error.response.data.errors.consentimiento_informado, 
+				victima_minas: error.response.data.errors.victima_minas
+			}
+
+			let errorsAnnexes = [];
+
+			if("audio" in error.response.data.errors){
+				errorsAnnexes.push(error.response.data.errors.audio);
+			}
+
+			if("video" in error.response.data.errors){
+				errorsAnnexes.push(error.response.data.errors.video);
+			}
+
+			if("anexos" in error.response.data.errors){
+				errorsAnnexes.push(error.response.data.errors.anexos);
+			}
+
+			if("descripcion_detallada" in error.response.data.errors){
+				errorsAnnexes.push(error.response.data.errors.descripcion_detallada);
+			}
+
+	    	const errorsTestimony = {
+	    		titulo:error.response.data.errors.titulo,
+	        	descripcionCorta:error.response.data.errors.descripcion_corta,
+	        	fechaEvento:error.response.data.errors.fecha_evento,
+				municipioTestimonio:error.response.data.errors.municipio,
+	        	descripcionLugar:error.response.data.errors.descripcion_lugar,
+	        	tipoTestimonio:error.response.data.errors.tipo,
+	        	annexes:errorsAnnexes
+			}
 
             this.setState({
-                formIsValid:isValid
-            })   
+            	formUserErrors:errorsUser,
+            	formTestimonyErrors:errorsTestimony
+            })
 
-        }, 10)
-    }
-
-    onTrueValid({name}){
-        this.setState((oldState, props) => {
-            return {
-                formValidations:Object.assign({},oldState.formValidations,{[name]:true})
-            }
+            animateScroll.scrollToTop();
         });
-
-        this.setFormIsValid();
-    }
-
-    onFalseValid({name}){
-        this.setState((oldState, props) => {
-            return {
-                formValidations:Object.assign({},oldState.formValidations,{[name]:false})
-            }
-        });
-
-        this.setFormIsValid();
-    }
-
-	/*=====  Fin de Estado de validaciòn de formulario  ======*/
-
-	handleSearchServerSelect(e, {input, result}){
-		this.setState({[input.name]:result.key})
-		this.onTrueValid(input);
-	}
-	
-
-	handleSearchChange(e, {input, result}){
-		this.setState({[input.name]:null})
-		this.onFalseValid(input);
-	}            
-
-	/*==============================================
-	=            Manejadores de eventos            =
-	==============================================*/	
-
-    handleSubmitFormRegisterStories(){
-					})
-    	/*this.setState({loading:true});
-
-    	if(this.props.action == "register"){
-    		this.props.sendRegisterStories(this.state)
-	    	.then((response) => {
-	    		if(response.status == 200){                  			
-					this.setState({
-						titulo:'',
-						texto:'',
-						municipio_id:'',    				
-						loading:false,
-						errors:[],
-						formIsValid:false
-					})
-
-					if("onActionSuccess" in this.props){
-						this.props.onActionSuccess();
-					}
-	    		}else{
-
-	                let errors = {};
-	                _.map(response.data.errors, (el, i) => {
-	                    errors[i] = el;
-	                });
-	                this.setState((oldState, props) => {
-	                    return {
-	                    	formErrors: Object.assign({}, oldState.formErrors, errors),
-			    			loading:false,
-			    			success:[]
-	                    };
-	                })  
-
-		    		this.setState({
-		    		})
-		    	}
-	    	});
-    	}else if(this.props.action == "updateStories"){
-    		
-    		
-    	}
-    	*/
-    }
-
-    /**
-     * Agrega un input file a la lista de anexos
-     */
-    addAnnexed(e){
-    	if(e)
-    		e.preventDefault();
-
-    	if(this.state.annexes.length < 9){
-    	let currentAnnexes = this.state.annexes;
-    	let currentAnnexesValues = this.state.annexesValues;
-
-    	let key = 0;//valor inicial
-
-    	//si existen más files, el key es el valor de key, en el ultimo file, más uno
-    	if(currentAnnexes.length)
-    		key = parseInt(currentAnnexes[(currentAnnexes.length - 1)].key) + 1
-
-    	//se agrega el valor del nuevo file
-    	currentAnnexesValues = Object.assign({},currentAnnexesValues,{["value_"+key]:""});
-    	currentAnnexes.push({
-    		key,
-    		name:key
-    	});
-
-		setTimeout(() => {
-			this.setState({
-				annexes:currentAnnexes,
-				annexesValues:currentAnnexesValues
-			})
-		}, 10);
-	  }
-    }
-
-    removeAnnexed(e, key){
-    	if(e)
-    		e.preventDefault();
-
-    	if(this.state.annexes.length > 1){
-	    	let currentAnnexes = this.state.annexes;
-	    	//key para eliminar de la lista de valores
-	    	let keyRemoveAnnexedValue = "value_"+currentAnnexes[key].key;
-
-	    	currentAnnexes.splice(key,1);
-
-	    	let currentAnnexesValues = this.state.annexesValues;
-
-	    	delete currentAnnexesValues[keyRemoveAnnexedValue];
-
-			setTimeout(() => {
-				this.setState({
-					annexes:currentAnnexes,
-					annexesValues:currentAnnexesValues
-				})
-			}, 10);
-		}
-    }
-
-    handleChangeInputFile(e, data){
-    	let currentAnnexesValues = this.state.annexesValues;
-
-    	currentAnnexesValues = Object.assign({},currentAnnexesValues,{["value_"+data.name]:e.target.files[0]});
-    	
-    	this.setState({
-			annexesValues:currentAnnexesValues
-		})
     }
 
     render() {
-    	const {titulo,texto,municipio_id,loading, formIsValid,formErrors,success} = this.state;
+    	//console.log("FormTestimony", this.state);
+    	const { loading, dataTestimony, stateFormTestimony, dataUser, stateFormUser, activeStep, template, resetForms, formUserErrors, formTestimonyErrors, errors } = this.state;
+
+    	let templateRender = "";
+    	//console.log(dataTestimony);
+    	if(dataTestimony && dataUser && stateFormTestimony && stateFormUser){
+	    	switch(template.toString()){
+				case "1": templateRender = <Template1 testimony={dataTestimony} user={dataUser}/>
+					break;
+				case "2": templateRender = <Template2 testimony={dataTestimony} user={dataUser}/>
+					break;
+				case "3": templateRender = <Template3 testimony={dataTestimony} user={dataUser}/>
+					break;
+				case "4": templateRender = <Template4 testimony={dataTestimony} user={dataUser}/>
+					break;
+			}
+		}
+
+		let steps = [];
+		let stepNumber = 1;
+
+		if(this.props.userType == "Administrador"){
+			steps.push(<Step key="1" completed={stateFormUser} active={(activeStep == "user")} link step="user" onClick={this.setActiveStep}>
+						<Icon name='user circle' />
+						<Step.Content>
+							<Step.Title>Paso #{stepNumber}</Step.Title>
+							<Step.Description>Datos del usuario</Step.Description>
+						</Step.Content>
+					</Step>);
+
+			stepNumber++;
+		}
+
+		steps.push(<Step key="2" completed={stateFormTestimony} active={(activeStep == "testimony")} disabled={!stateFormUser} link step="testimony" onClick={this.setActiveStep}>
+						<Icon name='book' />
+						<Step.Content>
+							<Step.Title>Paso #{stepNumber}</Step.Title>
+							<Step.Description>Datos del testimonio</Step.Description>
+						</Step.Content>
+					</Step>)
+
+		stepNumber++;
+
+		steps.push(<Step key="3" active={(activeStep == "save")} disabled={!(stateFormTestimony && stateFormUser)} link step="save" onClick={this.setActiveStep}>
+						<Icon name='save' />
+						<Step.Content>
+							<Step.Title>Paso #{stepNumber}</Step.Title>
+							<Step.Description>Vista previa y guardar</Step.Description>
+						</Step.Content>
+					</Step>)
+
         return (
-        	<Form loading={loading} style={{marginTop: "40px"}}>
-	        	<Grid stackable doubling columns={1}>	
-	          		<Valid.Input 		                    
-		                    type="text" 
-		                    name="titulo" 
-		                    id="titulo" 
-		                    value={titulo} 
-		                    label='Titulo' 
-		                    onTrueValid={this.onTrueValid} 
-		                    onFalseValid={this.onFalseValid} 
-							onChange={this.handleInputChange}
-		                    onFocus={this.handleFocus} 				                    			                    
-		                    required
-		                    alphabeticalSpace
-		                    min_length={6}
-		                    max_length={250}
-		                    wrapperColumn
-		                    errors={formErrors.titulo}
-		                />  
+        	<Segment basic className="no-padding" loading={loading}>
+        		<GeneralMessage error messages={errors} onDismiss={()=>this.setState({errors:[]})}/>
+        		<Step.Group stackable='tablet' fluid>
+					{steps}
+				</Step.Group>
 
-	                <Grid.Column>
-	                	<Segment basic style={{padding:'0px', marginTop:'-10px', marginBottom:'30px'}}>
-	                		<SearchServer required name="municipio_id" label="Municipio" predetermined={municipio_id} url={params.URL_API+"query/municipios"} handleResultSelect={this.handleSearchServerSelect} handleSearchChange={this.handleSearchChange}/>
-	                	</Segment>	                	
-	                </Grid.Column>		                
-	                
-	                <Grid.Column>	                		          		  
-						<Form.Field id='texto' name='texto' value={texto} control={TextArea} label='Texto' placeholder='Texto' required  min_length={6}
-		                	 max_length={2000} errors={formErrors.texto} onChange={this.handleInputChange} />							  	              	                	
-	                </Grid.Column>
+	        	<Form className="margin-top-20 no-padding">
 
-	                <Grid.Column>
-	                	<Segment>
-	                		<Header as="h3">
-	                			Anexos
-	                		</Header>
-		                	<Grid stackable doubling columns={3}>
-		                		{
-		                			_.map(this.state.annexes, (el, i) => {
-		                				return <Grid.Column key={el.key}>
-						            		<Input type="file">
-						            			<Input type="file" name={el.key} onChange={this.handleChangeInputFile}/>
-						            			<Button icon="close" onClick={(e) => {this.removeAnnexed(e, i)}}/>
-						            		</Input>
-						        		</Grid.Column>
-		                			})
-		                		}
-		                		<Grid.Column width={16}>
-		            				<Btn.Add onClick={this.addAnnexed}/>
-		                		</Grid.Column>            		
-		                	</Grid>
-		            		
-	                	</Segment>
-	                </Grid.Column>	    	                		                	                                	             
+        			<Segment className={activeStep != "user"?"d-none":""}>
+		        		<User 
+		        			noRenderPassword
+		        			noRenderPasswordConfirmation
+		        			noRenderTyC
+		        			renderConsentimientoInformado
+		    				onUpdate={(dataUser) => {
+		        					this.setState({
+		        						dataUser,
+		        						formUserErrors:dataUser.formErrors
+		        					});
+		        				}
+		        			}
+		    				onFormStateChange={(state) => {
+		    						this.setState((oldState) => {
+		    							return {
+		    								stateFormUser:state,
+		    								//stateFormTestimony:!state?false:oldState.stateFormTestimony
+		    							}
+		    						})
+		        				}
+		        			}
+		        			resetForm={resetForms}
+		        			formErrors={formUserErrors}
+						/>
+						<Segment basic textAlign="right">
+        					<Btn.Next type="button" step="testimony" disabled={(!stateFormUser)} onClick={this.setActiveStep} />
+        				</Segment>
+    				</Segment>
 
-					<Grid.Column width={16} textAlign="center">	
-						<Btn.Cancel onClick={this.close} href="{{url()->previous()}}"/>
-						<Btn.Save type="button" disabled={(!formIsValid && loading)} onClick={this.handleSubmitFormRegisterStories}/>		                   
-		            </Grid.Column>
-	            </Grid>  	            
-            </Form>
+        			<Segment className={activeStep != "testimony"?"d-none":""}>
+	        			<Testimony 
+	        				onUpdate={(dataTestimony) => {
+		        					this.setState({
+		        						dataTestimony:dataTestimony,
+		        						template:dataTestimony.plantilla,
+		        						formTestimonyErrors:dataTestimony.formErrors,
+		        					});
+		        				}
+		        			}
+	        				onFormStateChange={(state) => {
+	        						this.setState({stateFormTestimony:state})
+		        				}
+		        			}
+		        			resetForm={resetForms}
+		        			formErrors={formTestimonyErrors}
+        				/>
+
+        				<Segment basic textAlign="right">
+        					{
+        						this.props.userType == "Administrador"?
+        						<Btn.Previous type="button" step="user" onClick={this.setActiveStep}/>
+        						:""
+        					}
+        					<Btn.Next type="button" step="save" disabled={(!stateFormTestimony)} onClick={this.setActiveStep} />
+        				</Segment>
+    				</Segment>
+
+        			<Segment className={activeStep != "save"?"d-none":""}>
+        				{templateRender}
+        				<Segment basic textAlign="right">
+        					<Btn.Previous type="button" step="testimony" onClick={this.setActiveStep}/>
+        					<Btn.Save type="button" onClick={() => this.setState({confirmModalState:true})} />
+        					<Confirm
+						          header='Confirmación'
+						          content="¿Está seguro de guardar el testimonio diligenciado?"
+						          open={this.state.confirmModalState}
+						          onCancel={() => this.setState({confirmModalState:false})}
+						          onConfirm={this.send}
+						          size='tiny'
+						          cancelButton="No"
+						          confirmButton="Si"
+					        />
+        				</Segment>
+    				</Segment>
+	            </Form>
+            </Segment>
         );
-    }    
+    }
 }
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
 	return {
+		userType:state.app.user.rol,
+		user:state.app.user
 	}
 }
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		sendRegisterStories:(data) => {
-			return dispatch(actRegisterStories(data));
-		}
+
 	}
 }
 

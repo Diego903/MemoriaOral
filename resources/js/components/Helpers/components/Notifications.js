@@ -77,7 +77,7 @@ const Notifications = ({notifications, removeNotification, removeAllNotification
 	if(notifications.length > 1)
 		btnRemoveAll = <Grid.Row style={{margin:'.5rem 0px',padding:'0'}}>
         		<Grid.Column computer={5} tablet={10} mobile={16} style={{pointerEvents:"visible"}}>
-		    		<Button onClick={removeAllNotifications} fluid basic color="red"><Icon name="trash alternate outline"/> Quitar todo</Button>
+		    		<Button onClick={removeAllNotifications} fluid color="red"><Icon name="trash alternate outline"/> Quitar todo</Button>
 	    		</Grid.Column>
     		</Grid.Row>
 

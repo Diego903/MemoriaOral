@@ -18,7 +18,7 @@ class Footer extends Component {
             	<Container className="padding-top-30 padding-bottom-20">
 	            	<Grid>
 	            		<Grid.Column mobile={16} tablet={8} computer={6}>
-	            			<Image src="/images/logo_sm.png" size="small"/>
+	            			<Image src="/images/logo_txt_blanco.png" size="small"/>
 	            			<p className="margin-top-10">
 	            				Sistema para la recuperación de la memoria oral de las víctimas del conflicto armado en Colombia.
 	            			</p>

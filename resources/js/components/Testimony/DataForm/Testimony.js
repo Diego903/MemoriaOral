@@ -1,0 +1,205 @@
+import React, { Component, PropTypes } from 'react';
+
+import params from '../../../config/params';
+
+import { Grid, Form, Segment, Select } from 'semantic-ui-react';
+
+import { Valid, SearchServer } from '../../Helpers/Helpers';
+
+import SelectTemplate from './SelectTemplate';
+import Annexes from './Annexes';
+import Data from './Data';
+
+class Testimony extends Component {
+    
+    constructor(props) {
+        super(props);
+
+        this.state={
+        	titulo:"",
+        	descripcionCorta:"",
+        	fechaEvento:"",
+			municipioTestimonio:null,
+        	descripcionLugar:"",
+        	tipoTestimonio:"",
+        	plantilla:1,
+        	nombreMunicipio:"",
+			
+			descripcionDetallada:"",
+        	video:null,
+        	audio:null,
+        	audioRecord:null,
+        	annexes:[],//almacena la información de los anexos existentes
+			annexesValues:{},//almacena los valores de los anexos existentes
+			annexesData:{},//almacena la información de las imagenes (nombre, fecha y descripción)
+
+			dataIsValid:false,
+			annexesIsValid:false,
+			resetForms:false,
+			formErrors:{
+				titulo:[],
+	        	descripcionCorta:[],
+	        	fechaEvento:[],
+				municipioTestimonio:[],
+	        	descripcionLugar:[],
+	        	tipoTestimonio:[]
+			}
+        };
+
+        this.handleUpdateState = this.handleUpdateState.bind(this);        
+        this.handleFormUpdateState = this.handleFormUpdateState.bind(this);        
+        
+        
+    }	
+
+    componentWillReceiveProps(nextProps) {
+        if("resetForm" in nextProps && nextProps.resetForm){
+        	this.setState({
+        		titulo:"",
+	        	descripcionCorta:"",
+	        	fechaEvento:"",
+				municipioTestimonio:null,
+	        	descripcionLugar:"",
+	        	tipoTestimonio:"",
+	        	plantilla:1,
+	        	nombreMunicipio:"",
+				
+				descripcionDetallada:"",
+	        	video:null,
+	        	audio:null,
+	        	audioRecord:null,
+	        	annexes:[],//almacena la información de los anexos existentes
+				annexesValues:{},//almacena los valores de los anexos existentes
+				annexesData:{},//almacena la información de las imagenes (nombre, fecha y descripción)
+
+				dataIsValid:false,
+				annexesIsValid:false,
+				resetForms:true
+        	})
+        }else{
+        	this.setState({resetForms:false})
+        }
+
+        if("formErrors" in nextProps){
+	        this.setState({
+	        	formErrors:nextProps.formErrors
+	        })
+	    }
+    }
+
+    /**
+     * Dispara evento de actualización en el componente padre
+     * si se envia la propiedad onUpdate
+     */
+    handleUpdateState(){
+    	setTimeout(() => {
+			if('onUpdate' in this.props){
+				const {
+					tipoTestimonio,
+					titulo,
+					descripcionCorta,
+					fechaEvento,
+					descripcionLugar,
+					municipioTestimonio,
+					nombreMunicipio,
+					descripcionDetallada,
+					annexes,
+					annexesValues,
+					annexesData,
+					video,
+					audio,
+					audioRecord,
+					plantilla,
+					formErrors
+				} = this.state;
+
+				this.props.onUpdate({
+					tipoTestimonio,
+					titulo,
+					descripcionCorta,
+					fechaEvento,
+					descripcionLugar,
+					municipioTestimonio,
+					nombreMunicipio,
+					descripcionDetallada,
+					annexes,
+					annexesValues,
+					annexesData,
+					video,
+					audio,
+					audioRecord,
+					plantilla,
+					formErrors
+				});
+			}
+		}, 10);
+    }
+
+   
+    handleFormUpdateState(){
+        setTimeout(() => {
+        	const {dataIsValid, annexesIsValid} = this.state;
+
+            if("onFormStateChange" in this.props){
+            	this.props.onFormStateChange((dataIsValid && annexesIsValid)?true:false);
+            }
+
+        }, 10)
+    }
+
+    render() {	
+    	const { plantilla, resetForms, formErrors } = this.state;
+        return (
+        	<Segment basic className="no-padding no-margin">
+	        	<Data  
+        	    	onFormStateChange={(state) => {
+            	    	 	this.setState({dataIsValid:state});
+            	    	 	this.handleFormUpdateState();
+            	    	}
+        	    	}
+
+        	    	onUpdate={(state) => {
+        	    			const newState = Object.assign({}, this.state, state);
+        	    			this.setState(newState);
+        	    			this.handleUpdateState();
+            	    	}
+            	    }
+            	    resetForm={resetForms}
+            	    formErrors={formErrors}
+            	   />
+	        	<Grid>	               
+	                <Grid.Column mobile={16} tablet={16} computer={16}>
+	            	    <Annexes 
+	            	    	onFormStateChange={(state) => {
+		            	    	 	this.setState({annexesIsValid:state});
+		            	    	 	this.handleFormUpdateState();
+		            	    	}
+	            	    	}
+
+	            	    	onUpdate={(state) => {
+	            	    			const newState = Object.assign({}, this.state, state);
+	            	    			this.setState(newState);
+	            	    			this.handleUpdateState();
+		            	    	}
+		            	    }
+		            	    resetForm={resetForms}
+		            	    errors={formErrors.annexes}
+	            	    	/>	
+	                </Grid.Column>   	                		                	                                	             
+
+	                <Grid.Column mobile={16} tablet={16} computer={16}>
+	                	<p>A continuación, seleccione la plantilla que desea utilizar para mostrar la información del testimonio.</p>
+		                <SelectTemplate defaultValue={plantilla} onChange={(e, value) => { 
+				                	this.setState({plantilla:value});
+				                	this.handleUpdateState();
+				                }
+			                }
+		                />
+	                </Grid.Column>
+	            </Grid>  	            
+            </Segment>
+        );
+    }
+}
+
+export default Testimony;

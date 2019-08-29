@@ -16,6 +16,7 @@ class EvaluateHeaders
      */
     public function handle($request, Closure $next)
     {           
+        //dd('En middleware');
         //Si la solicitud trae cookies de autenticación
         $cookie = $request->cookie(env('COOKIE_AUTH_NAME'));
         if($cookie)
@@ -26,7 +27,6 @@ class EvaluateHeaders
                 $request->headers->set('Authorization', $data->token_type.' '.$data->access_token);
             }
         }
-
         return $next($request);
     }
 }

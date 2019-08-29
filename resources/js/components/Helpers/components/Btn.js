@@ -92,6 +92,30 @@ const Send = (props) => {
     );
 }
 
+const Next = (props) => {
+    return (
+        <Button {...props} positive>Siguiente <Icon name="arrow right"/></Button>
+    );
+}
+
+const Previous = (props) => {
+    return (
+        <Button {...props}><Icon name="arrow left"/> Anterior</Button>
+    );
+}
+
+const More = (props) => {
+    return (
+        <Button {...props} primary><Icon name="eye"/> Más</Button>
+    );
+}
+
+const Return = (props) => {
+    return (
+        <Button {...props}><Icon name="arrow left"/> Regresar</Button>
+    );
+}
+
 class Btn extends Component {
     static Save = Save;
     static Close = Close;
@@ -108,6 +132,10 @@ class Btn extends Component {
     static LockOnlyIcon = LockOnlyIcon;
     static UnlockOnlyIcon = UnlockOnlyIcon;
     static Send = Send;
+    static Next = Next;
+    static Previous = Previous;
+    static More = More;
+    static Return = Return;
 
     render() {
         return (

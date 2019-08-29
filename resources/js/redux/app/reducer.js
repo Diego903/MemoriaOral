@@ -3,7 +3,6 @@ import params from '../../config/params';
 
 const initState = {
     userAuth:false,
-    userType:null,
     user:null,
     rememberMe:false,
 }

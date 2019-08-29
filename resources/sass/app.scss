@@ -12,8 +12,13 @@
 
 @import '../../semantic/dist/semantic.min.css';
 @import './helpers.css';
+@import './svg_map.css';
 
 .search .results{
 	overflow-y: auto;
     max-height: 400px;
+}
+
+.ck-file-dialog-button{
+	display:none !important;
 }

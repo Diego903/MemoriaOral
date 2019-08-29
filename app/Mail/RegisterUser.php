@@ -12,14 +12,19 @@ class RegisterUser extends Mailable
     use Queueable, SerializesModels;
 
     public $user = null;
+    public $generatePassword = false;
+    public $pass = "";
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(User $user, $generatePassword, $pass = null)
     {
         $this->user = $user;
+        $this->generatePassword = $generatePassword;
+        $this->pass = $pass;
     }
 
     /**

@@ -44,38 +44,10 @@ class UserController extends Controller
 
     public function register(RequestRegisterUser $request)
     {
-
-       // DB::beginTransaction();
-        $str_random = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-    	$user = new User();
-        $version_previa = $user->toJson();
-    	$user->fill($request->all());
-        $user->password = Hash::make($request->password);
-
-        for($i = 0; $i < rand(30,45);$i++){
-            $user->token_ .= $str_random[rand(0, (strlen($str_random)-1))];
-        }
-
-    	$user->save();
-        $version_nueva = $user->toJson();
-
-        $log = new GestionUsuario();
-
-        $log->fill([
-            "fecha" => date("Y-m-d"),
-            "accion" => "Crear",
-            "version_previa" =>$version_previa,
-            "version_nueva" => $version_nueva,
-            "usuario_admin_id" =>null,
-            "usuario_id" => $user->id,
-        ]);
-
-        $log->save();        
-
-        Mail::to($user)->send(new RegisterUser($user));
+        User::register($request);
         //DB::commit();
     	return response(["success"=>true], 200);                
-        }
+    }
 
 
     public function show(User $user)

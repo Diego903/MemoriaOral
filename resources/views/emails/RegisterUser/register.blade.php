@@ -15,6 +15,10 @@ Para activar la nueva cuenta de usuario debe seguir los siguientes pasos:<p>
 <p style="text-align: justify;">Recuerde que, por la seguridad de su información, la pantalla de activación de cuenta tiene una caducidad de <strong>2 semanas</strong>, por lo tanto,
 si usted intenta ingresar después de la fecha de caducidad no podrá activar su cuenta.</p>
 
+@if($generatePassword)
+<p><strong>Su contraseña de ingreso es: </strong>{{ $pass }}</p>
+@endif
+
 @component('mail::button', ['url' => url('/account_activation/'.$user->id.'/'.$user->token_),'color'=>'success'])
 Activar de cuenta
 @endcomponent

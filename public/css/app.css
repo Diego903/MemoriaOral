@@ -3111,37 +3111,37 @@ FIN COLORES
 }
 
 .z-depth-1, .card-panel, .card {
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2) !important;
 }
 
 .z-depth-1-half{
-    box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 7px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 7px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -1px rgba(0, 0, 0, 0.2) !important;
 }
 
 .z-depth-2 {
-    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3) !important;
 }
 
 .z-depth-3 {
-    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.3) !important;
 }
 
 .z-depth-4 {
-    box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.3) !important;
 }
 
 .z-depth-5 {
-    box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.3) !important;
 }
 
 .hoverable {
-    transition: box-shadow .25s;
-    box-shadow: 0;
+    transition: box-shadow .25s !important;
+    box-shadow: 0 !important;
 }
 
 .hoverable:hover {
-    transition: box-shadow .25s;
-    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transition: box-shadow .25s !important;
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
 }
 
 .justify{
@@ -3475,6 +3475,39 @@ FIN CURSOR
 
 .no-border-radius{
     border-radius: 0px !important;
+}
+
+.no-border{
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.gradient-active{
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#a1dbff+0,cbebff+47,f0f9ff+100 */
+    background: rgb(161,219,255) !important; /* Old browsers */ /* FF3.6-15 */ /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg,  rgba(161,219,255,1) 0%,rgba(203,235,255,1) 47%,rgba(240,249,255,1) 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a1dbff', endColorstr='#f0f9ff',GradientType=1 ) !important; /* IE6-9 fallback on horizontal gradient */
+}
+
+.gradient-green-blue{
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#88b1cc+0,0078ce+100 */
+    background: rgb(136,177,204) !important; /* Old browsers */ /* FF3.6-15 */ /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(60deg,  rgba(33,186,69,1) 0%,rgba(0,120,206,1) 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#88b1cc', endColorstr='#0078ce',GradientType=1 ) !important; /* IE6-9 fallback on horizontal gradient */
+
+}.svg_departamento{
+	cursor: pointer;
+	transition: .3s;
+	opacity: 1;
+}
+
+.svg_departamento.active{
+	fill: #01579b;
+	opacity: 1;
+}
+
+.svg_departamento:hover{
+	opacity: .8;
 }@charset "UTF-8";
 
 /*!
@@ -14142,5 +14175,9 @@ a.text-dark:focus {
 .search .results {
   overflow-y: auto;
   max-height: 400px;
+}
+
+.ck-file-dialog-button {
+  display: none !important;
 }
 

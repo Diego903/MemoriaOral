@@ -2,86 +2,163 @@ import React, { Component, PropTypes } from 'react';
 
 import {Segment, Header, Icon, Card, Image} from 'semantic-ui-react';
 
+import { getPropertyObject } from '../../Helpers/Helpers';
+import params from '../../../config/params';
+
+const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
 class Template1 extends Component {
 
     constructor(props) {
         super(props);
 
-        this.state = {
-            titulo:"3 Tomas guerrilleras en una semana",
-            descripcion:<p><strong>Lorem Ipsum</strong> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.</p>,
-        };
+        this.getAudio = this.getAudio.bind(this);
+        this.getImages = this.getImages.bind(this);
+        this.getVideo = this.getVideo.bind(this);
+    }
+
+    getImages(testimony){
+    	let images = "";
+
+    	if("fromServer" in this.props){
+    		if("anexos" in testimony && testimony.anexos.length){
+    			images = _.map(testimony.anexos, (el, i) => {
+    				let date = el.fecha;
+    				if(date){
+	    				date = months[parseInt(date.split("-")[1])-1]
+	    					+" "+date.split("-")[2]
+	    					+" del "+date.split("-")[0];
+	    			}
+
+	    			return <Card key={i}>
+							<Image src={params.URL_API+"testimony/annexed/"+testimony.id+"/image/"+el.id} wrapped ui={false} />
+							<Card.Content>
+								<Card.Header>{ el.nombre }</Card.Header>
+								<Card.Meta>
+									<span className='date'>{ date }</span>
+								</Card.Meta>
+								<Card.Description>
+									{el.descripcion}
+								</Card.Description>
+							</Card.Content>
+						</Card>
+	    		})
+    		}
+    	}else{
+	    	if(testimony.annexes && testimony.annexes.length){
+	    		images = _.map(testimony.annexes, (el, i) => {
+	    			if(testimony.annexesValues["value_"+el.key]){
+	    				const existsData = ("data_"+el.key in testimony.annexesData)?true:false;
+	    				const name = existsData?testimony.annexesData["data_"+el.key].name:"";
+	    				let date = existsData?testimony.annexesData["data_"+el.key].date:"";
+	    				const description = existsData?testimony.annexesData["data_"+el.key].description:"";
+	    				if(date){
+		    				date = months[parseInt(date.split("-")[1])-1]
+		    					+" "+date.split("-")[2]
+		    					+" del "+date.split("-")[0];
+		    			}
+
+	    				return <Card key={i}>
+							<Image src={URL.createObjectURL(testimony.annexesValues["value_"+el.key])} wrapped ui={false} />
+							<Card.Content>
+								<Card.Header>{ name }</Card.Header>
+								<Card.Meta>
+									<span className='date'>{ date }</span>
+								</Card.Meta>
+								<Card.Description>
+									{description}
+								</Card.Description>
+							</Card.Content>
+						</Card>
+
+	    			}
+	    		})
+	    	}
+    	}
+
+	    return images;
+    }
+
+    getVideo(testimony){
+    	let url = null;
+
+    	if("fromServer" in this.props){
+    		if("video" in testimony && testimony.video)
+    			url = params.URL_API+"testimony/annexed/"+testimony.id+"/video/"+testimony.video.id;
+    	}else{
+	    	if(testimony.video){
+	    		url = URL.createObjectURL(testimony.video);
+	    	}
+	    }
+
+    	if(url){
+    		return <Segment basic>
+						<Header as="h3">Video del testimonio</Header>
+	    				<video controls width="60%"  controlsList="nodownload">
+							<source src={url} type="video/mp4"/>
+								Su navegador no tiene soporte para elementos de <code>video</code>.
+						</video>
+					</Segment>
+    	}
+
+    	return "";
+    }
+
+    getAudio(testimony){
+    	let url = null;
+    	if("fromServer" in this.props){
+    		if("audio" in testimony && testimony.audio)
+    			url = params.URL_API+"testimony/annexed/"+testimony.id+"/audio/"+testimony.audio.id;
+    	}else{
+	    	if(testimony.audio || testimony.audioRecord){
+	    		url = URL.createObjectURL(testimony.audio?testimony.audio:testimony.audioRecord);
+	    	}
+	    }
+
+	    if(url){
+	    	return <Segment basic>
+						<Header as="h3">Audio del testimonio</Header>
+						<audio src={url} controls controlsList="nodownload" style={{width:"80%"}}>
+						  Su navegador no tiene soporte para elementos de <code>audio</code>.
+						</audio>
+					</Segment>
+	    }
+
+	    return "";
     }
 
     render() {
-    	const {titulo, descripcion} = this.state;
-        return (
+    	const {testimony, user} = this.props;
+    	
+    	return (
             <Segment basic>
             	<Segment basic>
 	            	<Header as="h2" dividing>
-	            		{titulo}
+	            		{testimony.titulo}
 	            		<Header.Subheader>
-	            			<Icon name="male"/> Jose Luis Capote Mosquera
+	            			<Icon name="calendar alternate outline"/> {getPropertyObject(testimony, "fechaEvento", "fecha_evento")}
 	            		</Header.Subheader>
 	            		<Header.Subheader>
-	            			<Icon name="world"/> Toribio (Cauca)
+	            			<Icon name="map marker alternate"/> {testimony.nombreMunicipio}
+	            		</Header.Subheader>
+	            		<Header.Subheader>
+	            			<Icon name="align left"/> {getPropertyObject(testimony, "tipoTestimonio", "tipo")}
 	            		</Header.Subheader>
 	            	</Header>
             	</Segment>
 
 				<Segment basic className="justify">
-					{descripcion}
+					<p dangerouslySetInnerHTML={{__html: getPropertyObject(testimony,"descripcionDetallada", "descripcion_detallada")?getPropertyObject(testimony,"descripcionDetallada", "descripcion_detallada"):(getPropertyObject(testimony,"descripcionCorta", "descripcion_corta")?getPropertyObject(testimony,"descripcionCorta", "descripcion_corta"):"")}} />
 				</Segment>
 
         		<Segment basic textAlign="center">
         			<Card.Group centered>
-						<Card>
-							<Image src='https://verdadabierta.com/wp-content/uploads/2017/10/toribio-5.jpg' wrapped ui={false} />
-							<Card.Content>
-								<Card.Header>Escuela Juan Ernesto Silva - Toribio</Card.Header>
-								<Card.Meta>
-									<span className='date'>Junio 12 de 2006</span>
-								</Card.Meta>
-								<Card.Description>
-									It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
-								</Card.Description>
-							</Card.Content>
-						</Card>
-						<Card>
-							<Image src='https://verdadabierta.com/wp-content/uploads/2017/10/toribio-5.jpg' wrapped ui={false} />
-							<Card.Content>
-								<Card.Header>Escuela Juan Ernesto Silva - Toribio</Card.Header>
-								<Card.Meta>
-									<span className='date'>Junio 12 de 2006</span>
-								</Card.Meta>
-								<Card.Description>
-									It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
-								</Card.Description>
-							</Card.Content>
-						</Card>
-						<Card>
-							<Image src='https://i.ytimg.com/vi/9QhogS62Tcc/maxresdefault.jpg' wrapped ui={false} />
-							<Card.Content>
-								<Card.Header>Escuela Juan Ernesto Silva - Toribio</Card.Header>
-								<Card.Meta>
-									<span className='date'>Junio 12 de 2006</span>
-								</Card.Meta>
-								<Card.Description>
-									It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
-								</Card.Description>
-							</Card.Content>
-						</Card>
+        				{this.getImages(testimony)}
 					</Card.Group>
-					<Segment basic>
-						<Header as="h3">Audio del testimonio</Header>
-						<audio src="http://developer.mozilla.org/@api/deki/files/2926/=AudioTest_(1).ogg" controls controlsList="nodownload" style={{width:"80%"}}>
-						  Your browser does not support the <code>audio</code> element.
-						</audio>
-					</Segment>
-					<video controls width="100%"  controlsList="nodownload">
-						<source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
-							Your browser does not support the video tag.
-					</video>
+
+					{this.getAudio(testimony)}
+
+					{this.getVideo(testimony)}
 				</Segment>
 
             </Segment>
