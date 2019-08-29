@@ -18,7 +18,10 @@ import RegisterUser from '../components/User/RegisterUser';
 import UpdateUser from '../components/User/UpdateUser';
 import AccountActivation from '../components/User/AccountActivation';
 
-import RegisterStories from '../components/Stories/RegisterStories';
+import StorieConflict from '../components/StorieConflict/StorieConflict';
+import RegisterStories from '../components/StorieConflict/RegisterStories';
+import UpdateStories from '../components/StorieConflict/UpdateStories';
+
 
 import Login from '../components/Auth/Login/Login';
 import PasswordResetRequest from '../components/Auth/PasswordResetRequest/PasswordResetRequest';
@@ -144,7 +147,10 @@ class Routes extends Component
                     <GuestRoute exact path={config_routes.registerUser.path} component={RegisterUser} />
                     <GuestRoute exact path={config_routes.account_activation.path} component={AccountActivation} />
 
-                    <FreeRoute exact path={config_routes.storie_conflict.path} component={RegisterStories} />
+                    <FreeRoute exact path={config_routes.storie_conflict.path} component={StorieConflict} />    
+                    <AuthRoute exact userType="Administrador" path={config_routes.storie_conflict_register.path} component={RegisterStories} />
+                    <AuthRoute exact userType="Administrador" path={config_routes.storie_conflict_update.path} component={UpdateStories} />
+
 
                     <GuestRoute exact path={config_routes.login.path} component={Login} />
                     <GuestRoute exact path={config_routes.password_reset_request.path} component={PasswordResetRequest} />

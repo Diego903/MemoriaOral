@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { actRegisterStories, actUpdateStories } from '../../redux/Stories/actions';
 import axios from 'axios';
 import params from '../../config/params';
 
@@ -132,7 +131,7 @@ class FormTestimony extends Component {
 	==============================================*/	
 
     handleSubmitFormRegisterStories(){
-					})
+					
     	/*this.setState({loading:true});
 
     	if(this.props.action == "register"){
@@ -253,7 +252,7 @@ class FormTestimony extends Component {
 		                    name="titulo" 
 		                    id="titulo" 
 		                    value={titulo} 
-		                    label='Titulo' 
+		                    label='Título' 
 		                    onTrueValid={this.onTrueValid} 
 		                    onFalseValid={this.onFalseValid} 
 							onChange={this.handleInputChange}

@@ -89,8 +89,6 @@ class FormUser extends Component {
         this.setFormIsValid = this.setFormIsValid.bind(this);        
         this.handleSearchServerSelect = this.handleSearchServerSelect.bind(this);        
         this.handleSearchChange = this.handleSearchChange.bind(this);        
-        this.handleCancel = this.handleCancel.bind(this);        
-
     }
 
     componentDidMount() {
@@ -99,6 +97,7 @@ class FormUser extends Component {
         	this.setState({
         		loading:true
         	});
+
 
         	axios.post(params.URL_API+"user/show/"+this.props.userId)
         	.then(
@@ -288,12 +287,6 @@ class FormUser extends Component {
 	    	});
     		
     	}    	
-    }
-
-    handleCancel(){
-    	if('onCancel' in this.props){
-    		this.props.onCancel();
-    	}
     }
 
     render() {
@@ -518,7 +511,6 @@ class FormUser extends Component {
 								</Modal.Actions>
 							</Modal>:""
 						}
-						<Btn.Cancel onClick={this.handleCancel}/>
 						<Btn.Save disabled={(!formIsValid || loading)} onClick={this.handleSubmitFormRegister}/>		                   
 		            </Grid.Column>
 	            </Grid>  	            

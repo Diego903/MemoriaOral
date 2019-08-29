@@ -56,10 +56,19 @@ class SearchServer extends Component {
 	        //si se seleccionó un valor predeterminado yna vez, no se puede dos veces
         	}else if(this.countSelectedPredeterminate < 1 && props_.predetermined){
 	        	this.countSelectedPredeterminate++;
+
+	        	let params = {search:props_.predetermined};
+
+	        	if('otherParams' in this.props){
+	        		_.map(this.props.otherParams, (el, i) => {
+	        			params[el.name] = el.value
+	        		})
+	        	}
+
 	        	axios({
 					method:props_.method?props_.method:"post",
 					url:props_.url,
-					data:{search:props_.predetermined}
+					data:params
 				})
 				.then((response) => {
 					this.setState({
@@ -88,16 +97,22 @@ class SearchServer extends Component {
     		this.props.handleSearchChange(e, data);
     	}
 		if(this.props.url){
-			var dataServer = {
+			let dataServer = {
 				search:data.value
 			};
+
+        	if('otherParams' in this.props){
+        		_.map(this.props.otherParams, (el, i) => {
+        			dataServer[el.name] = el.value
+        		})
+        	}
 
 			axios({
 				method:this.props.method?this.props.method:"post",
 				url:this.props.url,
 				data:dataServer
 			})
-			.then((response) => {
+			.then((response) => {				
 				this.setState({
 					isLoading:false,
 					results:response.data
@@ -132,7 +147,7 @@ class SearchServer extends Component {
 	}
 
 	handleBlur(e, data){
-		if(!this.state.selected)
+		if(!this.state.selected && 'required' in this.props)
 			this.setError("required","Este campo es obligatorio");
 	}
 

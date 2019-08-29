@@ -27,7 +27,7 @@ class UpdateUser extends Component {
 
         return (
         	<Container>
-                <Header as="h2" dividing>Registro de usuarios</Header>
+                <Header as="h2" dividing>Actualización de usuarios</Header>
         		<GeneralMessage success messages={success} onDismiss={()=>this.setState({success:[]})}/>
 	        	<FormUser action="update" onActionSuccess={this.onActionSuccess} userId={this.props.match.params.id}/>
             </Container>
