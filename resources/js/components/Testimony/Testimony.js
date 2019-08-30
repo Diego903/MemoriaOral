@@ -16,30 +16,30 @@ import config_routes from '../../config/routes';
 import {animateScroll} from 'react-scroll';
 
 const tiposTestimonio = [
-  { key: '6', text: 'Todos', value: 'Todos' },
-  { key: '0', text: 'Atentado', value: 'Atentado' },
-  { key: '1', text: 'Desaparición forzada', value: 'Desaparición forzada' },
-  { key: '2', text: 'Desplazamiento', value: 'Desplazamiento' },
-  { key: '3', text: 'Muerte', value: 'Muerte' },
-  { key: '4', text: 'Secuestros', value: 'Secuestros' },
-  { key: '5', text: 'Supervivencia', value: 'Supervivencia' },
+	{ key: '6', text: 'Todos', value: 'Todos' },
+	{ key: '0', text: 'Atentado', value: 'Atentado' },
+	{ key: '1', text: 'Desaparición forzada', value: 'Desaparición forzada' },
+	{ key: '2', text: 'Desplazamiento', value: 'Desplazamiento' },
+	{ key: '3', text: 'Muerte', value: 'Muerte' },
+	{ key: '4', text: 'Secuestros', value: 'Secuestros' },
+	{ key: '5', text: 'Supervivencia', value: 'Supervivencia' },
 ];
 
 const estadosTestomonio = [
-  { key: '2', text: 'Todos', value: 'Todos' },
-  { key: '0', text: 'Aprobado', value: 'Aprobado' },
-  { key: '1', text: 'Registrado', value: 'Registrado' },
-  { key: '3', text: 'Cancelado', value: 'Cancelado' }
+	{ key: '2', text: 'Todos', value: 'Todos' },
+	{ key: '0', text: 'Aprobado', value: 'Aprobado' },
+	{ key: '1', text: 'Registrado', value: 'Registrado' },
+	{ key: '3', text: 'Cancelado', value: 'Cancelado' }
 ];
 
 const mostrarTestomonio = [
-  { key: '0', text: 'Todos', value: 'Todos' },
-  { key: '1', text: 'Mis testimonios', value: 'Mis testimonios' }
+	{ key: '0', text: 'Todos', value: 'Todos' },
+	{ key: '1', text: 'Mis testimonios', value: 'Mis testimonios' }
 ];
 
 const tipoVistaTestomonio = [
-  { key: '0', text: 'Detalle', value: 'Detalle' },
-  { key: '1', text: 'Compacta', value: 'Compacta' }
+	{ key: '0', text: 'Detalle', value: 'Detalle' },
+	{ key: '1', text: 'Compacta', value: 'Compacta' }
 ];
 
 class Testimony extends React.Component {

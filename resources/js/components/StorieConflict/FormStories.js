@@ -156,7 +156,31 @@ class FormStories extends Component {
 	/*=====  Fin de Estado de validaciòn de formulario  ======*/
 
 	handleSearchServerSelect(e, {input, result}){
-		this.setState({[input.name]:result.key})
+		if(input.name == "departamento_id"){
+			this.setState({
+				[input.name]:result.key,
+				municipio_id:-1
+			})
+
+			setTimeout(() => {
+				this.setState({
+					municipio_id:""
+				})
+			}, 10);
+		}else if(input.name == "municipio_id"){
+			this.setState({
+				[input.name]:result.key,
+				departamento_id:-1
+			})
+
+			setTimeout(() => {
+				this.setState({
+					departamento_id:""
+				})
+			}, 10);
+		}else{
+			this.setState({[input.name]:result.key})
+		}
 		this.onTrueValid(input);
 	}
 	
@@ -378,7 +402,7 @@ class FormStories extends Component {
 	                			Anexos existentes
 	                		</Header>
 		                		            			                	
-		                	<Grid stackable doubling columns={3}>
+		                	<Grid stackable doubling columns={2}>
 		                		{annexedRender}		         	           		
 		                	</Grid>
 		                </Segment>
@@ -414,7 +438,7 @@ class FormStories extends Component {
 									    header='Selección de departamento'
 									    content={
 									    	<Segment basic className="no-padding">
-										    	Si la historia que se va a registrar pertenece específicamente  a un departamento.	
+										    	Seleccione únicamente si la historia a registrar está relacionada con un departamento.
 									    	</Segment>
 									    }
 									  />
@@ -432,7 +456,7 @@ class FormStories extends Component {
 									    header='Selección de municipio'
 									    content={
 									    	<Segment basic className="no-padding">
-										    	Si la historia que se va a registrar pertenece específicamente a un municipio.
+										    	Seleccione únicamente si la historia a registrar está relacionada con un municipio.
 									    	</Segment>
 									    }
 									  />
@@ -459,7 +483,7 @@ class FormStories extends Component {
 	                			Anexos
 	                		</Header>
 
-	                		<Grid stackable doubling columns={3}>
+	                		<Grid stackable doubling columns={2}>
 		                		{
 		                			_.map(this.state.annexes, (el, i) => {
 		                				return <Grid.Column key={el.key}>

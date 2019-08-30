@@ -6,6 +6,7 @@ import GeneralMessage from '../Helpers/components/GeneralMessage';
 import params from '../../config/params';
 import { actList } from '../../redux/StorieConflict/actions';
 import { connect } from 'react-redux';
+import SvgMap from '../../components/SvgMap/SvgMap';
 
 const opcionesTipoBusqueda = [
   { key: 'departamentos', text: 'Departamentos', value: 'departamentos' },
@@ -18,13 +19,12 @@ class StorieConflict extends React.Component {
 	  this.state={	  	   
 			buscar:"",
 			municipio_id:"",
-			departamento:3,
-			tipoBusqueda:"",
+			departamento:"",
+			tipoBusqueda:"departamentos",
 			message:"",
 			storiesDisplayed:[],
 			currentStories:[],
 			isLoading:false,
-			info:[],
 			activeIndex: null,
 
 			formValidations:{
@@ -62,8 +62,20 @@ class StorieConflict extends React.Component {
 		this.reloadList();
 	} 	
 
-    handleSelectChange(e, {name, value}){;	
-        this.setState({ [name]:  value});
+    handleSelectChange(e, {name, value}){
+    	if(name == "tipoBusqueda" && value == "departamentos"){
+    		this.setState({
+    			[name]:  value,
+    			municipio_id:-1
+    		}); 
+			
+			setTimeout(() => {
+				this.setState({municipio_id:""}); 
+			});
+    	} else {
+	        this.setState({ [name]:  value});
+	    }
+
         this.reloadList();
     }
 
@@ -102,74 +114,82 @@ class StorieConflict extends React.Component {
 	}
 
 	render(){	
-		const {municipio_id, departamento, buscar, load_search, search_value, tipoBusqueda, info, activeIndex} = this.state;
+		const {municipio_id, departamento, buscar, load_search, search_value, tipoBusqueda, activeIndex} = this.state;
 
-		let content = "";
+		let items = "";
 
-		let items = _.map(this.props.storiesConflict, (el, i) => {
-				let annexedRender = "";
+		if(this.props.storiesConflict.length){
+			items = _.map(this.props.storiesConflict, (el, i) => {
+					let annexedRender = "";
 
-				if(
-					"annexes" in this.props 
-					&& this.props.annexes.length
-					&& el.id in this.props.annexes
-					&& this.props.annexes[el.id].length
-				){				
-					annexedRender = _.map(this.props.annexes[el.id], (el_, i_) => {						
+					if(
+						"annexes" in this.props 
+						&& this.props.annexes.length
+						&& el.id in this.props.annexes
+						&& this.props.annexes[el.id].length
+					){				
+						annexedRender = _.map(this.props.annexes[el.id], (el_, i_) => {						
 
-							return <a href={params.URL_API+"storie_conflict/get-annexed/"+el_.id_hc+"/"+el_.id} target="_blank" key={i_}>
-											
-										<Segment>
-											{this.getIcon(el_.nombre_archivo)}
-											{el_.nombre_archivo}
-										</Segment>
-									</a>
-					});
+								return <a href={params.URL_API+"storie_conflict/get-annexed/"+el_.id_hc+"/"+el_.id} target="_blank" key={i_}>
+												
+											<Segment>
+												{this.getIcon(el_.nombre_archivo)}
+												{el_.nombre_archivo}
+											</Segment>
+										</a>
+						});
 
-					annexedRender = <Accordion>
-						        <Accordion.Title active={activeIndex === 0} index={0} onClick={this.handleClick}>
-						          <Icon name='dropdown' />
-						          Anexos
-						        </Accordion.Title>
-						        <Accordion.Content active={activeIndex === 0}>
-						        	<Segment basic>
-						         		{annexedRender}
-						        	</Segment>
-						        </Accordion.Content>
-					        </Accordion>				
-				}
+						annexedRender = <Accordion>
+							        <Accordion.Title active={activeIndex === 0} index={0} onClick={this.handleClick}>
+							          <Icon name='dropdown' />
+							          Anexos
+							        </Accordion.Title>
+							        <Accordion.Content active={activeIndex === 0}>
+							        	<Segment basic>
+							         		{annexedRender}
+							        	</Segment>
+							        </Accordion.Content>
+						        </Accordion>				
+					}
 
-				let opcionActualizar = "";
+					let opcionActualizar = "";
 
-				if(this.props.userType == "Administrador"){
-					opcionActualizar = <Card fluid>
-						<Card.Content>
-							<Card.Header content={el.titulo} />
-							<Card.Meta content={el.ubicacion} />
-							<Card.Meta content={el.texto} />
-							{annexedRender}
-						</Card.Content>
-						<Card.Content extra>	                      	                     		               
-							<Button onClick={() => this.props.history.push("/storie-conflict/update/"+el.id)} primary type="button" className="margin-left-10" floated="right">Actualizar</Button>		                	
-						</Card.Content>
-					</Card>
+					if(this.props.userType == "Administrador"){
+						opcionActualizar = <Card fluid>
+							<Card.Content>
+								<Card.Header content={el.titulo} />
+								<Card.Meta content={el.ubicacion} />
+								<Card.Meta content={el.texto} />
+								{annexedRender}
+							</Card.Content>
+							<Card.Content extra>	                      	                     		               
+								<Button onClick={() => this.props.history.push("/storie-conflict/update/"+el.id)} primary type="button" className="margin-left-10" floated="right">Actualizar</Button>		                	
+							</Card.Content>
+						</Card>
 
-				}else if(this.props.userType == "Usuario"){
-					opcionActualizar = <Card fluid>
-						<Card.Content>
-							<Card.Header content={el.titulo} />
-							<Card.Meta content={el.ubicacion} />
-							<Card.Meta content={el.texto} />
-							{annexedRender}
-						</Card.Content>
-					</Card>
+					}else{
+						opcionActualizar = <Card fluid>
+							<Card.Content>
+								<Card.Header content={el.titulo} />
+								<Card.Meta content={el.ubicacion} />
+								<Card.Meta content={el.texto} />
+								{annexedRender}
+							</Card.Content>
+						</Card>
 
-				}				
+					}				
 
-				return <Grid.Column key={i}>				
-						{opcionActualizar}
-					</Grid.Column>
-		})
+					return <Grid.Column key={i}>				
+							{opcionActualizar}
+						</Grid.Column>
+			})
+		}else{
+			items = <GeneralMessage
+						warning
+						icon
+						messages={["No se encontraron resultados con los criterios de búsqueda seleccionados."]}
+					/>;
+		}
 
 		let message = "";
 
@@ -180,23 +200,9 @@ class StorieConflict extends React.Component {
 				    header='¿Desea registrar una historia del conflicto armado?'
 				    content={
 				    	<Segment basic className="no-padding">
-				    		Recuerde que para registrar una historia del conflicto armado en el sistema.
-					    	Haga clic en el siguiente botón y tendrá disponible el registro de historias del conflicto armado
-					    	<Button onClick={() => this.props.history.push(config_routes.storie_conflict_register.path)} positive type="button" className="margin-left-10">Registrar historias</Button>
-					    	Las historias del conflicto armado registradas por usted quedarán públicas automáticamente.
-				    	</Segment>
-				    }
-				  />
-
-		}else if(this.props.userType == "Usuario"){
-			message = <Message
-	    			info
-				    icon='microphone'
-				    header='Historias del conflicto armado'
-				    content={
-				    	<Segment basic className="no-padding">
-					    	Aqui podra vizualizar todas las historias del conflicto armado registradas en el sistema.
-
+				    		Para registrar una historia del conflicto armado, haga clic sobre el siguiente botón 
+					    	<Button onClick={() => this.props.history.push(config_routes.storie_conflict_register.path)} positive type="button" className="margin-left-10">Registrar historias del conflicto armado</Button>.
+					    	A continuación, se desplegará el formulario de registro de las historias del conflicto. Diligencie el formulario y haga clic en el botòn de guardar.
 				    	</Segment>
 				    }
 				  />
@@ -206,7 +212,6 @@ class StorieConflict extends React.Component {
 	    return (
 	    	<Container>
 	    		{message}
-				<GeneralMessage info messages={info} onDismiss={()=>this.setState({info:[]})}/>  
 
 	    		<Grid columns={3} doubling stackable>
 
@@ -218,7 +223,7 @@ class StorieConflict extends React.Component {
 
 	                <Grid.Column>	                         	           
      	            	<Form>
-                			<SearchServer name="municipio_id" label="Municipio" predetermined={municipio_id} url={params.URL_API+"query/municipios"} handleResultSelect={this.handleSearchServerSelect} handleSearchChange={this.handleSearchChange} otherParams={[{name:"departamento", value:departamento}]}/>
+                			<SearchServer disabled={tipoBusqueda == "departamentos"?true:false} name="municipio_id" label="Municipio" predetermined={municipio_id} url={params.URL_API+"query/municipios"} handleResultSelect={this.handleSearchServerSelect} handleSearchChange={this.handleSearchChange} otherParams={[{name:"departamento", value:departamento}]}/>
                 		</Form>                	               	
 	                </Grid.Column>
 
@@ -230,11 +235,23 @@ class StorieConflict extends React.Component {
 	    		</Grid>
 
 	    		<Grid>
-	    			<Grid.Column computer={6} tablet={8} mobile={16}>
-		    			<Image src="http://mapamudo.net/wp-content/uploads/mapa-mudo-de-colombia-2.png"/>
+	    			<Grid.Column computer={5} tablet={8} mobile={16}>
+	    				<Header centered="true">
+	    					Seleccione un departamento
+	    				</Header>
+		    			<SvgMap 
+			    			onselectDepto={(id) => {
+				    				this.setState({departamento:id, municipio_id:-1}); 
+				    				setTimeout(() => {
+										this.setState({municipio_id:""}); 
+									});
+				    				this.reloadList()
+			    				}
+			    			}
+			    		/>
 		    		</Grid.Column>
 
-		    		<Grid.Column computer={10} tablet={8} mobile={16}>
+		    		<Grid.Column computer={11} tablet={8} mobile={16}>
 			    		<Grid columns={1} doubling stackable>
 			    			{items}
 			    		</Grid>						

@@ -13,6 +13,7 @@ class SvgMap extends Component {
 
         this.state = {
         	selected:null,
+            idSelected:null,
         	hovered:null
         }
     }
@@ -38,11 +39,17 @@ class SvgMap extends Component {
 
     	for(let depto of deptos){
         	depto.addEventListener('click', (e) => {
-        		let classDeptos = document.querySelector(".active");
-        		classDeptos.classList.remove('active');
+        		let classDeptos = document.querySelector(".active_dpto");
+                
+                if(classDeptos)
+        		  classDeptos.classList.remove('active_dpto');
 
-        		e.target.classList.add("active");
-        		this.onClickDepto(e.target.id.split("_")[0], e.target.id.split("_")[1]);
+                if(e.target.id.split("_")[0] != this.state.idSelected){
+        		  e.target.classList.add("active_dpto");
+        		  this.onClickDepto(e.target.id.split("_")[0], e.target.id.split("_")[1]);
+                }else{
+                    this.onClickDepto(null, null);
+                }
         	});
 
         	depto.addEventListener('mouseenter', (e) => {
@@ -62,7 +69,8 @@ class SvgMap extends Component {
 
     onClickDepto(id, name){
     	this.setState({
-    		selected:name
+    		selected:name,
+            idSelected:id
     	});
     	if("onselectDepto" in this.props){
     		this.props.onselectDepto(id, name);

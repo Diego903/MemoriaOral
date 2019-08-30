@@ -57,15 +57,15 @@ const actLoadTestimonies = (data, reload = true, noReloadOnEmpty = false) => {
  * Accion para guardar una copia de los testimonios actuales en 
  * el store
  */
-const actSaveBackup = () => {
+const actSaveBackup = () => ({
     type:types.SAVE_BACKUP
-}
+})
 
 /**
  * Accion para restaurar una copia de seguridad 
  */
-const actRestoreBackup = () => {
+const actRestoreBackup = () => ({
     type:types.RESTORE_BACKUP
-}
+})
 
 export {actLoadTestimonies, actSaveBackup, actRestoreBackup};

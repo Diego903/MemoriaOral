@@ -44,9 +44,8 @@ class StorieConflictController extends Controller
 
         	$query = $query->join('departamentos','historias_conflicto.departamento_id','=','departamentos.id');
         	
-        	$query = $query->where('historias_conflicto.departamento_id', $request->departamento);
-
-
+        	if($request->departamento)
+        		$query = $query->where('historias_conflicto.departamento_id', $request->departamento);
         }
 
         if($request->has("buscar")){

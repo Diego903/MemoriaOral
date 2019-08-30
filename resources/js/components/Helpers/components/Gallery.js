@@ -35,7 +35,7 @@ class Gallery extends Component {
         	<div>
                 <Header inverted={("inverted" in this.props)}>
                     {images[indexShow].title}
-                    <Header.Subheader inverted={("inverted" in this.props)}>
+                    <Header.Subheader inverted={("inverted" in this.props).toString()}>
                         {images[indexShow].date}
                     </Header.Subheader>
                 </Header>
