@@ -18,7 +18,7 @@ class StorieConflict extends React.Component {
 	  this.state={	  	   
 			buscar:"",
 			municipio_id:"",
-			departamento:10,
+			departamento:3,
 			tipoBusqueda:"",
 			message:"",
 			storiesDisplayed:[],
@@ -39,7 +39,6 @@ class StorieConflict extends React.Component {
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.reloadList = this.reloadList.bind(this);
-        this.setInfo = this.setInfo.bind(this);
         this.getIcon = this.getIcon.bind(this);        
         
         this.props.loadList(this.state, true);
@@ -74,12 +73,6 @@ class StorieConflict extends React.Component {
     	}, 10);
     } 
 
-	setInfo(){
-		this.setState({
-			info:["No se encontraron registros."],
-		})
-	}
-
 
     handleClick = (e, titleProps) => {
 	    const { index } = titleProps
@@ -110,6 +103,8 @@ class StorieConflict extends React.Component {
 
 	render(){	
 		const {municipio_id, departamento, buscar, load_search, search_value, tipoBusqueda, info, activeIndex} = this.state;
+
+		let content = "";
 
 		let items = _.map(this.props.storiesConflict, (el, i) => {
 				let annexedRender = "";
@@ -144,8 +139,10 @@ class StorieConflict extends React.Component {
 					        </Accordion>				
 				}
 
-				return <Grid.Column key={i}>
-					<Card fluid>
+				let opcionActualizar = "";
+
+				if(this.props.userType == "Administrador"){
+					opcionActualizar = <Card fluid>
 						<Card.Content>
 							<Card.Header content={el.titulo} />
 							<Card.Meta content={el.ubicacion} />
@@ -156,25 +153,59 @@ class StorieConflict extends React.Component {
 							<Button onClick={() => this.props.history.push("/storie-conflict/update/"+el.id)} primary type="button" className="margin-left-10" floated="right">Actualizar</Button>		                	
 						</Card.Content>
 					</Card>
-				</Grid.Column>
+
+				}else if(this.props.userType == "Usuario"){
+					opcionActualizar = <Card fluid>
+						<Card.Content>
+							<Card.Header content={el.titulo} />
+							<Card.Meta content={el.ubicacion} />
+							<Card.Meta content={el.texto} />
+							{annexedRender}
+						</Card.Content>
+					</Card>
+
+				}				
+
+				return <Grid.Column key={i}>				
+						{opcionActualizar}
+					</Grid.Column>
 		})
 
-	    return (
-	    	<Container>
-	    		<Message
+		let message = "";
+
+		if(this.props.userType == "Administrador"){
+			message = <Message
 	    			info
 				    icon='microphone'
-				    header='¿Quiere contarle al mundo su historia?'
+				    header='¿Desea registrar una historia del conflicto armado?'
 				    content={
 				    	<Segment basic className="no-padding">
-					    	Si usted ha sido víctima del comflicto armado en Colombia y desea que las personas que visitan
-					    	nuestro sistema de información conozcan su historia, puede registrarla desde el siguiente botón.
+				    		Recuerde que para registrar una historia del conflicto armado en el sistema.
+					    	Haga clic en el siguiente botón y tendrá disponible el registro de historias del conflicto armado
 					    	<Button onClick={() => this.props.history.push(config_routes.storie_conflict_register.path)} positive type="button" className="margin-left-10">Registrar historias</Button>
-					    	Su historia hace parte de la memoria viva del conflicto armado, por lo tanto, mientras más perdure en el tiempo, más
-					    	personas conoceremos la verdadera historia.
+					    	Las historias del conflicto armado registradas por usted quedarán públicas automáticamente.
 				    	</Segment>
 				    }
 				  />
+
+		}else if(this.props.userType == "Usuario"){
+			message = <Message
+	    			info
+				    icon='microphone'
+				    header='Historias del conflicto armado'
+				    content={
+				    	<Segment basic className="no-padding">
+					    	Aqui podra vizualizar todas las historias del conflicto armado registradas en el sistema.
+
+				    	</Segment>
+				    }
+				  />
+
+		}		
+
+	    return (
+	    	<Container>
+	    		{message}
 				<GeneralMessage info messages={info} onDismiss={()=>this.setState({info:[]})}/>  
 
 	    		<Grid columns={3} doubling stackable>
@@ -216,6 +247,7 @@ class StorieConflict extends React.Component {
 
 const mapStateToProps = (state, props) => {
 	return {
+		userType:state.app.user?state.app.user.rol:false,
 		storiesConflict:state.StorieConflict.storiesDisplayed,
 		annexes:state.StorieConflict.annexes
 	}

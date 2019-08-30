@@ -190,6 +190,8 @@ class FormStories extends Component {
 					if("onActionSuccess" in this.props){
 						this.props.onActionSuccess();
 					}
+
+					animateScroll.scrollToTop();
 	    		}else{
 
 	                let errors = {};
@@ -206,7 +208,8 @@ class FormStories extends Component {
 
 		    		this.setState({
 		    		})
-		    	}
+		    		animateScroll.scrollToTop();
+		    	}		    	
 	    	});
     	}else if(this.props.action == "update"){
     		this.props.sendUpdateStories(this.state, this.props.StorieConflictId)

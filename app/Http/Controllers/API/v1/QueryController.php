@@ -34,8 +34,10 @@ class QueryController extends Controller
     public function departamentos(Request $request){
         $search = $request->has('search')?$request->search:"";
 
-        return Departamentos::select('departamentos.id as key','departamentos.nombre as title')
+        $query= Departamentos::select('departamentos.id as key','departamentos.nombre as title')
             ->where('departamentos.nombre','like','%'.$search.'%')
-            ->orWhere('departamentos.id',$search)->take(10)->get();
+            ->orWhere('departamentos.id',$search);           
+
+        return $query->take(10)->get();    
     }   
 }
