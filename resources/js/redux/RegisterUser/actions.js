@@ -9,22 +9,25 @@ import params from '../../config/params';
  */
 
 const actRegisterUser = (data) => {
-    //console.log(data);
     return dispatch => {
-        return axios.post(params.URL_API+'user/register',{
-        	numero_identificacion:data.numero_identificacion,
-        	nombres:data.nombres,
-        	apellidos:data.apellidos,
-            email:data.email,
-            genero:data.genero,
-            password:data.password,
-            password_confirmation:data.password_confirmation,
-            telefono:data.telefono,
-            nivel_estudio:data.nivel_estudio,
-            fecha_nacimiento:data.fecha_nacimiento,
-            direccion:data.direccion,
-            municipio_id:data.municipio_id
-        })
+        const formData = new FormData();
+
+        formData.append("numero_identificacion", data.numero_identificacion);
+        formData.append("nombres", data.nombres);
+        formData.append("apellidos", data.apellidos);
+        formData.append("fecha_nacimiento", data.fecha_nacimiento);
+        formData.append("genero", data.genero);
+        formData.append("email", data.email);
+        formData.append("telefono", data.telefono);
+        formData.append("nivel_estudio", data.nivel_estudio);
+        formData.append("password", data.password);
+        formData.append("password_confirmation", data.password_confirmation);
+        formData.append("municipio_id", data.municipio_id);
+        formData.append("direccion", data.direccion);
+        formData.append("certificado_victima", data.certificadoVictima);
+        formData.append("victima_minas", data.victima_minas);
+
+        return axios.post(params.URL_API+'user/register',formData)
         .then((response) => {
             //console.log(response);
             return response;
@@ -39,19 +42,22 @@ const actRegisterUser = (data) => {
 const actUpdateUser =(data, userId)=>{
 
     return dispatch => {
-        return axios.post(params.URL_API+'user/update/'+userId,{
-            id:data.id,
-            numero_identificacion:data.numero_identificacion,
-            nombres:data.nombres,
-            apellidos:data.apellidos,
-            email:data.email,
-            genero:data.genero,
-            telefono:data.telefono,
-            nivel_estudio:data.nivel_estudio,
-            fecha_nacimiento:data.fecha_nacimiento,
-            direccion:data.direccion,
-            municipio_id:data.municipio_id
-        })
+        const formData = new FormData();
+        formData.append("id", data.id);
+        formData.append("numero_identificacion", data.numero_identificacion);
+        formData.append("nombres", data.nombres);
+        formData.append("apellidos", data.apellidos);
+        formData.append("fecha_nacimiento", data.fecha_nacimiento);
+        formData.append("genero", data.genero);
+        formData.append("email", data.email);
+        formData.append("telefono", data.telefono);
+        formData.append("nivel_estudio", data.nivel_estudio);
+        formData.append("municipio_id", data.municipio_id);
+        formData.append("direccion", data.direccion);
+        formData.append("victima_minas", data.victima_minas);
+        formData.append("certificado_victima", data.certificadoVictima);
+
+        return axios.post(params.URL_API+'user/update/'+userId,formData)
         .then((response) => {
             return response;
         })

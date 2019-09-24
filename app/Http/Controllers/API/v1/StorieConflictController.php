@@ -141,7 +141,7 @@ class StorieConflictController extends Controller
 
 		        $archivo->save();
 
-				$ubicacion = "public/stories_conflict/".$historiaConflicto->id."/".$archivo->id;
+				$ubicacion = "app/public/stories_conflict/".$historiaConflicto->id."/".$archivo->id;
 
 				$archivo->ubicacion = $ubicacion;
 				$archivo->save();
@@ -220,7 +220,7 @@ class StorieConflictController extends Controller
 
 			        $archivo->save();
 
-					$ubicacion = "public/stories_conflict/".$storie_conflict->id."/".$archivo->id;
+					$ubicacion = "app/public/stories_conflict/".$storie_conflict->id."/".$archivo->id;
 
 					$archivo->ubicacion = $ubicacion;
 					$archivo->save();

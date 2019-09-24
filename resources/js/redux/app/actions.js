@@ -20,7 +20,7 @@ const actLogin = (user) => {
             'password':user.password,
             'rememberMe':user.remember,
         })
-        .then((response) => {;
+        .then((response) => {
             dispatch({
                     type:types.LOGIN,
                     rememberMe:user.remember,
@@ -45,7 +45,7 @@ const actLoginCookie = (rememberMe, user) => {
 /**
  * Acción para cerrar la sesión de un usuario con llamado a sevidor
  */
-const actLogout = () => {
+const actLogout = (reload = false) => {
     return dispatch => {
         return axios.post(params.URL+'/api/logout')
         .then((response) => {
@@ -57,6 +57,8 @@ const actLogout = () => {
                 });
 
                 dispatch(actRemoveAllNotifications());
+                if(reload)
+                    window.location.reload();
             }, 100);
         })
         .catch((error) => {

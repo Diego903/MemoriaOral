@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Segment, Button, Icon, Dimmer, Header } from 'semantic-ui-react';
+import { GeneralMessage } from '../../Helpers/Helpers';
 
 class RecordAudio extends Component {
 
@@ -7,11 +8,12 @@ class RecordAudio extends Component {
         super(props);
 
         this.state = {
-        	state:"stop",
-        	showIconRecording:true,
-        	activeDimmer:false,
-        	messageDimmer:"",
-        	showAudio:false
+            state:"stop",
+            showIconRecording:true,
+            activeDimmer:false,
+            messageDimmer:"",
+            showAudio:false,
+            microphoneAccess:false
         }
 
         //contador que maneja los segundos antes de iniciar una grabación
@@ -24,10 +26,28 @@ class RecordAudio extends Component {
         this.chunks = [];
 
         this.handleSuccess = this.handleSuccess.bind(this);
+        this.hasGetUserMedia = this.hasGetUserMedia.bind(this);
         this.delete = this.delete.bind(this);
 
-        navigator.mediaDevices.getUserMedia({ audio: true })
-     	.then(this.handleSuccess);
+        let microphoneAccess = true;
+
+        if(this.hasGetUserMedia()){
+            navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(
+                this.handleSuccess
+            )
+            .catch((err) => {
+                this.setState({
+                    microphoneAccess:false
+                })
+            });
+        }
+    }
+
+    hasGetUserMedia() {
+      // Note: Opera builds are unprefixed.
+      return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
+                navigator.mozGetUserMedia || navigator.msGetUserMedia);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -80,7 +100,7 @@ class RecordAudio extends Component {
     	})
     	//si se encuentra detenido se muestra cuenta regresiva
     	if(this.state.state == 'stop'){
-    		this.counter = 1;
+    		this.counter = 10;
 
 	    	let idInterval = null;
 
@@ -170,10 +190,19 @@ class RecordAudio extends Component {
 
     handleSuccess = (stream) => {
     	this.stream = stream;
+
+        this.setState({
+            microphoneAccess:true
+        })
 	}
 
     render() {
-    	const { state, showIconRecording, activeDimmer, messageDimmer, showAudio } = this.state;
+    	const { state, showIconRecording, activeDimmer, messageDimmer, showAudio, microphoneAccess } = this.state;
+        if(!this.hasGetUserMedia()){
+            return <GeneralMessage warning messages={["Su navegador no admite la grabación de audio mediante micrófono. Esto suele pasar cuando la versión del navegador no está actualizada, por favor, actualice el navegador he intente nuevamente."]}/>
+        }else if(!microphoneAccess){
+            return <GeneralMessage warning messages={["El acceso al micrófono ha sido inhabilitado, para grabar audio debe habilitar el acceso al micrófono desde las opciones del navegador."]}/>
+        }
 
     	let icon = icon = <Icon name="circle" className="white-text"/>
     	let textGrabar = "Grabar";

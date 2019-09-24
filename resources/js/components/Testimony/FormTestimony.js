@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import params from '../../config/params';
 
-import { Step, Grid, Form, Confirm, Button,TextArea, Segment, Container,Select,Message, Input, Header, Menu, Tab, Label, Icon } from 'semantic-ui-react';
+import { Step, Form, Confirm, Segment, Icon, Dropdown, Header, TextArea, Item } from 'semantic-ui-react';
 import GeneralMessage from '../Helpers/components/GeneralMessage';
-import { Btn, Valid, SearchServer, ImageCheck, RecordAudio } from '../Helpers/Helpers';
+import { Btn, Valid } from '../Helpers/Helpers';
 
 import Testimony from './DataForm/Testimony';
 import User from '../User/DataForm/User';
@@ -22,11 +22,13 @@ class FormTestimony extends Component {
     constructor(props) {
         super(props);
 
+        this.isUpdate = ("testimony" in this.props);
+
         this.state={
 			loading:false,
 			confirmModalState:false,
 			
-			dataTestimony:null,
+			dataTestimony:this.isUpdate?this.props.testimony:null,
 			stateFormTestimony:false,
 			formTestimonyErrors:{
 	        	titulo:[],
@@ -35,17 +37,22 @@ class FormTestimony extends Component {
 				municipioTestimonio:[],
 	        	descripcionLugar:[],
 	        	ubicacion:[],
-	        	tipoTestimonio:[]
+	        	tipoTestimonio:[],
+	        	observaciones:[],
 			},
 
-			dataUser:props.userType == "Administrador"?{}:props.user,
-			stateFormUser:props.userType == "Administrador"?false:true,
+			dataUser:this.isUpdate?props.testimony.usuario:(props.userType == "Administrador"?{}:props.user),
+			stateFormUser:this.isUpdate?true:(props.userType == "Administrador"?false:true),
 			formUserErrors:[],
 
-			activeStep:props.userType == "Administrador"?"user":"testimony",
+			activeStep:this.isUpdate?"testimony":(props.userType == "Administrador"?"user":"testimony"),
 			template:1,
 			resetForms:false,
-			errors:[]
+			errors:[],
+			showOptionsSave:false,
+			onlySave:false,
+			saveAndApprove:false,
+			saveAndCancel:false
         }
 
         this.setActiveStep = this.setActiveStep.bind(this);
@@ -74,31 +81,66 @@ class FormTestimony extends Component {
 		formData.append("fecha_evento", this.state.dataTestimony.fechaEvento);
 		formData.append("descripcion_lugar", this.state.dataTestimony.descripcionLugar);
 		formData.append("municipio", this.state.dataTestimony.municipioTestimonio);
-		formData.append("descripcion_detallada", this.state.dataTestimony.descripcionDetallada);
+		formData.append("descripcion_detallada", this.state.dataTestimony.descripcionDetallada?this.state.dataTestimony.descripcionDetallada:"");
 
 		if(this.state.dataTestimony.annexes && this.state.dataTestimony.annexes.length){
-			formData.append("anexos", JSON.stringify(this.state.dataTestimony.annexes));
+			let annexesSend = [];
 
-			_.map(this.state.dataTestimony.annexes, (el, i) => {
-	    		formData.append("anexos_datos_"+el.name, JSON.stringify(this.state.dataTestimony.annexesData["data_"+el.name]));
-	    		formData.append("anexos_valores_"+el.name, this.state.dataTestimony.annexesValues["value_"+el.name]);
-	    	});
+			_.map(this.state.dataTestimony.annexes, (el,i) => {
+				if(
+					(
+						"data_"+el.name in this.state.dataTestimony.annexesData
+						&& this.state.dataTestimony.annexesData["data_"+el.name].name
+						&& this.state.dataTestimony.annexesData["data_"+el.name].description
+					)
+					|| 
+
+					(
+						"value_"+el.name in this.state.dataTestimony.annexesValues)
+						&& this.state.dataTestimony.annexesValues["value_"+el.name]
+					)
+	    			annexesSend.push(el);
+			})	
+
+			if(annexesSend.length){
+				formData.append("anexos", JSON.stringify(annexesSend));
+
+				_.map(annexesSend, (el, i) => {
+					if("data_"+el.name in this.state.dataTestimony.annexesData)
+		    			formData.append("anexos_datos_"+el.name, JSON.stringify(this.state.dataTestimony.annexesData["data_"+el.name]));
+		    		
+					if("value_"+el.name in this.state.dataTestimony.annexesValues)
+		    			formData.append("anexos_valores_"+el.name, this.state.dataTestimony.annexesValues["value_"+el.name]);
+		    	});
+			}
 		}
-
-		if(this.state.dataTestimony.video)
+		if(this.state.dataTestimony.video && this.state.dataTestimony.video instanceof File)
 			formData.append("video", this.state.dataTestimony.video);
 
 		if(this.state.dataTestimony.audio || this.state.dataTestimony.audioRecord){
-			if(this.state.dataTestimony.audio)
+			if(this.state.dataTestimony.audio && this.state.dataTestimony.audio instanceof File)
 				formData.append("audio", this.state.dataTestimony.audio);
-			else
+			else if(this.state.dataTestimony.audioRecord)
 				formData.append("audio", this.state.dataTestimony.audioRecord, this.state.dataTestimony.titulo+".webm");
 		}
 
 		formData.append("plantilla", this.state.dataTestimony.plantilla);
 
+		if(this.isUpdate){
+			formData.append('id', this.state.dataTestimony.id);
+			
+			if(this.state.dataTestimony.observaciones)
+				formData.append('observaciones', this.state.dataTestimony.observaciones);
+
+			formData.append('onlySave', this.state.onlySave);
+			formData.append('saveAndApprove', this.state.saveAndApprove);
+			formData.append('saveAndCancel', this.state.saveAndCancel);
+			formData.append('deleteAudio', this.state.dataTestimony.deleteAudio);
+			formData.append('deleteVideo', this.state.dataTestimony.deleteVideo);
+		}
+
 		//Datos del usuario
-		if(this.props.userType == "Administrador"){
+		if(this.props.userType == "Administrador" && !this.isUpdate){
 			formData.append("numero_identificacion", this.state.dataUser.numero_identificacion);
 			formData.append("nombres", this.state.dataUser.nombres);
 			formData.append("apellidos", this.state.dataUser.apellidos);
@@ -114,7 +156,12 @@ class FormTestimony extends Component {
 			formData.append("victima_minas", this.state.dataUser.victima_minas);
 		}
 
-        axios.post(params.URL_API+'testimony/register',formData,
+		let url = params.URL_API+"testimony/register";
+		
+		if(this.isUpdate)
+			url = params.URL_API+"testimony/update/"+this.state.dataTestimony.id;
+
+        axios.post(url,formData,
         {
             headers: {
                 'content-type': 'multipart/form-data'
@@ -125,35 +172,51 @@ class FormTestimony extends Component {
 
 	    	animateScroll.scrollToTop();
             //console.log(response);
-            //se reinician los datos del estado
-            this.setState({
-	    		loading:false,
-	    		resetForms:true,
-	    		dataTestimony:null,
-				stateFormTestimony:false,
-				dataUser:this.props.userType == "Administrador"?{}:this.props.user,
-				stateFormUser:this.props.userType == "Administrador"?false:true,
-				activeStep:this.props.userType == "Administrador"?"user":"testimony",
-				template:1,
-				resetForms:true
-	    	})
-
-	    	setTimeout(() => {
-	    		this.setState({
-		    		resetForms:false
+            if(this.isUpdate){
+            	this.setState({
+		    		loading:false,
+		    		activeStep:"testimony"
 		    	})
-	    	}, 10);
 
-	    	if("onRegister" in this.props){
-	    		return this.props.onRegister();
-	    	}
+            	if("onUpdate" in this.props){
+		    		return this.props.onUpdate(this.state.dataTestimony);
+		    	}
+            }else{
+	            //se reinician los datos del estado
+	            this.setState({
+		    		loading:false,
+		    		resetForms:true,
+		    		dataTestimony:null,
+					stateFormTestimony:false,
+					dataUser:this.props.userType == "Administrador"?{}:this.props.user,
+					stateFormUser:this.props.userType == "Administrador"?false:true,
+					activeStep:this.props.userType == "Administrador"?"user":"testimony",
+					template:1,
+					resetForms:true
+		    	})
+
+		    	setTimeout(() => {
+		    		this.setState({
+			    		resetForms:false
+			    	})
+		    	}, 10);
+
+		    	if("onRegister" in this.props){
+		    		return this.props.onRegister();
+		    	}
+		    }
 
         })
         .catch((error) => {
+        	let messageError = "El registro del testimonio no se pudo completar, revise y corrija cada uno de los errores que pueden aparecer en cada pestaña.";
+
+        	if(this.isUpdate)
+        		messageError = "La actualización del testimonio no se pudo completar, revise y corrija cada uno de los errores que aparecen en este formulario.";
+
         	this.setState({
 	    		loading:false,
-	    		activeStep:this.props.userType == "Administrador"?"user":"testimony",
-	    		errors:["El registro del testimonio no se pudo completar, revise y corrija cada uno de los errores que pueden aparecer en cada pestaña."]
+	    		activeStep:this.isUpdate?"testimony":(this.props.userType == "Administrador"?"user":"testimony"),
+	    		errors:[messageError]
 	    	});
 
 
@@ -176,19 +239,31 @@ class FormTestimony extends Component {
 			let errorsAnnexes = [];
 
 			if("audio" in error.response.data.errors){
-				errorsAnnexes.push(error.response.data.errors.audio);
+				_.map(error.response.data.errors.audio, (el,i) => {
+					if(!errorsAnnexes.includes(el))
+						errorsAnnexes.push(el);
+				})
 			}
 
 			if("video" in error.response.data.errors){
-				errorsAnnexes.push(error.response.data.errors.video);
+				_.map(error.response.data.errors.video, (el,i) => {
+					if(!errorsAnnexes.includes(el))
+						errorsAnnexes.push(el);
+				})
 			}
 
 			if("anexos" in error.response.data.errors){
-				errorsAnnexes.push(error.response.data.errors.anexos);
+				_.map(error.response.data.errors.anexos, (el,i) => {
+					if(!errorsAnnexes.includes(el))
+						errorsAnnexes.push(el);
+				})
 			}
 
 			if("descripcion_detallada" in error.response.data.errors){
-				errorsAnnexes.push(error.response.data.errors.descripcion_detallada);
+				_.map(error.response.data.errors.descripcion_detallada, (el,i) => {
+					if(!errorsAnnexes.includes(el))
+						errorsAnnexes.push(el);
+				})
 			}
 
 	    	const errorsTestimony = {
@@ -198,6 +273,7 @@ class FormTestimony extends Component {
 				municipioTestimonio:error.response.data.errors.municipio,
 	        	descripcionLugar:error.response.data.errors.descripcion_lugar,
 	        	tipoTestimonio:error.response.data.errors.tipo,
+	        	observaciones:error.response.data.errors.observaciones,
 	        	annexes:errorsAnnexes
 			}
 
@@ -211,11 +287,9 @@ class FormTestimony extends Component {
     }
 
     render() {
-    	//console.log("FormTestimony", this.state);
-    	const { loading, dataTestimony, stateFormTestimony, dataUser, stateFormUser, activeStep, template, resetForms, formUserErrors, formTestimonyErrors, errors } = this.state;
-
+    	const { loading, dataTestimony, stateFormTestimony, dataUser, stateFormUser, activeStep, template, resetForms, formUserErrors, formTestimonyErrors, errors, showOptionsSave } = this.state;
+    	//console.log("DD",dataTestimony)
     	let templateRender = "";
-    	//console.log(dataTestimony);
     	if(dataTestimony && dataUser && stateFormTestimony && stateFormUser){
 	    	switch(template.toString()){
 				case "1": templateRender = <Template1 testimony={dataTestimony} user={dataUser}/>
@@ -232,7 +306,104 @@ class FormTestimony extends Component {
 		let steps = [];
 		let stepNumber = 1;
 
-		if(this.props.userType == "Administrador"){
+		let formUser = "";
+
+		let observations = "";
+
+		if(this.isUpdate){
+
+			let observationsList = <GeneralMessage
+				info
+				messages={["No se han registrado observaciones"]}
+			/>;
+
+			let observationsListItems = _.filter(this.props.testimony.gestion, (el, i) => {
+				return el.observaciones;
+			})
+
+			if(observationsListItems.length){
+				observationsList = <Item.Group divided>
+					{
+						_.map(observationsListItems, (el, i) => {
+							return <Item key={i}>
+								<Item.Content>
+									<Item.Header>{el.nombres+" "+el.apellidos+" ("+el.rol+")"}</Item.Header>
+									<Item.Meta>
+										<span className='cinema'>{el.fecha}</span>
+									</Item.Meta>
+									<Item.Description>{el.observaciones}</Item.Description>
+								</Item.Content>
+						    </Item>
+						})
+					}
+				</Item.Group>
+			}
+
+			observations = <Segment basic className="grey lighten-5">
+				<Header as="h2">
+					Observaciones del testimonio
+				</Header>
+				{
+					this.props.userType == "Administrador"?
+					<Valid.Input textArea required min_length={30} max_length={500} onChange={(e, {value}) => {
+						this.setState((oldState) => {
+							return {
+								dataTestimony:Object.assign({}, oldState.dataTestimony, {observaciones:value})
+							}
+						})
+					}} 
+					placeholder='Ingrese las observaciones de los cambios que acaba de realizar en el testimonio.' 
+					errors={formTestimonyErrors.observaciones}
+					onFocus={() => {
+						this.setState((oldState) => {
+							return {
+								formTestimonyErrors:Object.assign({},oldState.formTestimonyErrors,{observaciones:[]})
+							}
+						})
+					}}
+					/>
+					:""
+				}
+				{observationsList}
+			</Segment>
+		}
+
+		let formTestimony = <Segment className={activeStep != "testimony"?"d-none":""}>
+	        			<Testimony
+	        				onUpdate={(dataTestimony) => {
+	        						const newData = Object.assign({},this.state.dataTestimony, dataTestimony);
+		        					this.setState({
+		        						dataTestimony:newData,
+		        						template:5,
+		        						formTestimonyErrors:dataTestimony.formErrors,
+		        					});
+
+		        					setTimeout(() => {
+		        						this.setState({
+			        						template:dataTestimony.plantilla
+			        					});
+		        					}, 10);
+		        				}
+		        			}
+	        				onFormStateChange={(state) => {
+	        						this.setState({stateFormTestimony:state})
+		        				}
+		        			}
+		        			resetForm={resetForms}
+		        			formErrors={formTestimonyErrors}
+        				/>
+        				{observations}
+        				<Segment basic textAlign="right" className="no-padding">
+        					{
+        						this.props.userType == "Administrador"?
+        						<Btn.Previous type="button" step="user" onClick={this.setActiveStep}/>
+        						:""
+        					}
+        					<Btn.Next type="button" step="save" disabled={(!stateFormTestimony)} onClick={this.setActiveStep} />
+        				</Segment>
+    				</Segment>
+
+		if(!this.isUpdate && this.props.userType == "Administrador"){
 			steps.push(<Step key="1" completed={stateFormUser} active={(activeStep == "user")} link step="user" onClick={this.setActiveStep}>
 						<Icon name='user circle' />
 						<Step.Content>
@@ -241,37 +412,7 @@ class FormTestimony extends Component {
 						</Step.Content>
 					</Step>);
 
-			stepNumber++;
-		}
-
-		steps.push(<Step key="2" completed={stateFormTestimony} active={(activeStep == "testimony")} disabled={!stateFormUser} link step="testimony" onClick={this.setActiveStep}>
-						<Icon name='book' />
-						<Step.Content>
-							<Step.Title>Paso #{stepNumber}</Step.Title>
-							<Step.Description>Datos del testimonio</Step.Description>
-						</Step.Content>
-					</Step>)
-
-		stepNumber++;
-
-		steps.push(<Step key="3" active={(activeStep == "save")} disabled={!(stateFormTestimony && stateFormUser)} link step="save" onClick={this.setActiveStep}>
-						<Icon name='save' />
-						<Step.Content>
-							<Step.Title>Paso #{stepNumber}</Step.Title>
-							<Step.Description>Vista previa y guardar</Step.Description>
-						</Step.Content>
-					</Step>)
-
-        return (
-        	<Segment basic className="no-padding" loading={loading}>
-        		<GeneralMessage error messages={errors} onDismiss={()=>this.setState({errors:[]})}/>
-        		<Step.Group stackable='tablet' fluid>
-					{steps}
-				</Step.Group>
-
-	        	<Form className="margin-top-20 no-padding">
-
-        			<Segment className={activeStep != "user"?"d-none":""}>
+			formUser = <Segment className={activeStep != "user"?"d-none":""}>
 		        		<User
 		        			noRenderPassword
 		        			noRenderPasswordConfirmation
@@ -296,19 +437,31 @@ class FormTestimony extends Component {
 		        			resetForm={resetForms}
 		        			formErrors={formUserErrors}
 						/>
-						<Segment basic textAlign="right">
+						<Segment basic textAlign="right" className="no-padding">
         					<Btn.Next type="button" step="testimony" disabled={(!stateFormUser)} onClick={this.setActiveStep} />
         				</Segment>
-    				</Segment>
+    				</Segment>;
 
-        			<Segment className={activeStep != "testimony"?"d-none":""}>
+			stepNumber++;
+		}
+
+		if(this.isUpdate){
+			formTestimony = <Segment className={activeStep != "testimony"?"d-none":""}>
 	        			<Testimony
+	        				testimony={this.props.testimony}
 	        				onUpdate={(dataTestimony) => {
+	        						const newData = Object.assign({},this.state.dataTestimony, dataTestimony);
 		        					this.setState({
-		        						dataTestimony:dataTestimony,
-		        						template:dataTestimony.plantilla,
+		        						dataTestimony:newData,
+		        						template:5,
 		        						formTestimonyErrors:dataTestimony.formErrors,
 		        					});
+
+		        					setTimeout(() => {
+		        						this.setState({
+			        						template:dataTestimony.plantilla
+			        					});
+		        					}, 10);
 		        				}
 		        			}
 	        				onFormStateChange={(state) => {
@@ -318,25 +471,110 @@ class FormTestimony extends Component {
 		        			resetForm={resetForms}
 		        			formErrors={formTestimonyErrors}
         				/>
-
-        				<Segment basic textAlign="right">
+        				{observations}
+        				<Segment basic textAlign="right" className="no-padding">
         					{
-        						this.props.userType == "Administrador"?
+        						this.props.userType == "Administrador" && !this.isUpdate?
         						<Btn.Previous type="button" step="user" onClick={this.setActiveStep}/>
         						:""
         					}
         					<Btn.Next type="button" step="save" disabled={(!stateFormTestimony)} onClick={this.setActiveStep} />
         				</Segment>
     				</Segment>
+		}
+
+		steps.push(<Step key="2" completed={stateFormTestimony} active={(activeStep == "testimony")} disabled={!stateFormUser} link step="testimony" onClick={this.setActiveStep}>
+						<Icon name='book' />
+						<Step.Content>
+							<Step.Title>Paso #{stepNumber}</Step.Title>
+							<Step.Description>Datos del testimonio</Step.Description>
+						</Step.Content>
+					</Step>)
+
+		stepNumber++;
+
+		steps.push(<Step key="3" active={(activeStep == "save")} disabled={!(stateFormTestimony && stateFormUser)} link step="save" onClick={this.setActiveStep}>
+						<Icon name='save' />
+						<Step.Content>
+							<Step.Title>Paso #{stepNumber}</Step.Title>
+							<Step.Description>Vista previa y guardar</Step.Description>
+						</Step.Content>
+					</Step>)
+
+		let btnSave = <Btn.Save type="button" onClick={() => this.setState({
+			confirmModalState:true,
+			confirmModalMessage:this.isUpdate?"¿Está seguro de guardar los cambios realizados en el testimonio?":"¿Está seguro de guardar el testimonio diligenciado?",
+			onlySave:true,
+			saveAndApprove:false,
+			saveAndCancel:false,
+		})} />
+        if(this.isUpdate && this.props.user.rol == "Administrador"){
+        	btnSave = <Dropdown
+							    text='Guardar'
+							    color="blue"
+							    floating
+							    labeled
+							    button
+							    icon='save'
+							    className='icon primary'
+							    open={showOptionsSave}
+							    onMouseEnter={() => this.setState({showOptionsSave:true})}
+							    onClick={() => {
+								    	this.setState((oldState) => {
+								    		return {showOptionsSave:!oldState.showOptionsSave}
+								    	});
+								    }
+								}
+							  >
+							    <Dropdown.Menu onMouseLeave={() => this.setState({showOptionsSave:false})}>
+									<Dropdown.Header icon='info circle' content='Seleccione una opción de guardado' />
+									<Dropdown.Divider />
+									<Dropdown.Item onClick={() => this.setState({
+											confirmModalState:true,
+											onlySave:false,
+											saveAndApprove:true,
+											saveAndCancel:false,
+											confirmModalMessage:"¿Está seguro de guardar los cambios realizados y aprobar el testimonio?"
+										})} disabled={this.props.testimony.estado == "Aprobado"} text='1. Guardar y aprobar testimonio' />
+									<Dropdown.Item onClick={() => this.setState({
+											confirmModalState:true,
+											onlySave:false,
+											saveAndApprove:false,
+											saveAndCancel:true,
+											confirmModalMessage:"¿Está seguro de guardar los cambios realizados y cancelar el testimonio?"
+										})} disabled={this.props.testimony.estado == "Cancelado"} text='2. Guardar y cancelar testimonio' />
+									<Dropdown.Item onClick={() => this.setState({
+											confirmModalState:true,
+											onlySave:true,
+											saveAndApprove:false,
+											saveAndCancel:false,
+											confirmModalMessage:"¿Está seguro de guardar los cambios realizados en el testimonio?"
+										})} text='3. Sólo guardar cambios' />
+							    </Dropdown.Menu>
+							  </Dropdown>
+        }
+
+        return (
+        	<Segment basic className="no-padding" loading={loading}>
+        		<GeneralMessage error messages={errors} onDismiss={()=>this.setState({errors:[]})}/>
+        		<Step.Group stackable='tablet' fluid>
+					{steps}
+				</Step.Group>
+
+	        	<Form className="margin-top-20 no-padding">
+
+        			{formUser}
+
+        			{formTestimony}
 
         			<Segment className={activeStep != "save"?"d-none":""}>
         				{templateRender}
         				<Segment basic textAlign="right">
         					<Btn.Previous type="button" step="testimony" onClick={this.setActiveStep}/>
-        					<Btn.Save type="button" onClick={() => this.setState({confirmModalState:true})} />
+        					{btnSave}
         					<Confirm
 						          header='Confirmación'
-						          content="¿Está seguro de guardar el testimonio diligenciado?"
+						          content={this.state.confirmModalMessage}
 						          open={this.state.confirmModalState}
 						          onCancel={() => this.setState({confirmModalState:false})}
 						          onConfirm={this.send}

@@ -25,10 +25,10 @@ const Headers = ({ config, handleSort }) => {
 		    </Table.Header>
 }
 
-const mapStateToProps = (state, config) => {
+const mapStateToProps = (state, {id_table}) => {
 	return {
-		config
-	}
+		config:state.tableJl1805.config_tables[id_table]
+	};
 }
 
 const mapDispatchToProps = (dispatch, props) => {

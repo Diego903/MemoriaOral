@@ -62,6 +62,35 @@ class Data extends Component {
         this.handleSearchServerSelect = this.handleSearchServerSelect.bind(this);        
         this.handleSearchChange = this.handleSearchChange.bind(this);        
         
+    }
+
+    componentWillMount() {
+    	if("initialData" in this.props && this.props.initialData){
+    		const { initialData } = this.props;
+
+    		this.setState({
+	        	titulo:initialData.titulo,
+	        	descripcionCorta:initialData.descripcion_corta,
+	        	fechaEvento:initialData.fecha_evento,
+				municipioTestimonio:initialData.municipio_id,
+	        	descripcionLugar:initialData.descripcion_lugar,
+	        	tipoTestimonio:initialData.tipo,
+	        	nombreMunicipio:initialData.nombreMunicipio,
+				
+				formValidations:{
+		        	titulo:true,
+		        	descripcionCorta:true,
+		        	fechaEvento:true,
+					municipioTestimonio:true,
+		        	descripcionLugar:true,
+		        	tipoTestimonio:true
+				},
+				formIsValid:false,
+	        })
+
+	        this.handleUpdateState();
+	        this.setFormIsValid();
+    	}	    
     }	
 
     componentWillReceiveProps(nextProps) {
@@ -156,6 +185,7 @@ class Data extends Component {
             this.setState({
                 formIsValid:isValid
             })
+
 
             if("onFormStateChange" in this.props && lastFormIsValid != isValid){
             	this.props.onFormStateChange(isValid);

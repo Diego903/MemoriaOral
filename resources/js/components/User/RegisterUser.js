@@ -31,7 +31,7 @@ class RegisterUser extends Component {
         	<Container>
                 <Header as="h2" dividing>Registro de usuarios</Header>
         		<GeneralMessage success messages={success} onDismiss={()=>this.setState({success:[]})}/>
-	        	<FormUser action="register" onActionSuccess={this.onActionSuccess} onCancel={() => {this.props.history.goBack()}}/>
+	        	<FormUser action="register" onActionSuccess={this.onActionSuccess}/>
             </Container>
         );
     }

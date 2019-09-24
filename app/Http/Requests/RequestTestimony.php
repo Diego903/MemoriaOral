@@ -25,7 +25,7 @@ class RequestTestimony extends FormRequest
      */
     public function rules()
     {
-        if(Auth::user()->rol == "Administrador")
+        if(Auth::user()->rol == "Administrador" && !$this->has("id"))
             return array_merge(User::rules($this, false), Testimonio::rules($this));
 
         return Testimonio::rules($this);
@@ -36,7 +36,7 @@ class RequestTestimony extends FormRequest
             "audio.mimetypes" => "El formato del audio enviado es incorrecto, sólo se permite .mp3 y .webm",
             "audio.required_without_all" => "Seleccione por lo menos un anexo",
             "video.mimetypes" => "El formato del video enviado es incorrecto, sólo se permite .mp4 y .ogg",
-            "audio.required_without_all" => "Seleccione por lo menos un anexo",
+            "video.required_without_all" => "Seleccione por lo menos un anexo",
             "descripcion_detallada.required_without_all" => "Seleccione por lo menos un anexo",
             "anexos.required_without_all" => "Seleccione por lo menos un anexo",
         ];

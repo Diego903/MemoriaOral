@@ -1,7 +1,8 @@
 import React, { Component, createRef } from 'react';
 
-import { Segment, Sticky, Divider, Icon, Grid, Button } from 'semantic-ui-react';
-import { Btn } from '../../Helpers/Helpers';
+import { Segment, Sticky, Divider, Icon, Grid, Button, Container } from 'semantic-ui-react';
+import { Btn, Comments } from '../../Helpers/Helpers';
+import params from '../../../config/params';
 
 import Template1 from '../Templates/Template1';
 import Template2 from '../Templates/Template2';
@@ -84,6 +85,33 @@ class Detail extends Component {
         			</Segment>
         		</Sticky>:"";
 
+        const comments = (this.props.testimony.estado == "Aprobado"
+                         ||(this.props.user && this.props.user.rol == "Administrador")
+                         ||(this.props.user && this.props.user.rol == "Usuario" && this.props.user.id == this.props.testimony.usuario_id))?
+                            <Container className="no-padding">
+                                <Segment basic>
+                                    <Comments
+                                        href={params.URL+"/testimony/"+this.props.testimony.id}
+                                    />
+                                </Segment>
+                            </Container>:"";
+
+        let btnUpdate = "";
+
+        if(
+                (this.props.user && this.props.user.rol == "Administrador")
+                || (
+                    this.props.user.rol == "Usuario"
+                    && this.props.testimony.estado == "Registrado"
+                    && this.props.testimony.usuario_id == this.props.user.id
+                )
+            )
+                btnUpdate = <Segment basic>
+                        <Btn.Update floated="right" onClick={() => {
+                            this.props.handleUpdate(this.props.testimony.id)
+                        }}/>
+                    </Segment>
+
         return (
         	<div ref={this.contextRef} style={{marginTop:"-"+this.stickyTop+"px"}}>
         		{navigation}
@@ -91,6 +119,8 @@ class Detail extends Component {
 	            <Segment basic className="padding-top-none padding-left-none padding-right-none" style={{paddingBottom:this.stickyTop+"px"}}>
 	            	<Segment basic className="padding-left-30 margin-bottom-none margin-top-none padding-bottom-none padding-top-none">{btnReturn}</Segment>
 	            	{template}
+                    {btnUpdate}
+                    {comments}
 	            </Segment>
             </div>
         );

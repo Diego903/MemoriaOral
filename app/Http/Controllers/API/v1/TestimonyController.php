@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class TestimonyController extends Controller
 {
@@ -29,85 +30,232 @@ class TestimonyController extends Controller
 
 		$testimony = Testimonio::register($request, $user);
 		DB::commit();
+	} 
+
+	public function update(RequestTestimony $request, Testimonio $testimony)
+	{	
+		DB::beginTransaction();
+		$testimony->updateTestimony($request);
+		DB::commit();
 	}  
 
 	public function list(Request $request){
-		$testimonies = Testimonio::select(
-			"testimonios.*",
-			DB::raw("CONCAT(municipios.nombre,' (',departamentos.nombre,')') as nombreMunicipio")
-		)
-		->join("municipios","testimonios.municipio_id","=","municipios.id")
-		->join("departamentos","municipios.departamento_id","=","departamentos.id");
+		if($request->ajax()){
+			$testimonies = Testimonio::select(
+				"testimonios.*",
+				DB::raw("CONCAT(municipios.nombre,' (',departamentos.nombre,')') as nombreMunicipio")
+			)
+			->join("municipios","testimonios.municipio_id","=","municipios.id")
+			->join("departamentos","municipios.departamento_id","=","departamentos.id");
 
-		if($request->has("texto") && $request->texto){
-			$search = "%".$request->texto."%";
+			if($request->has("texto") && $request->texto){
+				$search = "%".$request->texto."%";
 
-			$testimonies = $testimonies->where(function($q) use ($search){
-				$q->where("testimonios.titulo","like",$search)
-					->orWhere("testimonios.descripcion_corta","like",$search)
-					->orWhere("testimonios.descripcion_detallada","like",$search)
-					->orWhere("testimonios.descripcion_lugar","like",$search);
-			});
-		}
-
-		if($request->has("tipo") && $request->tipo && $request->tipo != "Todos"){
-			$testimonies = $testimonies->where("testimonios.tipo",$request->tipo);
-		}
-
-		if(Auth::check() && Auth::user()->rol == "Administrador" && $request->has("estado") && $request->estado && $request->estado != "Todos"){
-			$testimonies = $testimonies->where("testimonios.estado",$request->estado);
-		}
-
-		if($request->has("municipio") && $request->municipio){
-			$testimonies = $testimonies->where("testimonios.municipio_id",$request->municipio);
-		}
-
-		if($request->has("fechaInicio") && $request->fechaInicio){
-			$testimonies = $testimonies->where("testimonios.fecha_evento",">=",$request->fechaInicio);
-		}
-
-		if($request->has("fechaFin") && $request->fechaFin){
-			$testimonies = $testimonies->where("testimonios.fecha_evento","<=",$request->fechaFin);
-		}
-
-		if(Auth::check() && Auth::user()->rol == "Usuario" && $request->has("mostrar") && $request->mostrar && $request->mostrar == "Mis testimonios"){
-			$testimonies = $testimonies->where("testimonios.usuario_id",Auth::user()->id);
-		}
-
-		if(!Auth::check()){
-			$testimonies = $testimonies->where("testimonios.estado","Aprobado");
-		}
-
-		if($request->has("tipoVista") && $request->tipoVista == "Detalle"){
-			if($request->has("find") && $request->find){
-				$testimonies = $testimonies->where("testimonios.id",$request->find);
+				$testimonies = $testimonies->where(function($q) use ($search){
+					$q->where("testimonios.titulo","like",$search)
+						->orWhere("testimonios.descripcion_corta","like",$search)
+						->orWhere("testimonios.descripcion_detallada","like",$search)
+						->orWhere("testimonios.descripcion_lugar","like",$search);
+				});
 			}
 
-			if($request->has("findNext") && $request->findNext){
-				$testimonies = $testimonies->where("testimonios.id",">", $request->findNext);
+			if($request->has("tipo") && $request->tipo && $request->tipo != "Todos"){
+				$testimonies = $testimonies->where("testimonios.tipo",$request->tipo);
 			}
 
-			if($request->has("findPrevious") && $request->findPrevious){
-				$testimonies = $testimonies->where("testimonios.id","<", $request->findPrevious)
-					->orderBy("testimonios.id", "DESC");
+			if(Auth::check() && Auth::user()->rol == "Administrador" && $request->has("estado") && $request->estado && $request->estado != "Todos"){
+				$testimonies = $testimonies->where("testimonios.estado",$request->estado);
 			}
 
-			$testimonies = $testimonies->first();
-
-			if($testimonies){
-				$testimonies->audio;
-				$testimonies->video;
-				$testimonies->anexos;
+			if($request->has("municipio") && $request->municipio){
+				$testimonies = $testimonies->where("testimonios.municipio_id",$request->municipio);
 			}
 
-			$testimonies = $testimonies?[$testimonies]:[];
+			if($request->has("fechaInicio") && $request->fechaInicio){
+				$testimonies = $testimonies->where("testimonios.fecha_evento",">=",$request->fechaInicio);
+			}
+
+			if($request->has("fechaFin") && $request->fechaFin){
+				$testimonies = $testimonies->where("testimonios.fecha_evento","<=",$request->fechaFin);
+			}
+
+			if(Auth::check() && Auth::user()->rol == "Usuario" && $request->has("mostrar") && $request->mostrar && $request->mostrar == "Mis testimonios"){
+				$testimonies = $testimonies->where("testimonios.usuario_id",Auth::user()->id);
+			}
+
+			if(!Auth::check()){
+				$testimonies = $testimonies->where("testimonios.estado","Aprobado");
+			}
+
+			if(($request->has("find") && $request->find) || ($request->has("tipoVista") && $request->tipoVista == "Detalle")){
+
+				if($request->has("find") && $request->find){
+					$testimonies = $testimonies->where("testimonios.id",$request->find);
+				}
+				
+				if($request->has("findNext") && $request->findNext){
+					$testimonies = $testimonies->where("testimonios.id",">", $request->findNext);
+				}
+
+				if($request->has("findPrevious") && $request->findPrevious){
+					$testimonies = $testimonies->where("testimonios.id","<", $request->findPrevious)
+						->orderBy("testimonios.id", "DESC");
+				}
+
+				$testimonies = $testimonies->first();
+
+				if($testimonies){
+					$testimonies->audio;
+					$testimonies->video;
+					$testimonies->anexos;
+					$testimonies->usuario;
+					$testimonies->gestion;
+				}
+
+				$testimonies = $testimonies?[$testimonies]:[];
+			}else{
+				if($request->has("ids"))
+					$testimonies = $testimonies->whereNotIn("testimonios.id", $request->ids);
+
+				$testimonies = $testimonies->take(8)->get();
+			}
+
+			return $testimonies;
 		}else{
-			$testimonies = $testimonies->whereNotIn("testimonios.id", $request->ids);
+			$rules = [
+				"busqueda" => "nullable|string",
+				"tipo" => "nullable|in:Atentado,Desaparición forzada,Desplazamiento,Muerte,Secuestros,Supervivencia",
+				"municipio" => "nullable|string",
+				"departamento" => "nullable|string",
+				"fechaInicio" => "nullable|date|before:".date("Y-m-d"),
+				"fechaFin" => "nullable|date|before:".date("Y-m-d"),
+				"excepciones" => "nullable|array",
+				"cantidad" => "nullable|integer",
+			];
 
-			$testimonies = $testimonies->take(1)->get();
+			$messages = [
+				"busqueda.string" => "El atributo busqueda sólo permite datos de tipo String.",
+				"tipo.in" => "El atributo tipo sólo admite los siguientes valores: Atentado, Desaparición forzada, Desplazamiento, Muerte, Secuestros o Supervivencia.",
+				"municipio.string" => "El atributo municipio sólo permite datos de tipo String.",
+				"departamento.string" => "El atributo departamento sólo permite datos de tipo String.",
+				"fechaInicio.date" => "El atributo fecha de inicio sólo admite los siguientes tipos de fecha: yyyy-mm-dd, yyyy/mm/dd.",
+				"fechaInicio.before" => "El atributo fecha de inicio sólo admite fechas anteriores a ".date("Y-m-d").".",
+				"fechaFin.date" => "El atributo fecha de fin sólo admite los siguientes tipos de fecha: yyyy-mm-dd, yyyy/mm/dd.",
+				"fechaFin.before" => "El atributo fecha de fin sólo admite fechas anteriores a ".date("Y-m-d").".",
+				"excepciones.array" => "El atributo excepciones sólo admite un dato de tipo array.",
+				"cantidad.integer" => "El atributo cantidad sólo admite valores numéricos de tipo entero."
+			];
+
+			$validator = Validator::make($request->all(), $rules, $messages);
+
+			if ($validator->fails()){
+				return response(["errors" => $validator->errors()], 422);
+			}
+
+			$testimonies = Testimonio::select("testimonios.*")
+			->with(["audio", "video", "anexos", "municipio.departamento"])
+			->join("municipios","testimonios.municipio_id","=","municipios.id")
+			->join("departamentos","municipios.departamento_id","=","departamentos.id")
+			->where("testimonios.estado", "Aprobado");
+
+			if($request->has("busqueda") && $request->busqueda){
+				$search = "%".$request->busqueda."%";
+
+				$testimonies = $testimonies->where(function($q) use ($search){
+					$q->where("testimonios.titulo","like",$search)
+						->orWhere("testimonios.descripcion_corta","like",$search)
+						->orWhere("testimonios.descripcion_detallada","like",$search)
+						->orWhere("testimonios.descripcion_lugar","like",$search);
+				});
+			}
+
+			if($request->has("tipo") && $request->tipo && $request->tipo != "Todos"){
+				$testimonies = $testimonies->where("testimonios.tipo",$request->tipo);
+			}
+
+			if($request->has("municipio") && $request->municipio){
+				$search = "%".$request->municipio."%";
+				$testimonies = $testimonies->where("municipios.nombre","like",$search);
+			}
+
+			if($request->has("departamento") && $request->departamento){
+				$search = "%".$request->departamento."%";
+				$testimonies = $testimonies->where("departamentos.nombre","like",$search);
+			}
+
+			if($request->has("fechaInicio") && $request->fechaInicio){
+				$testimonies = $testimonies->where("testimonios.fecha_evento",">=",$request->fechaInicio);
+			}
+
+			if($request->has("fechaFin") && $request->fechaFin){
+				$testimonies = $testimonies->where("testimonios.fecha_evento","<=",$request->fechaFin);
+			}
+
+			if($request->has("excepciones") && is_array($request->excepciones) && count($request->excepciones))
+				$testimonies = $testimonies->whereNotIn("testimonios.id", $request->excepciones);
+
+			if($request->has("cantidad") && $request->cantidad)
+				$testimonies = $testimonies->take($request->cantidad);
+
+			$testimonies = $testimonies->get();
+
+			$fullData = [];
+
+			foreach ($testimonies as $t) {
+				$data = [
+					"id" => $t->id,
+			        "titulo" => $t->titulo,
+			        "descripcion_corta" => $t->descripcion_corta,
+			        "descripcion_detallada" => $t->descripcion_detallada,
+			        "fecha_evento" => $t->fecha_evento,
+			        "descripcion_lugar" => $t->descripcion_lugar,
+			        "tipo" => $t->tipo,
+			        "municipio" => $t->municipio->nombre,
+			        "departamento" => $t->municipio->departamento->nombre,
+				];				
+
+				$audio = null;
+
+				if($t->audio){
+					$audio = [
+						"nombre" => $t->audio->nombre,
+						"url" => url("api/v1/testimony/annexed/".$t->id."/audio/".$t->audio->id)
+					];
+				}
+
+				$data["audio"] = $audio;
+
+				$video = null;
+
+				if($t->video){
+					$video = [
+						"nombre" => $t->video->nombre,
+						"url" => url("api/v1/testimony/annexed/".$t->id."/video/".$t->video->id)
+					];
+				}
+
+				$data["video"] = $video;
+
+				$anexos = [];
+
+				if($t->anexos && count($t->anexos)){
+					foreach ($t->anexos as $a) {
+						$anexos[] = [
+							"nombre" => $a->nombre,
+							"descripcion" => $a->descripcion,
+							"fecha" => $a->fecha,
+							"url" => url("api/v1/testimony/annexed/".$t->id."/image/".$a->id),
+						];
+					}
+				}
+
+				$data["anexos"] = $anexos;
+
+				$fullData[] = $data;
+			}
+
+			return $fullData;
 		}
-
-		return $testimonies;
 	}
 
 	public function annexed(Request $request, Testimonio $testimony, $type, $idAnnexed){

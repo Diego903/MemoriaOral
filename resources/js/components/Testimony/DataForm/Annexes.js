@@ -1,44 +1,102 @@
 import React, { Component, PropTypes } from 'react';
 
-import { Tab, Segment,Message, Input, Grid, Button, Icon } from 'semantic-ui-react';
+import { Tab, Segment,Message, Input, Grid, Button, Icon, Image } from 'semantic-ui-react';
 
 import { RecordAudio, Btn, Valid } from '../../Helpers/Helpers';
+import params from '../../../config/params';
 
 class Annexes extends Component {
 
     constructor(props) {
         super(props);
 
-        this.state = {
-        	descripcionDetallada:"",
-        	video:"",
-        	audio:"",
-        	audioRecord:"",
-        	annexes:[],//almacena la información de los anexos existentes
-			annexesValues:{},//almacena los valores de los anexos existentes
-			annexesData:{},//almacena la información de las imagenes (nombre, fecha y descripción)
+        let annexes = [];
+        let annexesData = {};
+        let index = 0;        
 
-			itemsWithErros:[],//registra el nombre de los items que tienen errores en la seleccion de anexos
+        if("initialData" in props && props.initialData){
+            const { initialData } = props;
+            if("anexos" in initialData && initialData.anexos.length){
+                _.map(initialData.anexos, (el, i) => {
+                    annexes.push({key:index, name:index, id:el.id});
+                    annexesData["data_"+index] = {
+                        name:el.nombre,
+                        date:el.fecha,
+                        description:el.descripcion,
+                    }
+                    index++;
+                });
+            }
 
-			formValidations:{
-	        	descripcionDetallada:false,
-	        	video:false,
-	        	audio:false,
-	        	audioRecord:false,
-	        	annexes:false
-			},
+            this.state = {
+                descripcionDetallada:initialData.descripcion_detallada,
+                annexes:annexes,
+                annexesData:annexesData,
+                annexesValues:{},
+                video:initialData.video?initialData.video:"",
+                audio:initialData.audio?initialData.audio:"",
+                audioRecord:"",
 
-			formErrors:{	
-	        	descripcionDetallada:[],
-	        	video:[],
-	        	audio:[],
-	        	audioRecord:[],
-	        	annexes:[]
-			},
-            resetForm:false,
-            resetAudio:false,
-            resetAudioRecord:false,
-            errors:[]
+                itemsWithErros:[],
+                
+                formValidations:{
+                    descripcionDetallada:initialData.descripcion_detallada?true:false,
+                    video:initialData.video?true:false,
+                    audio:initialData.audio?true:false,
+                    audioRecord:false,
+                    annexes:annexes.length?true:false
+                },
+                formErrors:{    
+                    descripcionDetallada:[],
+                    video:[],
+                    audio:[],
+                    audioRecord:[],
+                    annexes:[]
+                },
+                resetForm:false,
+                resetAudio:false,
+                resetAudioRecord:false,
+                errors:[],
+
+                deleteVideo:false,
+                deleteAudio:false,
+            }
+        }else{
+
+            this.state = {
+            	descripcionDetallada:"",
+            	video:"",
+            	audio:"",
+            	audioRecord:"",
+            	annexes:[],//almacena la información de los anexos existentes
+    			annexesValues:{},//almacena los valores de los anexos existentes
+    			annexesData:{},//almacena la información de las imagenes (nombre, fecha y descripción)
+
+    			itemsWithErros:[],//registra el nombre de los items que tienen errores en la seleccion de anexos
+
+    			formValidations:{
+    	        	descripcionDetallada:false,
+    	        	video:false,
+    	        	audio:false,
+    	        	audioRecord:false,
+    	        	annexes:false
+    			},
+
+    			formErrors:{	
+    	        	descripcionDetallada:[],
+    	        	video:[],
+    	        	audio:[],
+    	        	audioRecord:[],
+    	        	annexes:[]
+    			},
+                resetForm:false,
+                resetAudio:false,
+                resetAudioRecord:false,
+                errors:[],
+
+                deleteVideo:false,
+                deleteAudio:false
+            }
         }
 
         this.handleInputChange = this.handleInputChange.bind(this);        
@@ -102,7 +160,10 @@ class Annexes extends Component {
 
     componentWillMount() {
     	//se agrega una imagen al iniciar el componente
-        this.addAnnexed();
+        this.addAnnexed();  
+
+        this.handleUpdateState();
+        this.setFormIsValid();
     }
 
     handleInputChange(e, {name}){
@@ -112,7 +173,19 @@ class Annexes extends Component {
     		})
 
     		if(e.target.files[0]){
-    			this.onTrueValid({name:name})
+                if(name == "video"){
+                    this.setState({
+                        deleteVideo:true
+                    })
+                }else if(name == "audio"){
+                    this.setState({
+                        deleteAudio:true
+                    })
+                }
+
+                this.onTrueValid({
+                    name:name
+                });
     		}else{
     			this.onFalseValid({name:name}, false);
     		}
@@ -142,7 +215,9 @@ class Annexes extends Component {
 	        		audioRecord,
 	        		annexes,
 					annexesValues,
-					annexesData
+					annexesData,
+                    deleteVideo,
+                    deleteAudio
 				} = this.state;
 
 				this.props.onUpdate({
@@ -152,7 +227,9 @@ class Annexes extends Component {
 	        		audioRecord,
 	        		annexes,
 					annexesValues,
-					annexesData
+					annexesData,
+                    deleteVideo,
+                    deleteAudio
 				});
 			}
 		}, 10);
@@ -380,8 +457,7 @@ class Annexes extends Component {
     }
 
     render() {
-    	const { descripcionDetallada, resetForm, errors, resetAudio, resetAudioRecord } = this.state;
-
+    	const { descripcionDetallada, resetForm, errors, resetAudio, resetAudioRecord, deleteAudio, deleteVideo } = this.state;
         let errors_ = "";
 
         if(errors.length){
@@ -409,6 +485,42 @@ class Annexes extends Component {
 
     	limiteFechaImagen = yyyy+"-"+mm+"-"+dd;
 
+        let video = "";
+        let audio = "";
+
+        if("initialData" in this.props && this.props.initialData.video && !deleteVideo){
+            let urlVideo = params.URL_API+"testimony/annexed/"+this.props.initialData.id+"/video/"+this.props.initialData.video.id;
+
+            video = <Segment basic>
+                    <video controls width="100%"  controlsList="nodownload">
+                        <source src={urlVideo} type="video/mp4"/>
+                            Su navegador no tiene soporte para elementos de <code>video</code>.
+                    </video>
+                    <p>Puede eliminar el video y seleccionar uno nuevo o eliminar y omitir el envío de video. Si selecciona un video con el selector de archivos, el video actual se eliminará.</p>
+                    <Btn.Delete fluid onClick={() => {
+                            this.setState({deleteVideo:true, video:null})
+                            this.handleUpdateState();
+                        }
+                    }/>
+                </Segment>
+        }
+
+        if("initialData" in this.props && this.props.initialData.audio && !deleteAudio){
+            let urlAudio = params.URL_API+"testimony/annexed/"+this.props.initialData.id+"/audio/"+this.props.initialData.audio.id;
+
+            audio = <Segment>
+                        <audio src={urlAudio} controls controlsList="nodownload" style={{width:"100%"}}>
+                          Su navegador no tiene soporte para elementos de <code>audio</code>.
+                        </audio>
+                        <p>Puede eliminar el audio y seleccionar o grabar uno nuevo, también puede sólo eliminar el audio actual y omitir el envío de audio. Si selecciona un audio con el selector de archivos o si lo graba, el audio actual se eliminará.</p>
+                        <Btn.Delete fluid onClick={() => {
+                                this.setState({deleteAudio:true, audio:null})
+                                this.handleUpdateState();
+                            }
+                        }/>
+                    </Segment>
+        }
+
 		const panes = [
 			{
 				menuItem: { key: 'description', icon: 'align left', content: 'Descripción detallada' },
@@ -433,7 +545,7 @@ class Annexes extends Component {
 		            	onTrueValid={this.onTrueValid}
 		            	onFalseValid={this.onFalseValid}
 		            	onChange={(data, dataRender) => {
-			            		this.setState({descripcionDetallada:data});
+			            		this.setState({descripcionDetallada:data?data:""});
 			            		this.handleUpdateState();
 			            	}
 			            }
@@ -454,12 +566,18 @@ class Annexes extends Component {
 					    	</Segment>
 						}
 					  />
-                	<Grid stackable doubling columns={3}>
+                	<Grid stackable doubling columns={("initialData" in this.props && this.props.initialData)?2:3}>
                 		{
                 			_.map(this.state.annexes, (el, i) => {
+                                let image = "";
+
+                                if("initialData" in this.props && el.id && !this.state.annexesValues['value_'+el.key]){
+                                    image = <Image size="medium" centered src={params.URL_API+"testimony/annexed/"+this.props.initialData.id+"/image/"+el.id} />
+                                }
+
                 				return <Grid.Column key={el.key}>
                 					<Segment>
-					            		<Input type="file">
+					            		<Input type="file" className="w-100">
                                             <Valid.File
                                                 label={"Imagen #"+(i+1)}
                                                 maxSize={1}
@@ -468,9 +586,14 @@ class Annexes extends Component {
                                                 accept=".jpg,.jpeg,.png"
                                              />
 					            		</Input>
+
+                                        <Segment basic>
+                                            {image}
+                                        </Segment>
+
 					            		<Segment basic className="no-padding">
 					            			<Valid.Input value={"data_"+el.key in this.state.annexesData?this.state.annexesData["data_"+el.key].name:""} onTrueValid={this.evaluateStateAnnexes} onFalseValid={this.evaluateStateAnnexes} required min_length={5} max_length={60} name={"name_"+el.key} label="Nombre" placeholder="Ingrese el nombre de la imagen" onChange={this.handleChangeInputDataAnnexed}/>
-					            			<Valid.Input max={limiteFechaImagen} onTrueValid={this.evaluateStateAnnexes} onFalseValid={this.evaluateStateAnnexes} type="date" name={"date_"+el.key} label="Fecha" placeholder="Seleccione la fecha de la imagen" onChange={this.handleChangeInputDataAnnexed}/>
+					            			<Valid.Input value={"data_"+el.key in this.state.annexesData?(this.state.annexesData["data_"+el.key].date?this.state.annexesData["data_"+el.key].date:""):""} max={limiteFechaImagen} onTrueValid={this.evaluateStateAnnexes} onFalseValid={this.evaluateStateAnnexes} type="date" name={"date_"+el.key} label="Fecha" placeholder="Seleccione la fecha de la imagen" onChange={this.handleChangeInputDataAnnexed}/>
 					            			<Valid.Input textArea value={"data_"+el.key in this.state.annexesData?this.state.annexesData["data_"+el.key].description:""} onTrueValid={this.evaluateStateAnnexes} onFalseValid={this.evaluateStateAnnexes} required min_length={30} max_length={500} name={"description_"+el.key} label="Descripción" placeholder="Descripción de la imagen" onChange={this.handleChangeInputDataAnnexed}/>
                                             <Btn.Delete fluid onClick={(e) => {this.removeAnnexed(e, i)}}/>
 					            		</Segment>
@@ -504,6 +627,7 @@ class Annexes extends Component {
                         accept=".mp4,.ogg"
                         reset={resetForm}
                      />
+                     {video}
 				</Tab.Pane>,
 			},
 			{
@@ -558,6 +682,7 @@ class Annexes extends Component {
 					<RecordAudio 
 						onStop={(source) => {
 							this.setState({
+                                deleteAudio:true,
 								audioRecord:source,
                                 resetAudio:true,
                                 audio:""
@@ -578,11 +703,12 @@ class Annexes extends Component {
                             this.setState({
                                 audioRecord:""
                             })
-                            this.onFalseValid({name:"audioRecord"});
+                            this.onFalseValid({name:"audioRecord"}, false);
                             this.handleUpdateState();
                         }}
                         resetForm={resetForm?true:(resetAudioRecord?true:false)}
 					/>
+                    {audio}
 				</Tab.Pane>,
 			}
 		];

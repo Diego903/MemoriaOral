@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import { actLoadTestimonies, actSaveBackup, actRestoreBackup } from '../../redux/testimony/actions';
 import { actAddNotification } from '../../redux/notifications/actions';
 
-import { Segment, Visibility, Sticky, Header, Container, Divider, Icon, Grid, Message, Button, Form } from 'semantic-ui-react';
+import { Segment, Visibility, Sticky, Header, Container, Divider, Icon, Grid, Message, Button, Form, Card } from 'semantic-ui-react';
 import Detail from './ContentList/Detail';
 import Compact from './ContentList/Compact';
+import UpdateTestimony from './UpdateTestimony';
 
 import { SearchServer, GeneralMessage } from '../Helpers/Helpers';
 import params from '../../config/params';
@@ -44,7 +45,7 @@ const tipoVistaTestomonio = [
 
 class Testimony extends React.Component {
 	contextRef = createRef();
-
+	isMounted = false;
 	constructor(props) {
 		super(props);
 
@@ -61,21 +62,43 @@ class Testimony extends React.Component {
 			findNext:null,//para consultar el testimonio que siguiente al actual
 			findPrevious:null,//para consulta el testimonio que antecede al actual
 			loading:false,
-			responseEmpty:false//cuando se ha consultado sin tener resultados
+			responseEmpty:false,//cuando se ha consultado sin tener resultados
+			updateWasOpen:false,
+			activeSticky:(window.innerWidth < 768)?false:true
 		}
 
 		this.handleChangeFilter = this.handleChangeFilter.bind(this);
 		this.loadTestimonies = this.loadTestimonies.bind(this);
 		this.handleMore = this.handleMore.bind(this);
+		this.handleUpdate = this.handleUpdate.bind(this);
 		this.handleReturn = this.handleReturn.bind(this);
 		this.handlePrevious = this.handlePrevious.bind(this);
 		this.handleNext = this.handleNext.bind(this);
 		this.handleUpdateVisibility = this.handleUpdateVisibility.bind(this);
+
+		window.addEventListener("resize", function(){
+			if(this.isMounted){
+				if(window.innerWidth < 768 && this.state.activeSticky){
+					this.setState({
+						activeSticky:false
+					})
+				}else if(window.innerWidth >= 768 && !this.state.activeSticky){
+					this.setState({
+						activeSticky:true
+					})
+				}
+			}
+		})
 	}
 
 	componentWillMount() {
+		this.isMounted = true;
 		//se cargan los testimonios al iniciar el componente
 	    this.loadTestimonies(false);
+	}
+
+	componentWillUnmount() {
+	    this.isMounted = false;
 	}
 
 	/**
@@ -87,13 +110,13 @@ class Testimony extends React.Component {
 	 *                                   se utiliza principalmente para en la vista a detalle se pueda mostrar un mensaje toast cuando
 	 *                                   no hay resultados, sin quitar el testimonio que està en pantalla
 	 */
-	loadTestimonies(reload = true, noReloadOnEmpty = false){
+	loadTestimonies(reload = true, noReloadOnEmpty = false, callback = false){
 		this.setState({loading:true});
 
 		setTimeout(() => {
 			this.props.load(this.state, reload, noReloadOnEmpty)
 			.then((response) => {
-				//si no se encontrarin resultados
+				//si no se encontraron resultados
 				if(!response.data.length && (noReloadOnEmpty || !reload)){
 					this.setState({responseEmpty:true});
 
@@ -113,6 +136,10 @@ class Testimony extends React.Component {
 				this.setState({
 					loading:false
 				});
+
+				if(typeof callback == "function"){
+					callback();
+				}
 			});
 		}, 10);
 		
@@ -148,6 +175,7 @@ class Testimony extends React.Component {
 	 * @param  {[type]} idTestimony identificador del testimonio
 	 */
 	handleMore(idTestimony){
+		animateScroll.scrollToTop();
 		//se cambia el modo de vista a detalle y se establece
 		//el identificador del testimonio en find para que lo busque en la base de datos
 		this.setState({tipoVista:"Detalle", find:idTestimony});
@@ -158,14 +186,39 @@ class Testimony extends React.Component {
 	}
 
 	/**
+	 * Manejador del evento de click en el botòn de actualizar
+	 * @param  {[type]} idTestimony identificador del testimonio
+	 */
+	handleUpdate(idTestimony){
+		this.setState({tipoVista:"Actualizar"})
+		//se cambia el modo de vista a Actualizar y se establece
+		//el identificador del testimonio en find para que lo busque en la base de datos
+		//this.setState({find:idTestimony});
+		//se crea un backup de los datos existentes para poder
+		//cerrar la vista a detalle y tener los datos que existian antes de abrirla
+		/*this.props.saveBackup();
+		this.loadTestimonies(true, false, () => {
+			this.setState({tipoVista:"Actualizar"})
+		});*/
+	}
+
+	/**
 	 * Manejador del evento generado al intentar cerrar la vista a detalle
 	 */
 	handleReturn(){
+		animateScroll.scrollToTop();
+		if(!this.state.updateWasOpen){
+			//se restablecen los datos existentes antes de abrir la vista a detalle
+			this.props.restoreBackup();
+		}
+
 		//se vuelve a la vista compacta y find se asigna en null para que no se consulte nuevamente
-		this.setState({tipoVista:"Compacta", find:null});
-		//se restablecen los datos existentes antes de abrir la vista a detalle
-		this.props.restoreBackup();
-		this.loadTestimonies();
+		if(this.state.updateWasOpen){
+			this.setState({tipoVista:"Compacta", updateWasOpen:false, find:null});
+			this.loadTestimonies();
+		}else{
+			this.setState({tipoVista:"Compacta", find:null});
+		}
 	}
 
 	/**
@@ -236,7 +289,8 @@ class Testimony extends React.Component {
 			tipoVista,
 			mostrar,
 			loading,
-			find
+			find,
+			activeSticky
 		} = this.state;
 
 
@@ -247,20 +301,46 @@ class Testimony extends React.Component {
 				let items = [];
 
 				_.map(this.props.testimonies, (el, i) => {
-					items.push(<Compact key={i} testimony={el} onClickMore={this.handleMore}/>)
+					items.push(<Compact key={i} testimony={el} onClickMore={this.handleMore} onClickUpdate={this.handleUpdate}/>)
 				});
 
-				content = <Grid columns={2} doubling stackable>
+				content = <Card.Group itemsPerRow={2} doubling>
 			    			{items}
-			    		</Grid>
-	    	}else{
+			    		</Card.Group>
+	    	}else if(tipoVista == "Detalle"){
 	    		content = <Detail 
     						testimony={this.props.testimonies[0]}
+    						user={this.props.user}
+    						handleUpdate={(idTestimony) => {
+    							animateScroll.scrollToTop();
+    							this.handleUpdate(idTestimony)
+    						}}
     						returnable={find?true:false}
     						showNavigation={find?false:true}
     						onReturn={this.handleReturn}
     						onPrevious={this.handlePrevious}
     						onNext={this.handleNext}
+    					/>	
+	    	}else if(tipoVista == "Actualizar" && this.props.testimonies.length == 1){
+	    		content = <UpdateTestimony 
+    						testimony={this.props.testimonies[0]}
+    						onReturn={() => {
+    							animateScroll.scrollToTop();
+    							this.setState({tipoVista:"Detalle"})
+    						}}
+    						onUpdateTestimony={(dataTestimony) => {
+    							this.setState({
+    								updateWasOpen:true
+    							});
+
+    							this.props.addNotification({
+									header:"Testimonio actualizado",
+									message:"Los cambios realizados han sido registrados con éxito en el sistema.",
+									showButtonClose:true,
+									closeIn:10
+								})
+    							this.handleMore(dataTestimony.id);
+    						}}
     					/>	
 	    	}
 		}else{
@@ -310,14 +390,14 @@ class Testimony extends React.Component {
 
 			inputMostrar = <Form.Select disabled={find?true:false} name="mostrar" value={mostrar} fluid label="Mostrar" options={mostrarTestomonio} placeholder="Testimonios a mostrar" onChange={this.handleChangeFilter}/>
 		}
-
+		
 	    return (
 	    	<Container>
 	    		{message}
 	    		<div ref={this.contextRef}>
 		    		<Grid divided>
 		    			<Grid.Column mobile={16} tablet={6} computer={5}>
-		    				<Sticky context={this.contextRef}>
+		    				<Sticky context={this.contextRef} active={activeSticky}>
 		    					<Segment disabled={find?true:false} inverted basic className="no-margin gradient-green-blue">
 			    					<Header inverted as="h3">Filtros de búsqueda</Header>
 			    					<Form inverted>
@@ -370,6 +450,7 @@ class Testimony extends React.Component {
 		    			</Grid.Column>
 
 		    			<Grid.Column mobile={16} tablet={10} computer={11}>
+				    		
 		    				<Visibility
 				              	once={false}
 				    			onUpdate={this.handleUpdateVisibility}
@@ -389,6 +470,7 @@ class Testimony extends React.Component {
 const mapStateToProps = (state) => {
 	return {
 		userType:state.app.user?state.app.user.rol:false,
+		user:state.app.userAuth?state.app.user:false,
 		testimonies:state.testimony.testimonies
 	}
 }

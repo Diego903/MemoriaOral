@@ -103,7 +103,7 @@ class PasswordResetRequest extends React.Component{
 	render(){
 		const {identificationNumber, formIsValid, loadingForm} = this.state;
 		return (
-			<Grid centered>
+			<Grid centered className="margin-top-50 margin-bottom-50">
 				<Grid.Column computer={5} tablet={10} mobile={14}>
 					<Form loading={loadingForm}>
 						<Valid.Input 

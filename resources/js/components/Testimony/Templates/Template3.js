@@ -61,7 +61,7 @@ class Template3 extends Component {
         }else{
             if(testimony.annexes && testimony.annexes.length){
                 _.map(testimony.annexes, (el, i) => {
-                    if(testimony.annexesValues["value_"+el.key]){
+                    if(testimony.annexesValues["value_"+el.key] || "id" in el){
                         const existsData = ("data_"+el.key in testimony.annexesData)?true:false;
                         const name = existsData?testimony.annexesData["data_"+el.key].name:"";
                         let date = existsData?testimony.annexesData["data_"+el.key].date:"";
@@ -72,8 +72,15 @@ class Template3 extends Component {
                                 +" del "+date.split("-")[0];
                         }
 
+                        let url = "";
+                        if(testimony.annexesValues["value_"+el.key]){
+                            url = URL.createObjectURL(testimony.annexesValues["value_"+el.key]);
+                        }else{
+                            url = params.URL_API+"testimony/annexed/"+testimony.id+"/image/"+el.id
+                        }
+
                         images.push({
-                            url:URL.createObjectURL(testimony.annexesValues["value_"+el.key]),
+                            url,
                             title:name,
                             date:date,
                             description:description
@@ -104,7 +111,11 @@ class Template3 extends Component {
                 url = params.URL_API+"testimony/annexed/"+testimony.id+"/video/"+testimony.video.id;
         }else{
             if(testimony.video){
-                url = URL.createObjectURL(testimony.video);
+                if(testimony.video.constructor.name == "Object"){
+                    url = params.URL_API+"testimony/annexed/"+testimony.id+"/video/"+testimony.video.id;
+                }else{
+                    url = URL.createObjectURL(testimony.video);
+                }
             }
         }
 
@@ -131,7 +142,11 @@ class Template3 extends Component {
                 url = params.URL_API+"testimony/annexed/"+testimony.id+"/audio/"+testimony.audio.id;
         }else{
             if(testimony.audio || testimony.audioRecord){
-                url = URL.createObjectURL(testimony.audio?testimony.audio:testimony.audioRecord);
+                if(testimony.audio.constructor.name == "Object"){
+                    url = params.URL_API+"testimony/annexed/"+testimony.id+"/audio/"+testimony.audio.id;
+                }else{
+                    url = URL.createObjectURL(testimony.audio?testimony.audio:testimony.audioRecord);
+                }
             }
         }
 

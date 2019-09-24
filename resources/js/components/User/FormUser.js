@@ -26,7 +26,6 @@ class FormUser extends Component {
         };
 
         this.handleSubmitFormRegister = this.handleSubmitFormRegister.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
     }
 	
 	/*==============================================
@@ -73,8 +72,7 @@ class FormUser extends Component {
 	    		if(response.status == 200){                  			
 					this.setState({			
 						loading:false,
-						errors:{},
-						formIsValid:false
+						errors:{}
 					})
 
 					if("onActionSuccess" in this.props){
@@ -99,12 +97,6 @@ class FormUser extends Component {
 	    	});
     		
     	}    	
-    }
-
-    handleCancel(){
-    	if('onCancel' in this.props){
-    		this.props.onCancel();
-    	}
     }
 
     render() {
@@ -147,7 +139,6 @@ class FormUser extends Component {
 								</Modal.Actions>
 							</Modal>:""
 						}
-						<Btn.Cancel onClick={this.handleCancel}/>
 						<Btn.Save disabled={(!formIsValid || loading)} onClick={this.handleSubmitFormRegister}/>		                   
 		            </Grid.Column>
 	            </Grid>  	            

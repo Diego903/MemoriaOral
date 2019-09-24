@@ -16,7 +16,8 @@ const actLoadTestimonies = (data, reload = true, noReloadOnEmpty = false) => {
 
         let ids = [];
 
-        _.map(testimonies, (el, i) => ids.push(el.id));
+        if(!reload)
+            _.map(testimonies, (el, i) => ids.push(el.id));
 
         return axios.post(params.URL_API+'testimony/list',{
         	texto:data.texto,

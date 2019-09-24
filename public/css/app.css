@@ -3495,6 +3495,26 @@ FIN CURSOR
     background: linear-gradient(60deg,  rgba(33,186,69,1) 0%,rgba(0,120,206,1) 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#88b1cc', endColorstr='#0078ce',GradientType=1 ) !important; /* IE6-9 fallback on horizontal gradient */
 
+}
+
+iframe.fb_iframe_widget_lift{
+    width: 100% !important;
+}
+
+.text-lh-4rem .text{
+    line-height: 4rem;
+}
+
+.navbar_header{
+    position: fixed !important;
+    z-index: 10001 !important;
+    border-bottom: 2px solid #01579b !important;
+    width: 100%;
+    top: 0px !important;
+}
+
+.w-100{
+    width: 100% !important;
 }.svg_departamento{
 	cursor: pointer;
 	transition: .3s;

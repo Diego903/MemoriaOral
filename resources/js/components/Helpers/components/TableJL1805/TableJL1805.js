@@ -14,10 +14,11 @@ import Headers from './Headers';
 
 import axios from 'axios';
 
-const TableJL1805 = ({id_table, config, initTable}) => {
+const TableJL1805 = ({id_table, config}) => {
 		if(typeof config == 'undefined'){
-			initTable();
-			return '';
+			//return <p>No se ha encontrado información para configurar de la tabla especificada</p>;
+			//console.warn(id_table, "No se ha encontrado información para configurar de la tabla especificada");
+			return "";
 		}else{
 		    return (
 				<Segment basic>
@@ -26,17 +27,17 @@ const TableJL1805 = ({id_table, config, initTable}) => {
 						<Loader>Cargando ...</Loader>
 					</Dimmer>
 
-					<Helpers {...config} id_table={id_table}/>
+					<Helpers id_table={id_table}/>
 
 					<Segment basic style={ {padding:'0px'} }>
 						<Table {...config.props}>
-							<Headers {...config} id_table={id_table}/>
+							<Headers id_table={id_table}/>
 
 							<Table.Body>
-								<Body {...config}/>
+								<Body id_table={id_table}/>
 							</Table.Body>
 
-							<Pagination {...config} id_table={id_table}/>
+							<Pagination id_table={id_table}/>
 						</Table>
 					</Segment>
 				</Segment>
@@ -53,9 +54,6 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch, props) => {
 	return {
-		initTable:() => {
-			dispatch(actInitTableJL1805(props.id, props.config));
-		}
 	}
 }
 

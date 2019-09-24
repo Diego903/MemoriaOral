@@ -52,7 +52,7 @@ class User extends Component {
 			certificadoVictima:"",
 			consentimientoInformado:"",
 			terminos_condiciones:("userId" in this.props && this.props.userId)?true:false,
-			victima_minas:("userId" in this.props && this.props.userId)?true:false,
+			victima_minas:false,
 			formValidations:{
 	        	numero_identificacion:stateFormValidations,
 	        	nombres:stateFormValidations,
@@ -143,7 +143,7 @@ class User extends Component {
         	.then(
         		(response) => {        			
         			this.setState({
-		        		formIsValid:true,
+		        		//formIsValid:true,
 		        		loading:false,
 		        		numero_identificacion:response.data.numero_identificacion?response.data.numero_identificacion:"",
 		        		nombres:response.data.nombres?response.data.nombres:"",
@@ -154,11 +154,13 @@ class User extends Component {
 		        		telefono:response.data.telefono?response.data.telefono:"",
 		        		nivel_estudio:response.data.nivel_estudio?response.data.nivel_estudio:"",
 		        		municipio_id:response.data.municipio_id?response.data.municipio_id:"",
-		        		direccion:response.data.direccion?response.data.direccion:""
-		        	});
+		        		direccion:response.data.direccion?response.data.direccion:"",
+		        		victima_minas:response.data.victima_minas?true:false
+		        	}, () => this.handleUpdateState(), this.setFormIsValid());
+
         		}, 
         		(error) => {        			
-        			console.log(error);
+        			//console.log(error);
         			this.setState({
 		        		loading:false
 		        	});
@@ -180,6 +182,8 @@ class User extends Component {
 					email,
 					telefono,
 					nivel_estudio,
+					password,
+					password_confirmation,
 					municipio_id,
 					direccion,
 					certificadoVictima,
@@ -198,6 +202,8 @@ class User extends Component {
 					email,
 					telefono,
 					nivel_estudio,
+					password,
+					password_confirmation,
 					municipio_id,
 					direccion,
 					certificadoVictima,
@@ -257,15 +263,17 @@ class User extends Component {
     =========================================================*/    
 
     setFormIsValid(){
+    	//console.log(this.state.formValidations);
         setTimeout(() => {
         	const lastFormIsValid = this.state.formIsValid;
+        	//console.log("lastFormIsValid", lastFormIsValid);
         	const exceptions = ["victima_minas"];
             let isValid = true;
             _.map(this.state.formValidations, (value, key) => {
             	if(exceptions.indexOf(key) < 0)
                 	if(!value)isValid = false;
             });
-
+            //console.log("isValid", isValid);
             this.setState({
                 formIsValid:isValid
             })
@@ -309,10 +317,9 @@ class User extends Component {
 		this.setState({[input.name]:null})
 		this.onFalseValid(input);
 	}
-	
 
     render() {
-    	const {numero_identificacion, nombres, apellidos, email,genero,password,password_confirmation,telefono,nivel_estudio,fecha_nacimiento,direccion,municipio_id,terminos_condiciones,loading, formIsValid, formErrors, success, resetFiles } = this.state;
+    	const {numero_identificacion, nombres, apellidos, email,genero,password,password_confirmation,telefono,nivel_estudio,fecha_nacimiento,direccion,municipio_id,terminos_condiciones,loading, formIsValid, formErrors, success, resetFiles, victima_minas } = this.state;
     	
     	let limiteFechaNacimiento = new Date();
     	limiteFechaNacimiento.setFullYear(limiteFechaNacimiento.getFullYear() - 18);
@@ -360,9 +367,9 @@ class User extends Component {
 	    let fielterminos_condiciones = <Grid.Column width={16}>			               					   
 						  					<Form.Checkbox name="terminos_condiciones" inline label='Estoy de acuerdo con los Términos y Condiciones. Vea términos y condiciones con el botón [ Ver términos y condiciones ]' required onChange={this.handleInputChange}/>
 		            					</Grid.Column>;
-	                
+
 	    let fieldVictimaMinas = resetFiles?"":<Grid.Column computer={16}>
-						  					<Form.Checkbox name="victima_minas" inline label='¿Ha sido víctima de minas antipersona?' onChange={this.handleInputChange}/>
+						  					<Form.Checkbox name="victima_minas" inline label='¿Ha sido víctima de minas antipersona?' onChange={this.handleInputChange} checked={victima_minas}/>
 		            					</Grid.Column>;
 	                
 	    let fieldCertificadoVictima = <Grid.Column className="field required padding-top-none margin-top-none">
@@ -373,7 +380,6 @@ class User extends Component {
 	    										onChange={this.handleInputChange} 
 	    										accept=".jpg,.jpeg,.png,.pdf"
 	    										onFocus={this.handleFocus} 
-	    										required
 	    										errors={formErrors.certificadoVictima}
 	    										reset={resetFiles}
 	    									 />
@@ -397,8 +403,8 @@ class User extends Component {
 	    	fieldPassword = "";
 	    	fieldpassword_confirmation="";
 	    	fielterminos_condiciones="";
-	    	fieldVictimaMinas = "";
-	    	fieldCertificadoVictima = "";
+	    	//fieldVictimaMinas = "";
+	    	//fieldCertificadoVictima = "";
 	    }
 
 	    if(!("renderConsentimientoInformado" in this.props)) fieldConsentimientoInformado = "";

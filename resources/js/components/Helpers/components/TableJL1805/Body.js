@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 
 import { Table } from 'semantic-ui-react';
 
-const Body = ({rows_current, headers, data, assignValueCell, assignRow, assignCell}) => {
+const Body = ({config}) => {
+	const {rows_current, headers, data, assignValueCell, assignRow, assignCell} = config;
 	//si existen datos en la variable data
     if(data && data.length){
     	let cont = 0;
@@ -29,8 +30,10 @@ const Body = ({rows_current, headers, data, assignValueCell, assignRow, assignCe
 	</Table.Row>
 }
 
-const mapStateToProps = (state, props) => {
-	return { props }
+const mapStateToProps = (state, {id_table}) => {
+	return {
+		config:state.tableJl1805.config_tables[id_table]
+	};
 }
 
 const mapDispatchToProps = (dispatch, props) => {

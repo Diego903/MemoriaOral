@@ -5,7 +5,8 @@ import { actChangePageTableJL1805 } from '../../../../redux/tableJL1805/actions'
 
 import { Table, Menu, Icon, Pagination as Pag } from 'semantic-ui-react';
 
-const Pagination = ({rows_current, current_page, pagination, pagination_config, headers, full_data_length, handleChangePage, props}) => {
+const Pagination = ({config, handleChangePage}) => {
+	const {rows_current, current_page, pagination, pagination_config, headers, full_data_length} = config;
 	if(pagination){
 		//cantidad de paginas que debe tener la tabla
 		const pages = Math.ceil(full_data_length/rows_current);
@@ -32,10 +33,10 @@ const Pagination = ({rows_current, current_page, pagination, pagination_config, 
 	return <Table.Footer/>;
 }
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state, {id_table}) => {
 	return {
-		props
-	}
+		config:state.tableJl1805.config_tables[id_table]
+	};
 }
 
 const mapDispatchToProps = (dispatch, props) => {

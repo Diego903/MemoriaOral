@@ -56,6 +56,7 @@ Route::prefix('v1')->group(function(){
     Route::prefix('testimony')->group(function(){
         Route::middleware('auth:api')->group(function(){
             Route::post('register', 'API\v1\TestimonyController@register');
+            Route::post('update/{testimony}', 'API\v1\TestimonyController@update');
         });
         Route::post('list', 'API\v1\TestimonyController@list');
         Route::get('annexed/{testimony}/{type}/{idAnnexed}', 'API\v1\TestimonyController@annexed');

@@ -8,7 +8,6 @@ import { Form, Container, Grid } from 'semantic-ui-react';
 const Helpers = ({config, handleRows, handleSearchChange}) => {
 	
 	const { rows, rows_current, search, load_search, search_value } = config;
-
 	let rows_select = '';
 
 	//define que mostrar en la opcion de cantidad de filas
@@ -38,8 +37,10 @@ const Helpers = ({config, handleRows, handleSearchChange}) => {
 		</Container>
 }
 
-const mapStateToProps = (state, config) => {
-	return {config};
+const mapStateToProps = (state, {id_table}) => {
+	return {
+		config:state.tableJl1805.config_tables[id_table]
+	};
 }
 
 const mapDispatchToProps = (dispatch, props) => {

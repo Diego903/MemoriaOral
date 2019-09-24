@@ -19,23 +19,23 @@ const actUpdateTableJL1805 = (id_table) => {
 }
 
 const actSortTableJL1805 = (id_table, clicked_column) => {
-    showLoadTable(id_table)();
-    return sortTable(id_table, clicked_column, hideLoadTable(id_table));
+    //showLoadTable(id_table);
+    return sortTable(id_table, clicked_column, () => hideLoadTable(id_table));
 }
 
 const actSearchTableJL1805 = (id_table, search_value) => {
-    showLoadSearch(id_table)();
-    return searchTable(id_table, search_value, hideLoadSearch(id_table));
+    //showLoadSearch(id_table);
+    return searchTable(id_table, search_value, () => hideLoadSearch(id_table));
 }
 
 const actChangeRowsTableJL1805 = (id_table, rows_current) => {
-    showLoadTable(id_table)();
-    return changeCurrentRows(id_table, rows_current, hideLoadTable(id_table));
+    //showLoadTable(id_table);
+    return changeCurrentRows(id_table, rows_current, () => hideLoadTable(id_table));
 }
 
 const actChangePageTableJL1805 = (id_table, page) => {
-    showLoadTable(id_table)();
-    return changePage(id_table, page, hideLoadTable(id_table));
+    //showLoadTable(id_table);
+    return changePage(id_table, page, () => hideLoadTable(id_table));
 }
 
 export { actInitTableJL1805, actUpdateTableJL1805, actSortTableJL1805, actSearchTableJL1805, actChangeRowsTableJL1805, actChangePageTableJL1805 };
@@ -398,12 +398,10 @@ export { actInitTableJL1805, actUpdateTableJL1805, actSortTableJL1805, actSearch
          * @return {Function}        Función que despacha la acción para cambiar el estado
          */
         const showLoadSearch = (id_table) => {
-            return () => {
-                store.dispatch({
+            return store.dispatch({
                     type:types.LOAD_SEARCH,
                     id_table
                 });
-            }
         }
 
         /**
@@ -413,12 +411,10 @@ export { actInitTableJL1805, actUpdateTableJL1805, actSortTableJL1805, actSearch
          * @return {Function}        Función que despacha la acción para cambiar el estado
          */        
         const hideLoadSearch = (id_table) => {
-            return () => {
-                store.dispatch({
+            return store.dispatch({
                     type:types.NO_LOAD_SEARCH,
                     id_table
                 });
-            }
         }
         
         /**
@@ -428,12 +424,10 @@ export { actInitTableJL1805, actUpdateTableJL1805, actSortTableJL1805, actSearch
          * @return {Function}        Función que despacha la acción para cambiar el estado
          */
         const showLoadTable = (id_table) => {
-            return () => {
-                store.dispatch({
+            return store.dispatch({
                     type:types.LOAD_TABLE,
                     id_table
                 });
-            }
         }
         
         /**
@@ -443,12 +437,10 @@ export { actInitTableJL1805, actUpdateTableJL1805, actSortTableJL1805, actSearch
          * @return {Function}        Función que despacha la acción para cambiar el estado
          */
         const hideLoadTable = (id_table) => {
-            return () => {
-                store.dispatch({
+            return store.dispatch({
                     type:types.NO_LOAD_TABLE,
                     id_table
                 });
-            }
         }
 
 

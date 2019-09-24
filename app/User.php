@@ -51,6 +51,10 @@ class User extends Authenticatable
         return $this->belongsTo(Municipio::class);
     }
 
+    public function certificadoVictima(){
+        return $this->belongsTo(Archivo::class, "certificado_victima_id");
+    }
+
     public static function rules(Request $request, $password = true){
         $rules = [
             "numero_identificacion"=>"required|min:6|max:10|digits_between:6,10|unique:users,numero_identificacion",
@@ -62,7 +66,7 @@ class User extends Authenticatable
             "fecha_nacimiento"=>"required|Date|before_or_equal:".date("Y-m-d",strtotime("-18 Years")),
             "direccion"=>"required|min:3|max:60",
             "municipio_id"=>"required",
-            "certificado_victima"=>"required|file|max:1024|mimes:jpg,jpeg,png,pdf",
+            "certificado_victima"=>"file|max:1024|mimes:jpg,jpeg,png,pdf",
         ];
 
         //si el usuario es registrado por un administrador
@@ -103,31 +107,33 @@ class User extends Authenticatable
 
         $user->save();
 
-        //almacenamiento de certificado de víctima del conflicto
-        $fileCertificadoVictima = $request->file('certificado_victima');     
+        if($request->hasFile('certificado_victima')){
+            //almacenamiento de certificado de víctima del conflicto
+            $fileCertificadoVictima = $request->file('certificado_victima');     
 
-        $archivoCertificadoVictima = new Archivo();
+            $archivoCertificadoVictima = new Archivo();
 
-        $archivoCertificadoVictima->fill([
-            "nombre" => $fileCertificadoVictima->getClientOriginalName(),
-            "nombre_archivo" => $fileCertificadoVictima->getClientOriginalName(),
-            "ubicacion" => "empty",
-            "metadatos" => null,        
-        ]);
+            $archivoCertificadoVictima->fill([
+                "nombre" => $fileCertificadoVictima->getClientOriginalName(),
+                "nombre_archivo" => $fileCertificadoVictima->getClientOriginalName(),
+                "ubicacion" => "empty",
+                "metadatos" => null,        
+            ]);
 
-        $archivoCertificadoVictima->save();
+            $archivoCertificadoVictima->save();
 
-        $ubicacion = "private/users/victim_certificates/".$user->id."/".$archivoCertificadoVictima->id;
+            $ubicacion = "app/private/users/victim_certificates/".$user->id."/".$archivoCertificadoVictima->id;
 
-        $archivoCertificadoVictima->ubicacion = $ubicacion;
-        $archivoCertificadoVictima->save();
-        $fileCertificadoVictima->move(storage_path($ubicacion), $fileCertificadoVictima->getClientOriginalName());
+            $archivoCertificadoVictima->ubicacion = $ubicacion;
+            $archivoCertificadoVictima->save();
+            $fileCertificadoVictima->move(storage_path($ubicacion), $fileCertificadoVictima->getClientOriginalName());
 
-        $user->certificado_victima_id = $archivoCertificadoVictima->id;
-        $user->save();
+            $user->certificado_victima_id = $archivoCertificadoVictima->id;
+            $user->save();
+        }
 
         //si es administrador se debe subir el consentimiento informado
-        if(Auth::user()->rol == "Administrador"){
+        if(Auth::check() && Auth::user()->rol == "Administrador"){
             $fileConsentimientoInformado = $request->file('consentimiento_informado');     
 
             $archivoConsentimientoInformado = new Archivo();
@@ -141,7 +147,7 @@ class User extends Authenticatable
 
             $archivoConsentimientoInformado->save();
 
-            $ubicacion = "private/users/informed_consent/".$user->id."/".$archivoConsentimientoInformado->id;
+            $ubicacion = "app/private/users/informed_consent/".$user->id."/".$archivoConsentimientoInformado->id;
 
             $archivoConsentimientoInformado->ubicacion = $ubicacion;
             $archivoConsentimientoInformado->save();

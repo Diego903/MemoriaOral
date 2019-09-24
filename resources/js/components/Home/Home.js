@@ -15,10 +15,14 @@ class Home extends Component
         };
     }
 
+    componentWillMount() {
+        
+    } 
+
     render()
     {
         return (
-            <Segment basic style={{padding:"0px"}}>
+            <Segment basic style={{padding:"0px", marginTop:"-30px"}}>
                 <Slider autoplay={10000}>
                     <div className="slider-content" style={{ background: "url('https://cdn.wallpapersafari.com/47/2/yU7WfC.jpg') no-repeat center center" }}>
                         <div className="inner">
@@ -48,7 +52,6 @@ class Home extends Component
 
                 <Container style={{marginTop:"2rem"}}>
                     <Header>Inicio del sistema</Header>
-
                     <Grid>
                         <Grid.Column computer={12} tablet={10} mobile={16}>
                             <p>

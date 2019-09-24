@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Accordion, Segment, Header, Container, Divider, Card, Icon, Grid, Message, Button, Form,TextArea, Image} from 'semantic-ui-react';
 import config_routes from '../../config/routes';
-import {Btn, Valid,SearchServer} from '../Helpers/Helpers';
+import {Btn, Valid,SearchServer, Comments} from '../Helpers/Helpers';
 import GeneralMessage from '../Helpers/components/GeneralMessage';
 import params from '../../config/params';
 import { actList } from '../../redux/StorieConflict/actions';
@@ -154,15 +154,21 @@ class StorieConflict extends React.Component {
 
 					let opcionActualizar = "";
 
+					const storieComments = <Comments
+										startHidden
+                                        href={params.URL+"/storie-conflict/"+el.id}
+                                    />
+
 					if(this.props.userType == "Administrador"){
 						opcionActualizar = <Card fluid>
 							<Card.Content>
 								<Card.Header content={el.titulo} />
 								<Card.Meta content={el.ubicacion} />
-								<Card.Meta content={el.texto} />
+								{el.texto}
 								{annexedRender}
 							</Card.Content>
 							<Card.Content extra>	                      	                     		               
+								{storieComments}
 								<Button onClick={() => this.props.history.push("/storie-conflict/update/"+el.id)} primary type="button" className="margin-left-10" floated="right">Actualizar</Button>		                	
 							</Card.Content>
 						</Card>
@@ -172,8 +178,12 @@ class StorieConflict extends React.Component {
 							<Card.Content>
 								<Card.Header content={el.titulo} />
 								<Card.Meta content={el.ubicacion} />
-								<Card.Meta content={el.texto} />
+								{el.texto}
 								{annexedRender}
+							</Card.Content>
+
+							<Card.Content extra>
+								{storieComments}
 							</Card.Content>
 						</Card>
 

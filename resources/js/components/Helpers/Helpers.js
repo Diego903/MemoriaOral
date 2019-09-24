@@ -7,6 +7,7 @@ import SearchServer from './components/SearchServer';
 import Gallery from './components/Gallery';
 import ImageCheck from './components/ImageCheck';
 import RecordAudio from './components/RecordAudio';
+import Comments from './components/Comments';
 
 const getPropertyObject = (object_, property, alternative) => {
 	if(property in object_){
@@ -29,5 +30,6 @@ export {
 	Gallery,
 	ImageCheck,
 	RecordAudio,
+	Comments,
 	getPropertyObject
 }

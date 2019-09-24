@@ -22,7 +22,7 @@ class Testimony extends Component {
 			municipioTestimonio:null,
         	descripcionLugar:"",
         	tipoTestimonio:"",
-        	plantilla:1,
+        	plantilla:"testimony" in this.props?this.props.testimony.plantilla:1,
         	nombreMunicipio:"",
 			
 			descripcionDetallada:"",
@@ -32,6 +32,9 @@ class Testimony extends Component {
         	annexes:[],//almacena la información de los anexos existentes
 			annexesValues:{},//almacena los valores de los anexos existentes
 			annexesData:{},//almacena la información de las imagenes (nombre, fecha y descripción)
+
+        	deleteVideo:false,//determina si se debe eliminar el video almacenado en el servidor
+        	deleteAudio:false,//determina si se debe eliminar el audio almacenado en el servidor
 
 			dataIsValid:false,
 			annexesIsValid:false,
@@ -47,9 +50,7 @@ class Testimony extends Component {
         };
 
         this.handleUpdateState = this.handleUpdateState.bind(this);        
-        this.handleFormUpdateState = this.handleFormUpdateState.bind(this);        
-        
-        
+        this.handleFormUpdateState = this.handleFormUpdateState.bind(this);
     }	
 
     componentWillReceiveProps(nextProps) {
@@ -66,7 +67,9 @@ class Testimony extends Component {
 				
 				descripcionDetallada:"",
 	        	video:null,
+	        	deleteVideo:false,
 	        	audio:null,
+	        	deleteAudio:false,
 	        	audioRecord:null,
 	        	annexes:[],//almacena la información de los anexos existentes
 				annexesValues:{},//almacena los valores de los anexos existentes
@@ -110,7 +113,9 @@ class Testimony extends Component {
 					audio,
 					audioRecord,
 					plantilla,
-					formErrors
+					formErrors,
+					deleteAudio,
+					deleteVideo
 				} = this.state;
 
 				this.props.onUpdate({
@@ -129,7 +134,9 @@ class Testimony extends Component {
 					audio,
 					audioRecord,
 					plantilla,
-					formErrors
+					formErrors,
+					deleteAudio,
+					deleteVideo
 				});
 			}
 		}, 10);
@@ -139,7 +146,6 @@ class Testimony extends Component {
     handleFormUpdateState(){
         setTimeout(() => {
         	const {dataIsValid, annexesIsValid} = this.state;
-
             if("onFormStateChange" in this.props){
             	this.props.onFormStateChange((dataIsValid && annexesIsValid)?true:false);
             }
@@ -152,6 +158,7 @@ class Testimony extends Component {
         return (
         	<Segment basic className="no-padding no-margin">
 	        	<Data  
+	        		initialData={"testimony" in this.props?this.props.testimony:false}
         	    	onFormStateChange={(state) => {
             	    	 	this.setState({dataIsValid:state});
             	    	 	this.handleFormUpdateState();
@@ -170,6 +177,7 @@ class Testimony extends Component {
 	        	<Grid>	               
 	                <Grid.Column mobile={16} tablet={16} computer={16}>
 	            	    <Annexes 
+	            	    	initialData={"testimony" in this.props?this.props.testimony:false}
 	            	    	onFormStateChange={(state) => {
 		            	    	 	this.setState({annexesIsValid:state});
 		            	    	 	this.handleFormUpdateState();

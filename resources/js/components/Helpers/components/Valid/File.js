@@ -85,7 +85,7 @@ class File extends Component {
             });
 		}
 
-        let inputFIle = <Input type="file" name={name} onChange={this.handleInputChange} onFocus={this.handleFocus} accept={accept}/>
+        let inputFIle = <Input type="file" name={name} onChange={this.handleInputChange} onFocus={this.handleFocus} accept={accept} fluid/>
 
         if(reset){
             inputFIle = "";

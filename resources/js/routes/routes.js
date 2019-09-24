@@ -31,6 +31,7 @@ import E404 from '../components/Errors/E404';
 import Footer from '../components/Footer/Footer';
 
 import { Notifications } from '../components/Helpers/Helpers';
+import Allies from '../components/Allies/Allies';
 
 /*----------  Componentes del sistema  ----------*/
 
@@ -134,7 +135,7 @@ class Routes extends Component
     {
         const { app } = this.state;
         return <BrowserRouter>
-            <div className="">
+            <div className="margin-top-50 padding-top-50">
                 <Header/>
                 <Switch>
                     <FreeRoute exact path={config_routes.home.path} component={Home} />
@@ -159,6 +160,7 @@ class Routes extends Component
                     <FreeRoute component={E404} />
                 </Switch>
                 <Notifications/>
+                <Allies/>
             </div>
             <Footer/>
         </BrowserRouter>;    

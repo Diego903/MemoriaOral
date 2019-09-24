@@ -116,7 +116,7 @@ class Login extends React.Component {
         const {username, password, remember, loading, error} = this.state;
 
         return (
-            <Container>
+            <Container className="margin-top-50">
         	<Grid centered>
             	<Grid.Column computer={6} tablet={10} mobile={14}>
                   	<Form loading={loading}>

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { Grid, Button, Menu, Segment, Icon, Image, Dropdown, Divider, Responsive } from 'semantic-ui-react'
+import { Grid, Button, Menu, Segment, Header as H, Icon, Image, Dropdown, Divider, Responsive } from 'semantic-ui-react'
 import ModalChangeComponent from '../Auth/ModalChangePassword/ModalChangePassword';
 
 import routes from '../../config/routes';
@@ -100,12 +100,20 @@ class Header extends React.Component {
 							/>
 
 		const buttonShowChangePassword = <ModalChangeComponent buttonShow={<Dropdown.Item>Cambiar contraseña</Dropdown.Item>} />
+
+		const userText = userAuth?
+			<H as="h5" textAlign="right" className="no-margin">
+				{user.nombres+' '+user.apellidos}
+				<H.Subheader>
+					{user.rol}
+				</H.Subheader>
+			</H>:"";
 		//Muestra botón para navegar a ingreso o opciones de usuario si esta logueado
+		//<Dropdown.Item>Perfil</Dropdown.Item>
 		const optionAuth = userAuth?
 				<Menu.Menu position="right" key={7}>
-					<Dropdown item text={user.nombres+' '+user.apellidos}>
+					<Dropdown item trigger={userText}>
 						<Dropdown.Menu>
-							<Dropdown.Item>Perfil</Dropdown.Item>
 							{buttonShowChangePassword}
 							<Divider/>
 							<Dropdown.Item onClick={logout}>Salir</Dropdown.Item>
@@ -113,21 +121,39 @@ class Header extends React.Component {
 					</Dropdown>
 				</Menu.Menu>:
 				<Menu.Menu position="right" key={7}>
+					<Dropdown 
+						text='Acceso'
+						icon='users' 
+					    labeled
+					    button
+					    className='icon primary text-lh-4rem'
+					>
+						<Dropdown.Menu style={{minWidth:"250px"}}>
+							<Dropdown.Item
+								item={routes.login.item}
+								path={routes.login.path}
+								content={<H as="h3" textAlign="center">{routes.login.name}</H>}
+								onClick={handleItemClick}
+							/>
+							<Divider horizontal>
+							o
+							</Divider>
+							<Dropdown.Item
+								item={routes.registerUser.item}
+								path={routes.registerUser.path}
+								content={<H as="h3" textAlign="center">{routes.registerUser.name}</H>}
+								onClick={handleItemClick}
+							/>
+						</Dropdown.Menu>
+					</Dropdown>
+				</Menu.Menu>
+
+				/*<Menu.Menu position="right" key={7}>
 		          <Button primary path={routes.login.path} onClick={handleItemClick}>
 		          		{routes.login.name}
 		          		<Icon name="chevron right"/>
 		          </Button>
-		        </Menu.Menu>
-
-        const optionRegisterUser = !userAuth?<Menu.Item
-			key={8}
-			name={routes.registerUser.name}
-			item={routes.registerUser.item}
-			path={routes.registerUser.path}
-			active={activeItem === routes.registerUser.item}
-			onClick={handleItemClick}
-		/>:""
-
+		        </Menu.Menu>*/
         /*=====  Fin de Items del menú  ======*/
 
 	    const optionsMenu = [
@@ -138,12 +164,11 @@ class Header extends React.Component {
 	    	optionInvestigationRequest,
 	    	optionUsers,
 	    	optionOpenData,
-            optionRegisterUser,
 	    	optionAuth
 	    ];
 
 	    return (
-	    	<Segment className="margin-bottom-30 no-padding" style={{borderBottom:"2px solid #01579b"}}>
+	    	<Segment className="margin-bottom-30 no-padding navbar_header" style={{borderBottom:"2px solid #01579b"}}>
 	    		<Grid columns={1}>
 					<Grid.Column only="mobile tablet">
 						<Segment textAlign = 'right'>
@@ -198,7 +223,7 @@ const mapDispatchToProps = (dispatch, {history}) => {
 			dispatch(actChangeActiveItem(item));
 			history.push(path);
 		},
-		logout:() => (dispatch(actLogout()))
+		logout:() => (dispatch(actLogout(true)))
 	}
 }	
 

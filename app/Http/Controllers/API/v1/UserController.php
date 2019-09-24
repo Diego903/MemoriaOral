@@ -4,10 +4,11 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Helpers\TableJL1805;
 use App\Http\Controllers\Controller;
-use App\Models\GestionUsuario;
 use App\Http\Requests\RequestRegisterUser;
 use App\Http\Requests\RequestUpdateUser;
 use App\Mail\RegisterUser;
+use App\Models\Archivo;
+use App\Models\GestionUsuario;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -61,6 +62,39 @@ class UserController extends Controller
             $version_previa = $user->toJson();
             
             $user->fill($request->all());
+            $user->victima_minas = $request->victima_minas == "true"?1:0;
+
+            if($request->hasFile('certificado_victima')){
+                $certificadoAnterior = $user->certificadoVictima;
+
+                if($certificadoAnterior){
+                    @unlink(storage_path($certificadoAnterior->ubicacion."/".$certificadoAnterior->nombre_archivo));
+                    $certificadoAnterior->delete();
+                }
+
+                //almacenamiento de certificado de víctima del conflicto
+                $fileCertificadoVictima = $request->file('certificado_victima');     
+
+                $archivoCertificadoVictima = new Archivo();
+
+                $archivoCertificadoVictima->fill([
+                    "nombre" => $fileCertificadoVictima->getClientOriginalName(),
+                    "nombre_archivo" => $fileCertificadoVictima->getClientOriginalName(),
+                    "ubicacion" => "empty",
+                    "metadatos" => null,        
+                ]);
+
+                $archivoCertificadoVictima->save();
+
+                $ubicacion = "app/private/users/victim_certificates/".$user->id."/".$archivoCertificadoVictima->id;
+
+                $archivoCertificadoVictima->ubicacion = $ubicacion;
+                $archivoCertificadoVictima->save();
+                $fileCertificadoVictima->move(storage_path($ubicacion), $fileCertificadoVictima->getClientOriginalName());
+
+                $user->certificado_victima_id = $archivoCertificadoVictima->id;
+            }
+
             $user->save();
 
             $version_nueva = $user->toJson();
