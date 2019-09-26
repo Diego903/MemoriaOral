@@ -35,11 +35,11 @@
         "react-redux": "^7.0.3",
         "react-router-dom": "^5.0.1",
         "react-scroll": "^1.7.12",
-        "svg-pan-zoom": "github:ariutta/svg-pan-zoom",
         "redux": "^4.0.4",
         "redux-thunk": "^2.3.0",
         "semantic-ui": "^2.4.2",
-        "semantic-ui-react": "^0.87.3"
+        "semantic-ui-react": "^0.87.3",
+        "svg-pan-zoom": "^3.6.0"
     },
     "babel": {
         "presets": [],
