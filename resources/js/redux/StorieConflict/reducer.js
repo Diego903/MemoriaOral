@@ -9,6 +9,7 @@ const initRegister = {
     annexes:[],
 }
 
+
 const reducerApp = (state=initRegister, action) => {
     switch (action.type) {
 

@@ -31,8 +31,7 @@ Route::prefix('v1')->group(function(){
             Route::post('show/{user}', 'API\v1\UserController@show');
             Route::post('toggle-lock', 'API\v1\UserController@toggleLock')->middleware('role_is:Administrador');
         });
-
-        
+     
         Route::post('register', 'API\v1\UserController@register');
         Route::post('account-activation', 'API\v1\UserController@accountActivation');
     });
@@ -61,5 +60,10 @@ Route::prefix('v1')->group(function(){
         Route::post('list', 'API\v1\TestimonyController@list');
         Route::get('annexed/{testimony}/{type}/{idAnnexed}', 'API\v1\TestimonyController@annexed');
     });
+
+    Route::prefix('investigation_request')->group(function(){        
+        Route::post('register', 'API\v1\InvestigationRequestController@register');
+       
+    });    
 
 });

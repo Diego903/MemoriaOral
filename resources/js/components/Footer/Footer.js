@@ -37,7 +37,9 @@ class Footer extends Component {
 	            			<div><Link to={routes.home.path}>Página principal</Link></div>
 	            			<div><Link to={routes.testimony.path}>Testimonios</Link></div>
 	            			<div><Link to={routes.storie_conflict.path}>Historias del conflicto</Link></div>
-	            			<div><Link to={routes.investigation_request.path}>Solicitudes de investigación</Link></div>
+							{
+								//<div><Link to={routes.investigation_request.path}>Solicitudes de investigación</Link></div>
+							}
 	            			<div><Link to={routes.open_data.path}>Datos abiertos</Link></div>
 	            		</Grid.Column>	            		
 	            	</Grid>

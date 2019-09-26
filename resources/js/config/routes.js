@@ -1,6 +1,6 @@
 export default {
 	home:{
-		name:'Inicio',
+		name:'Página principal',
 		item:'home',
 		path:'/'
 	},
@@ -55,12 +55,18 @@ export default {
 		item:'storie_conflict_register',
 		path:'/storie-conflict/update/:id'
 	},	
-
+	
 	investigation_request:{
 		name:'Solicitudes de investigación',
 		item:'investigation_request',
 		path:'/investigation_request'
 	},
+
+	/*register_investigation_request:{
+		name:'Registro de solicitudes de investigación',
+		item:'register_investigation_request',
+		path:'/investigation_request/register'
+	},*/
 	
 	login:{
 		name:'Ingresar',

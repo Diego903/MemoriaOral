@@ -22,6 +22,8 @@ import StorieConflict from '../components/StorieConflict/StorieConflict';
 import RegisterStories from '../components/StorieConflict/RegisterStories';
 import UpdateStories from '../components/StorieConflict/UpdateStories';
 
+//import InvestigationRequest from '../components/InvestigationRequest/InvestigationRequest';
+//import RegisterInvestigationRequest from '../components/InvestigationRequest/RegisterInvestigationRequest';
 
 import Login from '../components/Auth/Login/Login';
 import PasswordResetRequest from '../components/Auth/PasswordResetRequest/PasswordResetRequest';
@@ -152,6 +154,10 @@ class Routes extends Component
                     <AuthRoute exact userType="Administrador" path={config_routes.storie_conflict_register.path} component={RegisterStories} />
                     <AuthRoute exact userType="Administrador" path={config_routes.storie_conflict_update.path} component={UpdateStories} />
 
+                    {
+                        //<FreeRoute exact path={config_routes.investigation_request.path} component={InvestigationRequest} />
+                        //<FreeRoute exact path={config_routes.register_investigation_request.path} component={RegisterInvestigationRequest} />
+                    }
 
                     <GuestRoute exact path={config_routes.login.path} component={Login} />
                     <GuestRoute exact path={config_routes.password_reset_request.path} component={PasswordResetRequest} />

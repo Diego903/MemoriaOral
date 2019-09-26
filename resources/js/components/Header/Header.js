@@ -41,10 +41,9 @@ class Header extends React.Component {
 
 		const optionHome = <Menu.Item 
 								key={1}
-								name=""
+								name={routes.home.name}
 								item={routes.home.item}
-								path=''
-								icon='home'
+								path={routes.home.path}
 								active={activeItem === routes.home.item} 
 								onClick={handleItemClick} 
 							/>
@@ -67,14 +66,14 @@ class Header extends React.Component {
 							  onClick={handleItemClick}
 							/>
 
-		const optionInvestigationRequest = <Menu.Item
+		/*const optionInvestigationRequest = <Menu.Item
 							  key={4}
 							  name={routes.investigation_request.name}
 							  item={routes.investigation_request.item}
 							  path={routes.investigation_request.path}
 							  active={activeItem === routes.investigation_request.item}
 							  onClick={handleItemClick}
-							/>
+							/>*/
 
 	    //Si es administrador debe mostrar la opcion de usuarios
 	    const optionUsers = userAuth?(
@@ -161,7 +160,7 @@ class Header extends React.Component {
 	    	optionHome,
 	    	optionTestimony,
 	    	optionStorieConflict,
-	    	optionInvestigationRequest,
+	    	//optionInvestigationRequest,
 	    	optionUsers,
 	    	optionOpenData,
 	    	optionAuth
