@@ -11,4 +11,8 @@ class Archivo extends Model
     protected $fillable = [
         'nombre', 'nombre_archivo', 'fecha', 'descripcion', 'ubicacion', 'metadatos',
     ];
+
+    protected $hidden = [
+        'ubicacion'
+    ];
 }

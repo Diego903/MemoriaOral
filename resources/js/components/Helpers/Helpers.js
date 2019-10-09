@@ -8,6 +8,7 @@ import Gallery from './components/Gallery';
 import ImageCheck from './components/ImageCheck';
 import RecordAudio from './components/RecordAudio';
 import Comments from './components/Comments';
+import Recaptcha_ from './components/Recaptcha_';
 
 const getPropertyObject = (object_, property, alternative) => {
 	if(property in object_){
@@ -31,5 +32,6 @@ export {
 	ImageCheck,
 	RecordAudio,
 	Comments,
+	Recaptcha_,
 	getPropertyObject
 }

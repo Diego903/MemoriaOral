@@ -89,6 +89,20 @@ class Header extends React.Component {
 	    		:""
 	    	):"";
 
+	    //Si es administrador debe mostrar la opcion de allies
+	    const optionAllies = userAuth?(
+	    		user.rol == 'Administrador'?
+	    		<Menu.Item
+	    		  key={8}
+		          name={routes.allies.name}
+		          item={routes.allies.item}
+		          path={routes.allies.path}
+		          active={activeItem === routes.allies.item}
+		          onClick={handleItemClick}
+		        />
+	    		:""
+	    	):"";	    
+
 		const optionOpenData = <Menu.Item
 							  key={6}
 							  name={routes.open_data.name}
@@ -162,6 +176,7 @@ class Header extends React.Component {
 	    	optionStorieConflict,
 	    	//optionInvestigationRequest,
 	    	optionUsers,
+	    	optionAllies,
 	    	optionOpenData,
 	    	optionAuth
 	    ];

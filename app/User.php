@@ -55,6 +55,10 @@ class User extends Authenticatable
         return $this->belongsTo(Archivo::class, "certificado_victima_id");
     }
 
+    public function consentimientoInformado(){
+        return $this->belongsTo(Archivo::class, "consentimiento_informado_id");
+    }    
+
     public static function rules(Request $request, $password = true){
         $rules = [
             "numero_identificacion"=>"required|min:6|max:10|digits_between:6,10|unique:users,numero_identificacion",
