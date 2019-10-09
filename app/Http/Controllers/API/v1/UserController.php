@@ -24,16 +24,10 @@ class UserController extends Controller
     	/*$module = Module::where('identifier',1)->first();
     	dd(Gate::allows('update', $module));*/
 
-		$query = User::select('users.id',
-					'numero_identificacion',
-					DB::raw('CONCAT(users.nombres," ",users.apellidos) as nombre'),
-					'genero',
-					'nivel_estudio',
-					DB::raw('CONCAT(municipios.nombre," - ",departamentos.nombre) as municipio'),
-					'email',
-					'telefono',
-					'estado'
-				)
+		$query = User::select('users.*',
+                            DB::raw('CONCAT(users.nombres," ",users.apellidos) as nombre'),
+                            DB::raw('CONCAT(municipios.nombre," - ",departamentos.nombre) as municipio')
+                        )
 				->join('municipios','users.municipio_id','=','municipios.id')
 				->join('departamentos','municipios.departamento_id','=','departamentos.id')
 				->where('rol','Usuario');
@@ -169,5 +163,19 @@ class UserController extends Controller
     	}
 
     	return response(["error"=>"La información enviada es incorrecta."],422);
-    }
+    } 
+
+    public function annexed(Request $request, User $user, $type){
+
+        $annexed = false;
+        if($type == "certificado_victima"){
+            $annexed = $user->certificadoVictima;
+        }else if($type == "consentimiento_informado"){
+            $annexed = $user->consentimientoInformado;
+        }
+
+        if($annexed)
+            return response()->file(storage_path($annexed->ubicacion."/".$annexed->nombre_archivo));       
+        return response(["error" => ["Not found."]], 404);
+    }       
 }

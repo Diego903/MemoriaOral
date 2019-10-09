@@ -169,7 +169,7 @@ class StorieConflict extends React.Component {
 							</Card.Content>
 							<Card.Content extra>	                      	                     		               
 								{storieComments}
-								<Button onClick={() => this.props.history.push("/storie-conflict/update/"+el.id)} primary type="button" className="margin-left-10" floated="right">Actualizar</Button>		                	
+								<Button onClick={() => this.props.history.push("/storie-conflict/update/"+el.id)} primary type="button" className="margin-left-10" floated="right"><Icon name="pencil alternate"/>Actualizar</Button>		                	
 							</Card.Content>
 						</Card>
 

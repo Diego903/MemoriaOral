@@ -35,6 +35,7 @@ import E404 from '../components/Errors/E404';
 import Footer from '../components/Footer/Footer';
 
 import { Notifications } from '../components/Helpers/Helpers';
+import RegisterAllies from '../components/Allies/RegisterAllies';
 import Allies from '../components/Allies/Allies';
 
 /*----------  Componentes del sistema  ----------*/
@@ -166,10 +167,12 @@ class Routes extends Component
                     <GuestRoute exact path={config_routes.password_reset_request.path} component={PasswordResetRequest} />
                     <GuestRoute exact path={config_routes.reset_password.path} component={ResetPassword} />
 
+                    <AuthRoute exact userType="Administrador" path={config_routes.allies.path} component={Allies} />
+
                     <FreeRoute component={E404} />
                 </Switch>
                 <Notifications/>
-                <Allies/>
+                <RegisterAllies/>
             </div>
             <Footer/>
         </BrowserRouter>;    

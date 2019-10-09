@@ -30,6 +30,7 @@ Route::prefix('v1')->group(function(){
             Route::post('update/{user}', 'API\v1\UserController@update');
             Route::post('show/{user}', 'API\v1\UserController@show');
             Route::post('toggle-lock', 'API\v1\UserController@toggleLock')->middleware('role_is:Administrador');
+            Route::get('annexed/{user}/{idAnnexed}', 'API\v1\UserController@annexed');
         });
      
         Route::post('register', 'API\v1\UserController@register');
@@ -65,6 +66,16 @@ Route::prefix('v1')->group(function(){
     Route::prefix('investigation_request')->group(function(){        
         Route::post('register', 'API\v1\InvestigationRequestController@register');
        
-    });    
+    });   
+
+    Route::prefix('allies')->group(function(){
+        Route::middleware('auth:api')->group(function(){
+            Route::post('list', 'API\v1\AlliesController@list')->middleware('role_is:Administrador');
+            Route::post('update/{solicitudesAliados}', 'API\v1\AlliesController@update')->middleware('role_is:Administrador'); 
+            Route::post('listBitacoras/{solicitudesAliados}', 'API\v1\AlliesController@listBitacoras')->middleware('role_is:Administrador');           
+
+        });
+        Route::post('register', 'API\v1\AlliesController@register');
+    });     
 
 });

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-import { Container, Button, Segment, Confirm, Dimmer, Header, Icon, Loader } from 'semantic-ui-react';
+import { Container, Button, Segment, Confirm, Dimmer, Header, Icon, Loader, Popup, Grid } from 'semantic-ui-react';
 import { Btn } from '../Helpers/Helpers';
 import axios from 'axios';
 import { connect } from 'react-redux';
@@ -41,13 +41,31 @@ class User extends Component {
                 data:[],
                 assignValueCell:(header, row, value) => {
                     if(header.name == 'opciones'){
+
+                        const btnLinkCertificadoVictimas =(row.certificado_victima_id)?<Segment><a target="_blank" href={params.URL_API+"user/annexed/"+row.id+"/certificado_victima"} size="mini">Certificado de victimas</a></Segment>:""
+
+                        const btnLinkConsentimientoInformado =(row.consentimiento_informado_id)? <Segment> <a target="_blank" href={params.URL_API+"user/annexed/"+row.id+"/consentimiento_informado"} size="mini">Consentimiento informado</a></Segment>:""
+                                                                                                                                                                                
+                        const message =(!btnLinkCertificadoVictimas && !btnLinkConsentimientoInformado)?"No se encontraron anexos relacionados":"" 
+
                         const btnUpdate = <Btn.UpdateOnlyIcon size="mini" user={row.id} onClick={this.handleClickBtnUpdate}/>
                         const btnToggleLock = (row.estado != "Inactivo")?<Btn.LockOnlyIcon size="mini" action="bloquear" user={row.id} onClick={this.handleToggleLock}/>:
                                                 <Btn.UnlockOnlyIcon size="mini" action="desbloquear" user={row.id} onClick={this.handleToggleLock}/>
+                        const btnFiles =<Popup trigger={<Btn.FilesIcon size="mini" user={row.id}/>} flowing hoverable> 
+                                <Grid centered >
+                                  <Grid.Column textAlign='center'>
+                                    <Header as='h4'>Anexos</Header>                                                                  
+                                    {btnLinkCertificadoVictimas} 
+                                    {btnLinkConsentimientoInformado}
+                                    {message}     
+                                  </Grid.Column>                                                          
+                                </Grid>
+                        </Popup>                  
 
                         return <Segment basic className="no-padding">
                             {btnUpdate}
                             {btnToggleLock}
+                            {btnFiles}
                         </Segment>
                     }
                     return value;

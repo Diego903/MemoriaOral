@@ -2833,3 +2833,7 @@ iframe.fb_iframe_widget_lift{
 .w-100{
     width: 100% !important;
 }
+
+.ui.page.modals.dimmer.visible{
+    z-index: 10001 !important;
+}

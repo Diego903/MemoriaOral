@@ -377,6 +377,7 @@ class FormStories extends Component {
 			});
     }
 
+
     render() {
     	const {titulo,texto,municipio_id,departamento_id,annexesLoaded,loading, formIsValid,formErrors,success, msjConfirm} = this.state;
 		let annexedRender = "";

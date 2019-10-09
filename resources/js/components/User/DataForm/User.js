@@ -6,7 +6,7 @@ import params from '../../../config/params';
 
 import { Grid, Form, Checkbox, Button, Icon, Segment, Container,Select,Message, Modal, Header, Input } from 'semantic-ui-react';
 import GeneralMessage from '../../Helpers/components/GeneralMessage';
-import { Btn, Valid, SearchServer } from '../../Helpers/Helpers';
+import { Btn, Valid, SearchServer, Recaptcha_ } from '../../Helpers/Helpers';
 
 import {animateScroll} from 'react-scroll';
 
@@ -562,6 +562,9 @@ class User extends Component {
                 {fieldpassword_confirmation}
                 {fieldVictimaMinas}
                 {fielterminos_condiciones}
+                <Recaptcha_ 
+	                onChange={(value) => console.log("PRUEBA RECAPTCHA", value)}
+	            />
             </Grid>  	            
         );
     }

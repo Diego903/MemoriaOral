@@ -5,6 +5,7 @@ export default {
 		path:'/'
 	},
 
+
 	testimony:{
 		name:'Testimonios',
 		item:'testimony',
@@ -22,6 +23,13 @@ export default {
 		item:'user',
 		path:'/user'
 	},
+
+	allies:{
+		name:'Aliados',
+		item:'allies',
+		path:'/allies'
+	},
+
 	account_activation:{
 		name:'Activación de cuenta',
 		item:'account_activation',
@@ -67,6 +75,12 @@ export default {
 		item:'register_investigation_request',
 		path:'/investigation_request/register'
 	},*/
+
+	allies:{
+		name:'Aliados',
+		item:'allies',
+		path:'/allies'
+	},	
 	
 	login:{
 		name:'Ingresar',

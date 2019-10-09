@@ -9,6 +9,7 @@ import ImageCheck from './components/ImageCheck';
 import RecordAudio from './components/RecordAudio';
 import Comments from './components/Comments';
 import StaticSidebar from './components/StaticSidebar';
+import Recaptcha_ from './components/Recaptcha_';
 
 const getPropertyObject = (object_, property, alternative) => {
 	if(property in object_){
@@ -32,6 +33,7 @@ export {
 	ImageCheck,
 	RecordAudio,
 	Comments,
+	Recaptcha_,
 	StaticSidebar,
 	getPropertyObject
 }

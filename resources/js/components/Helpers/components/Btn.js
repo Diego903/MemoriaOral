@@ -86,6 +86,18 @@ const UnlockOnlyIcon = (props) => {
     );
 }
 
+const BitacoraIcon = (props) => {
+    return (
+        <Button {...props} positive icon="list"/>
+    );
+}
+
+const FilesIcon = (props) => {
+    return (
+        <Button {...props} positive icon="file outline"/>
+    );
+}
+
 const Send = (props) => {
     return (
         <Button {...props} primary><Icon name="send"/> Enviar</Button>
@@ -136,6 +148,8 @@ class Btn extends Component {
     static Previous = Previous;
     static More = More;
     static Return = Return;
+    static BitacoraIcon = BitacoraIcon;
+    static FilesIcon = FilesIcon;
 
     render() {
         return (

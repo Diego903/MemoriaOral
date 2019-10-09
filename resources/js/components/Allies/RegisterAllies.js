@@ -1,0 +1,346 @@
+import React, { Component, PropTypes } from 'react';
+
+import {Grid, Segment, Header, Button, Icon, Modal, Popup, Form, TextArea } from 'semantic-ui-react';
+import GeneralMessage from '../Helpers/components/GeneralMessage';
+import {actRegisterAllies} from '../../redux/Allies/actions';
+import { Btn, Valid, Recaptcha_ } from '../Helpers/Helpers';
+import params from '../../config/params';
+import { connect } from 'react-redux';
+import axios from 'axios';
+
+class RegisterAllies extends Component {
+
+	constructor(props) {
+		super(props);
+
+		this.state = {
+        	nombre_organizacion:"",
+        	sitio_web:"",
+        	facebook:"",   
+        	correo:"",
+        	telefonos:"",
+        	objeto_social:"",     	
+			open:false,
+
+			formValidations:{
+				nombre_organizacion:("AlliesId" in this.props)?true:false,	        
+				sitio_web:("AlliesId" in this.props)?true:false,
+				facebook:("AlliesId" in this.props)?true:false,
+				correo:("AlliesId" in this.props)?true:false,
+				telefonos:("AlliesId" in this.props)?true:false,
+				objeto_social:("AlliesId" in this.props)?true:false
+	        					      					
+			},
+			formErrors:{
+				nombre_organizacion:[],
+				sitio_web:[],
+				facebook:[],
+				correo:[],
+				telefonos:[],
+				objeto_social:[]
+				
+			},
+			loading:false,
+			formIsValid:false,			
+
+
+			styles:{
+				position: 'fixed',
+				bottom: '3%',
+				right: '2%',
+				zIndex: 1000,
+				/*width:'100%',
+				minWidth:'100%',*/
+				padding:'0px',
+				//margin:'1rem 0px',
+			}
+		};
+		this.handleInputChange = this.handleInputChange.bind(this);
+		this.handleSelectChange = this.handleSelectChange.bind(this);
+		this.handleFocus = this.handleFocus.bind(this);
+		this.setFormIsValid = this.setFormIsValid.bind(this);
+        this.onTrueValid = this.onTrueValid.bind(this);       
+        this.onFalseValid = this.onFalseValid.bind(this);
+        this.handleSubmitFormRegisterAllies = this.handleSubmitFormRegisterAllies.bind(this); 
+        this.onActionSuccess = this.onActionSuccess.bind(this);
+
+	}
+
+    handleInputChange(e, {name}){
+        let value = (e.target.type == 'checkbox')?e.target.checked:e.target.value;
+        this.setState({ [name]:  value});
+    }	
+
+    handleSelectChange(e, {name, value}){
+        this.setState({ [name]:  value});
+    }
+
+    handleFocus(e, {name}){
+        this.setState((oldState, props) => {
+            return {formErrors: Object.assign({}, oldState.formErrors, {[name]:[]})}
+        })
+    }
+
+    /*=========================================================
+    =            Estado de validaciòn de formulario            =
+    =========================================================*/     
+
+    setFormIsValid(){
+        setTimeout(() => {
+            let isValid = true;
+            _.map(this.state.formValidations, (value, key) => {
+                if(!value)isValid = false;
+            });
+
+            this.setState({
+                formIsValid:isValid
+            })   
+
+        }, 10)
+    }
+
+    onTrueValid({name}){
+        this.setState((oldState, props) => {
+            return {
+                formValidations:Object.assign({},oldState.formValidations,{[name]:true})
+            }
+        });
+
+        this.setFormIsValid();
+    }
+
+    onFalseValid({name}){
+        this.setState((oldState, props) => {
+            return {
+                formValidations:Object.assign({},oldState.formValidations,{[name]:false})
+            }
+        });
+
+        this.setFormIsValid();
+    }    
+
+	/*=====  Fin de Estado de validaciòn de formulario  ======*/
+	          
+
+	/*==============================================
+	=            Manejadores de eventos            =
+	==============================================*/	
+
+    handleSubmitFormRegisterAllies(){
+    	this.setState({loading:true, open:false});
+    		this.props.sendRegisterAllies(this.state)
+	    	.then((response) => {
+	    		if(response.status == 200){                  			
+					this.setState({					
+						nombre_organizacion:'',
+						sitio_web:'',
+						facebook:'',
+						correo:'',
+						telefonos:'',
+						objeto_social:'',	
+						loading:false,
+						errors:[],
+						formIsValid:false
+					})
+
+					this.onActionSuccess();
+					
+
+					animateScroll.scrollToTop();
+	    		}else{
+
+	                let errors = {};
+	                _.map(response.data.errors, (el, i) => {
+	                    errors[i] = el;
+	                });
+	                this.setState((oldState, props) => {
+	                    return {
+	                    	formErrors: Object.assign({}, oldState.formErrors, errors),
+			    			loading:false,
+			    			success:[]
+	                    };
+	                })  
+
+		    		this.setState({
+		    		})
+		    		animateScroll.scrollToTop();
+		    	}		    	
+	    	});    		
+    }  
+
+    onActionSuccess(){
+        this.setState({
+            success:["Se ha registrado exitosamente."],
+        })
+    }       
+
+	render() {
+		const {nombre_organizacion, sitio_web, facebook, correo, telefonos, objeto_social, loading, formIsValid,formErrors,success} = this.state;
+
+		const triggerModa =  <Popup
+					trigger={<Button 
+			    			animated='vertical'
+			    			size="big"
+			    			color="orange"
+			    		>
+							<Button.Content visible>¿Quieres ser un aliado? <Icon className="margin-left-10" name="handshake outline"/></Button.Content>
+							<Button.Content hidden>Envianos tus datos <Icon className="margin-left-10" name="heart"/></Button.Content>
+					    </Button>}	
+					    content="Quienes son nuestros aliados. Nuestros aliados son organizaciónes dispuestas a resacir a las victimas del conflicto armado en colombia."					    
+    					basic							  
+				    />				    				
+
+		const triggerModal = <Button 
+	    			animated='vertical'
+	    			size="big"
+	    			color="orange"
+	    		>
+					<Button.Content visible>¿Quieres ser un aliado? <Icon className="margin-left-10" name="handshake outline"/></Button.Content>
+					<Button.Content hidden>Envianos tus datos <Icon className="margin-left-10" name="heart"/></Button.Content>
+			    </Button>
+
+	    return (
+	    	<Segment basic style={this.state.styles}>
+			    <Modal trigger={triggerModal} size="small" closeIcon>
+					<Header>
+						<Icon name="handshake outline" />
+						<Header.Content>
+							Si deseas ser un aliado nuestro y apoyar de alguna forma a las víctimas del
+							conflicto armado en Colombia, dejanos tus datos y los de la organización a la cual
+							perteneces. Pronto nos pondremos en contácto contigo.
+						</Header.Content>
+					</Header>
+					
+					<Modal.Content>
+
+						<Form loading={loading}>
+							<Valid.Input 
+					                    type="text" 
+					                    name="nombre_organizacion" 
+					                    id="nombre_organizacion" 
+					                    value={nombre_organizacion} 
+					                    label='Nombre organización'
+					                    onTrueValid={this.onTrueValid} 
+					                    onFalseValid={this.onFalseValid} 			                     
+					                    onChange={this.handleInputChange} 
+					                    onFocus={this.handleFocus}
+					                    required
+					                    min_length={3}
+					                	max_length={60}			                
+					                    wrapperColumn
+					                    errors={formErrors.nombre_organizacion}
+					                    alphabeticalSpace
+					                />
+					    		<Grid stackable doubling columns={2}>            
+
+						   				<Valid.Input 
+						                    type="text" 
+						                    name="sitio_web" 
+						                    id="sitio_web" 
+						                    value={sitio_web} 
+						                    label='Sitio Web'
+						                    onTrueValid={this.onTrueValid} 
+						                    onFalseValid={this.onFalseValid} 			                     
+						                    onChange={this.handleInputChange} 
+						                    onFocus={this.handleFocus}
+						                    required
+						                    min_length={3}
+						                	max_length={60}			                
+						                    wrapperColumn
+						                    errors={formErrors.sitio_web}
+						                    alphabeticalSpace
+						                />
+						                
+						    			<Valid.Input 
+						                    type="text" 
+						                    name="facebook" 
+						                    id="facebook" 
+						                    value={facebook} 
+						                    label='Facebook'
+						                    onTrueValid={this.onTrueValid} 
+						                    onFalseValid={this.onFalseValid} 			                     
+						                    onChange={this.handleInputChange} 
+						                    onFocus={this.handleFocus}
+						                    required
+						                    min_length={3}
+						                	max_length={60}			                
+						                    wrapperColumn
+						                    errors={formErrors.facebook}
+						                    alphabeticalSpace
+						                />                        
+
+						            	<Valid.Input	
+						                    id="correo"
+						                    name="correo"
+						                    value={correo}
+						                    label='Correo electrónico'		                   
+						                    type="text" 		                     		                     		                     		                     
+						                    onTrueValid={this.onTrueValid} 
+						                    onFalseValid={this.onFalseValid} 		                    
+						                    onChange={this.handleInputChange} 
+						                    onFocus={this.handleFocus}
+						                    required
+						                    email 
+						                    wrapperColumn
+						                    max_length={100}
+						                    min_length={7}
+						                    errors={formErrors.correo}
+						                />
+
+						                <Valid.Input 
+						                    type="text" 
+						                    name="telefonos" 
+						                    id="telefonos" 
+						                    value={telefonos} 
+						                    label='Telefonos'
+						                    onTrueValid={this.onTrueValid} 
+						                    onFalseValid={this.onFalseValid} 			                	                    
+						                    onChange={this.handleInputChange}
+						                    onFocus={this.handleFocus}		                     
+						                    alphabeticalSpace
+						                    required
+							                min_length={10}
+							                max_length={100}	 
+						                    wrapperColumn
+						                    errors={formErrors.telefonos}
+						                    help="En este campo podrá describir los números de teléfono de la organización a la que se encuentra vinculado, los números de teléfono deben estar separados. Un ejemplo es: '3123458545-2146564.'"
+					                	/>
+					            </Grid>    	
+			                	<Grid.Column>	                		          		  
+									<Form.Field id='objeto_social' name='objeto_social' value={objeto_social} control={TextArea} label='Objeto social' placeholder='Objeto social'
+					                	 max_length={1000} errors={formErrors.objeto_social} onChange={this.handleInputChange} />							  	              	                	
+				                </Grid.Column>
+
+				                <Grid.Column>	                		          		  
+									<Recaptcha_ 
+						                onChange={(value) => console.log("PRUEBA RECAPTCHA", value)}
+						            />
+				                </Grid.Column>				                					                
+					    </Form>
+
+					</Modal.Content>
+
+					<Modal.Actions>
+				      <Btn.Save disabled={(!formIsValid || loading)} onClick={this.handleSubmitFormRegisterAllies}/>
+				    </Modal.Actions>
+				</Modal>
+			</Segment>       
+	    )
+	}
+}
+
+
+const mapStateToProps = (state) => {
+	return {
+	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		sendRegisterAllies:(data) => {
+			return dispatch(actUpdateAllies(data));
+		},
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterAllies);
