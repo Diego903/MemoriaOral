@@ -57,7 +57,8 @@ Route::prefix('v1')->group(function(){
             Route::post('register', 'API\v1\TestimonyController@register');
             Route::post('update/{testimony}', 'API\v1\TestimonyController@update');
         });
-        Route::post('list', 'API\v1\TestimonyController@list');
+        Route::post('list/{isApiClient?}', 'API\v1\TestimonyController@list');
+        Route::get('export', 'API\v1\TestimonyController@export');
         Route::get('annexed/{testimony}/{type}/{idAnnexed}', 'API\v1\TestimonyController@annexed');
     });
 

@@ -14,7 +14,7 @@ import Headers from './Headers';
 
 import axios from 'axios';
 
-const TableJL1805 = ({id_table, config}) => {
+const TableJL1805 = ({id_table, config, height}) => {
 		if(typeof config == 'undefined'){
 			//return <p>No se ha encontrado información para configurar de la tabla especificada</p>;
 			//console.warn(id_table, "No se ha encontrado información para configurar de la tabla especificada");
@@ -29,8 +29,8 @@ const TableJL1805 = ({id_table, config}) => {
 
 					<Helpers id_table={id_table}/>
 
-					<Segment basic style={ {padding:'0px'} }>
-						<Table {...config.props}>
+					<Segment basic style={ {padding:'0px', overflow:"auto", height:height?height+"px":"auto"} }>
+						<Table {...config.props} >
 							<Headers id_table={id_table}/>
 
 							<Table.Body>

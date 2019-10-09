@@ -69,6 +69,7 @@ const init_state = {
                 return <RowComponent key={index}/>;
             },
             props:{},
+            otherParams:{},
         }
 }
 

@@ -158,8 +158,8 @@ class Header extends React.Component {
 	    const optionsMenu = [
 	    	logo,
 	    	optionHome,
-	    	optionTestimony,
 	    	optionStorieConflict,
+	    	optionTestimony,
 	    	//optionInvestigationRequest,
 	    	optionUsers,
 	    	optionOpenData,

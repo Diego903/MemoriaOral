@@ -22,6 +22,8 @@ import StorieConflict from '../components/StorieConflict/StorieConflict';
 import RegisterStories from '../components/StorieConflict/RegisterStories';
 import UpdateStories from '../components/StorieConflict/UpdateStories';
 
+import OpenData from '../components/OpenData/OpenData';
+
 //import InvestigationRequest from '../components/InvestigationRequest/InvestigationRequest';
 //import RegisterInvestigationRequest from '../components/InvestigationRequest/RegisterInvestigationRequest';
 
@@ -153,6 +155,7 @@ class Routes extends Component
                     <FreeRoute exact path={config_routes.storie_conflict.path} component={StorieConflict} />    
                     <AuthRoute exact userType="Administrador" path={config_routes.storie_conflict_register.path} component={RegisterStories} />
                     <AuthRoute exact userType="Administrador" path={config_routes.storie_conflict_update.path} component={UpdateStories} />
+                    <FreeRoute exact path={config_routes.open_data.path} component={OpenData} />
 
                     {
                         //<FreeRoute exact path={config_routes.investigation_request.path} component={InvestigationRequest} />

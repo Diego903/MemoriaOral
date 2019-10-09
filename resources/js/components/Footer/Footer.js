@@ -35,8 +35,8 @@ class Footer extends Component {
 	            		<Grid.Column mobile={16} tablet={8} computer={4}>
 	            			<Header as="h3" inverted>Navegación</Header>
 	            			<div><Link to={routes.home.path}>Página principal</Link></div>
-	            			<div><Link to={routes.testimony.path}>Testimonios</Link></div>
 	            			<div><Link to={routes.storie_conflict.path}>Historias del conflicto</Link></div>
+	            			<div><Link to={routes.testimony.path}>Testimonios</Link></div>
 							{
 								//<div><Link to={routes.investigation_request.path}>Solicitudes de investigación</Link></div>
 							}

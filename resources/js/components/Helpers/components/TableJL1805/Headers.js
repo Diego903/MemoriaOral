@@ -13,7 +13,10 @@ const Headers = ({ config, handleSort }) => {
 		return <Table.HeaderCell 
 		sorted={el.no_sortable?null:sortable?(column === el.name ? direction : null):null}
 		onClick={el.no_sortable?null:sortable?handleSort(el.name):null}
-		key={el.name} textAlign={el.textAlign}>
+		key={el.name} 
+		textAlign={el.textAlign}
+		width={el.width?el.width:1}
+		>
 			{el.label}
 		</Table.HeaderCell>
 	})

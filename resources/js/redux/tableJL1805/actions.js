@@ -38,7 +38,12 @@ const actChangePageTableJL1805 = (id_table, page) => {
     return changePage(id_table, page, () => hideLoadTable(id_table));
 }
 
-export { actInitTableJL1805, actUpdateTableJL1805, actSortTableJL1805, actSearchTableJL1805, actChangeRowsTableJL1805, actChangePageTableJL1805 };
+const actUpdateOtherParamsTableJL1805 = (id_table, newOtherParams) => {
+    //showLoadTable(id_table);
+    return updateOtherParams(id_table, newOtherParams, () => hideLoadTable(id_table));
+}
+
+export { actInitTableJL1805, actUpdateTableJL1805, actSortTableJL1805, actSearchTableJL1805, actChangeRowsTableJL1805, actChangePageTableJL1805, actUpdateOtherParamsTableJL1805 };
 
 /*=====  End of actions  ======*/
 
@@ -216,6 +221,18 @@ export { actInitTableJL1805, actUpdateTableJL1805, actSortTableJL1805, actSearch
         }
     }
 
+    const updateOtherParams = (id_table, otherParams, callback) => {
+        const state = store.getState().tableJl1805;
+        const config = state.config_tables[id_table];
+
+        const new_config = Object.assign({}, config, {
+                otherParams: otherParams,
+                current_page: 1
+            });
+
+        return loadDataServer(id_table, new_config, callback);
+    }
+
     /**
      * Asigna el número de filas a mostrar y restablece la tabla a la primera página
      * 
@@ -328,7 +345,7 @@ export { actInitTableJL1805, actUpdateTableJL1805, actSortTableJL1805, actSearch
                 const { data_source_url } = config;
                 const config_server = getParamsServer(config);
 
-                return axios.post(data_source_url,{config:config_server, page:config.current_page})
+                return axios.post(data_source_url,{config:config_server, page:config.current_page, ...config.otherParams})
                 .then((response) => {
                     const result = response.data;
 
