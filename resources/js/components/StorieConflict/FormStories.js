@@ -439,7 +439,7 @@ class FormStories extends Component {
 									    header='Selección de departamento'
 									    content={
 									    	<Segment basic className="no-padding">
-										    	Seleccione únicamente si la historia a registrar está relacionada con un departamento.
+										    	Seleccione únicamente si la reseña histórica a registrar está relacionada con un departamento.
 									    	</Segment>
 									    }
 									  />
@@ -457,7 +457,7 @@ class FormStories extends Component {
 									    header='Selección de municipio'
 									    content={
 									    	<Segment basic className="no-padding">
-										    	Seleccione únicamente si la historia a registrar está relacionada con un municipio.
+										    	Seleccione únicamente si la reseña histórica a registrar está relacionada con un municipio.
 									    	</Segment>
 									    }
 									  />

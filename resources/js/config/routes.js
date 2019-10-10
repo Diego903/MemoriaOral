@@ -47,7 +47,7 @@ export default {
     },
 
     storie_conflict:{
-		name:'Historias del conflicto',
+		name:'Reseña histórica',
 		item:'stories_conflict',
 		path:'/storie-conflict'
 	},    
