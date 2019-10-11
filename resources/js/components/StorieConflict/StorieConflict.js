@@ -207,12 +207,12 @@ class StorieConflict extends React.Component {
 			message = <Message
 	    			info
 				    icon='microphone'
-				    header='¿Desea registrar una historia del conflicto armado?'
+				    header='¿Desea registrar una reseña histórica?'
 				    content={
 				    	<Segment basic className="no-padding">
-				    		Para registrar una historia del conflicto armado, haga clic sobre el siguiente botón 
-					    	<Button onClick={() => this.props.history.push(config_routes.storie_conflict_register.path)} positive type="button" className="margin-left-10">Registrar historias del conflicto armado</Button>.
-					    	A continuación, se desplegará el formulario de registro de las historias del conflicto. Diligencie el formulario y haga clic en el botòn de guardar.
+				    		Para registrar una reseña histórica, haga clic sobre el siguiente botón 
+					    	<Button onClick={() => this.props.history.push(config_routes.storie_conflict_register.path)} positive type="button" className="margin-left-10">Registrar reseña histórica</Button>.
+					    	A continuación, se desplegará el formulario de registro de reseñas históricas. Diligencie el formulario y haga clic en el botón de guardar.
 				    	</Segment>
 				    }
 				  />

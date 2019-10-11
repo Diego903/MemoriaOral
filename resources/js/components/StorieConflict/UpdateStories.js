@@ -29,7 +29,7 @@ class UpdateStories extends Component {
             <Container>
                 <Grid centered>
                     <Grid.Column mobile={16} tablet={12} computer={10}>
-                        <Header as="h2" dividing>Actualizar historias del conflicto armado</Header>
+                        <Header as="h2" dividing>Actualización de reseña histórica</Header>
                         <GeneralMessage success messages={success} onDismiss={()=>this.setState({success:[]})}/>
                         <FormStories StorieConflictId={this.props.match.params.id} action="update" onActionSuccess={this.onActionSuccess}/>
                     </Grid.Column>

@@ -18,7 +18,7 @@ class RegisterStories extends Component {
 
     onActionSuccess(){
         this.setState({
-            success:["Se ha registrado una nueva historia del conflicto armado exitosamente."],
+            success:["Se ha registrado una nueva reseña histórica exitosamente."],
         })
     }
 
@@ -29,7 +29,7 @@ class RegisterStories extends Component {
             <Container>
                 <Grid centered>
                     <Grid.Column mobile={16} tablet={12} computer={10}>
-                        <Header as="h2" dividing>Registro de historias del conflicto armado</Header>
+                        <Header as="h2" dividing>Registro de reseña histórica</Header>
                         <GeneralMessage success messages={success} onDismiss={()=>this.setState({success:[]})}/>
                         <FormStories action="register" onActionSuccess={this.onActionSuccess}/>
                     </Grid.Column>

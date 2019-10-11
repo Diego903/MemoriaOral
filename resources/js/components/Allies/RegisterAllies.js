@@ -4,6 +4,7 @@ import {Grid, Segment, Header, Button, Icon, Modal, Popup, Form, TextArea } from
 import GeneralMessage from '../Helpers/components/GeneralMessage';
 import {actRegisterAllies} from '../../redux/Allies/actions';
 import { Btn, Valid, Recaptcha_ } from '../Helpers/Helpers';
+import { animateScroll} from 'react-scroll';
 import params from '../../config/params';
 import { connect } from 'react-redux';
 import axios from 'axios';
@@ -21,14 +22,15 @@ class RegisterAllies extends Component {
         	telefonos:"",
         	objeto_social:"",     	
 			open:false,
+			validReChaptcha:false,
 
 			formValidations:{
-				nombre_organizacion:("AlliesId" in this.props)?true:false,	        
-				sitio_web:("AlliesId" in this.props)?true:false,
-				facebook:("AlliesId" in this.props)?true:false,
-				correo:("AlliesId" in this.props)?true:false,
-				telefonos:("AlliesId" in this.props)?true:false,
-				objeto_social:("AlliesId" in this.props)?true:false
+				nombre_organizacion:false,	        
+				sitio_web:false,
+				facebook:false,
+				correo:false,
+				telefonos:false,
+				objeto_social:true
 	        					      					
 			},
 			formErrors:{
@@ -127,7 +129,7 @@ class RegisterAllies extends Component {
 	==============================================*/	
 
     handleSubmitFormRegisterAllies(){
-    	this.setState({loading:true, open:false});
+    	this.setState({loading:true, open:false, validReChaptcha:false});
     		this.props.sendRegisterAllies(this.state)
 	    	.then((response) => {
 	    		if(response.status == 200){                  			
@@ -143,9 +145,7 @@ class RegisterAllies extends Component {
 						formIsValid:false
 					})
 
-					this.onActionSuccess();
-					
-
+					this.onActionSuccess();					
 					animateScroll.scrollToTop();
 	    		}else{
 
@@ -175,7 +175,9 @@ class RegisterAllies extends Component {
     }       
 
 	render() {
-		const {nombre_organizacion, sitio_web, facebook, correo, telefonos, objeto_social, loading, formIsValid,formErrors,success} = this.state;
+		const {nombre_organizacion, sitio_web, facebook, correo, telefonos, objeto_social, loading, formIsValid, formErrors, success} = this.state;
+		console.log(this.state.formValidations);
+		const {userAuth} = this.props;
 
 		const triggerModa =  <Popup
 					trigger={<Button 
@@ -190,14 +192,18 @@ class RegisterAllies extends Component {
     					basic							  
 				    />				    				
 
-		const triggerModal = <Button 
+		const triggerModal =!userAuth?
+		 		<Button 
 	    			animated='vertical'
 	    			size="big"
 	    			color="orange"
 	    		>
 					<Button.Content visible>¿Quieres ser un aliado? <Icon className="margin-left-10" name="handshake outline"/></Button.Content>
 					<Button.Content hidden>Envianos tus datos <Icon className="margin-left-10" name="heart"/></Button.Content>
-			    </Button>
+			    </Button>:"";
+			   console.log(formIsValid);
+			   console.log(this.state.validReChaptcha);
+	
 
 	    return (
 	    	<Segment basic style={this.state.styles}>
@@ -234,7 +240,7 @@ class RegisterAllies extends Component {
 					    		<Grid stackable doubling columns={2}>            
 
 						   				<Valid.Input 
-						                    type="text" 
+						                    type="url" 
 						                    name="sitio_web" 
 						                    id="sitio_web" 
 						                    value={sitio_web} 
@@ -243,16 +249,15 @@ class RegisterAllies extends Component {
 						                    onFalseValid={this.onFalseValid} 			                     
 						                    onChange={this.handleInputChange} 
 						                    onFocus={this.handleFocus}
-						                    required
 						                    min_length={3}
 						                	max_length={60}			                
 						                    wrapperColumn
 						                    errors={formErrors.sitio_web}
-						                    alphabeticalSpace
+						                    help="En este campo podrá escribir la url de su titio web. Un ejemplo es: 'http://www.google.com'"						                    
 						                />
 						                
 						    			<Valid.Input 
-						                    type="text" 
+						                    type="url" 
 						                    name="facebook" 
 						                    id="facebook" 
 						                    value={facebook} 
@@ -261,12 +266,11 @@ class RegisterAllies extends Component {
 						                    onFalseValid={this.onFalseValid} 			                     
 						                    onChange={this.handleInputChange} 
 						                    onFocus={this.handleFocus}
-						                    required
 						                    min_length={3}
 						                	max_length={60}			                
 						                    wrapperColumn
 						                    errors={formErrors.facebook}
-						                    alphabeticalSpace
+						                    help="En este campo podrá escribir la url de su Facebook. Un ejemplo es: 'https://www.facebook.com'"						                   
 						                />                        
 
 						            	<Valid.Input	
@@ -296,8 +300,7 @@ class RegisterAllies extends Component {
 						                    onTrueValid={this.onTrueValid} 
 						                    onFalseValid={this.onFalseValid} 			                	                    
 						                    onChange={this.handleInputChange}
-						                    onFocus={this.handleFocus}		                     
-						                    alphabeticalSpace
+						                    onFocus={this.handleFocus}
 						                    required
 							                min_length={10}
 							                max_length={100}	 
@@ -307,13 +310,14 @@ class RegisterAllies extends Component {
 					                	/>
 					            </Grid>    	
 			                	<Grid.Column>	                		          		  
-									<Form.Field id='objeto_social' name='objeto_social' value={objeto_social} control={TextArea} label='Objeto social' placeholder='Objeto social'
+									<Form.Field id='objeto_social' name='objeto_social' value={objeto_social} control={TextArea} label='Objeto social' placeholder='Objeto social' required
 					                	 max_length={1000} errors={formErrors.objeto_social} onChange={this.handleInputChange} />							  	              	                	
 				                </Grid.Column>
+				                <br/>				  				                
 
 				                <Grid.Column>	                		          		  
 									<Recaptcha_ 
-						                onChange={(value) => console.log("PRUEBA RECAPTCHA", value)}
+						                onChange={(value) => this.setState({validReChaptcha:true})}
 						            />
 				                </Grid.Column>				                					                
 					    </Form>
@@ -321,7 +325,7 @@ class RegisterAllies extends Component {
 					</Modal.Content>
 
 					<Modal.Actions>
-				      <Btn.Save disabled={(!formIsValid || loading)} onClick={this.handleSubmitFormRegisterAllies}/>
+				      <Btn.Save disabled={(!formIsValid || !this.state.validReChaptcha || loading)} onClick={this.handleSubmitFormRegisterAllies} />
 				    </Modal.Actions>
 				</Modal>
 			</Segment>       
@@ -330,15 +334,17 @@ class RegisterAllies extends Component {
 }
 
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
 	return {
+		userAuth:state.app.userAuth,
+		user:state.app.user
 	}
 }
 
 const mapDispatchToProps = (dispatch) => {
 	return {
 		sendRegisterAllies:(data) => {
-			return dispatch(actUpdateAllies(data));
+			return dispatch(actRegisterAllies(data));
 		},
 	}
 }
