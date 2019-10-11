@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { actOpenFullLoader, actCloseFullLoader } from '../../redux/fullLoader/actions';
 import axios from 'axios';
 import params from '../../config/params';
 
@@ -71,6 +72,8 @@ class FormTestimony extends Component {
     		loading:true,
     		confirmModalState:false
     	})
+
+    	this.props.openLoader("Estamos guardando la información del testimonio, este proceso puede tardar varios segundos o minutos.");
 
     	const formData = new FormData();
 
@@ -170,6 +173,7 @@ class FormTestimony extends Component {
         )
         .then((response) => {
 
+	    	this.props.closeLoader();
 	    	animateScroll.scrollToTop();
             //console.log(response);
             if(this.isUpdate){
@@ -208,6 +212,7 @@ class FormTestimony extends Component {
 
         })
         .catch((error) => {
+        	this.props.closeLoader();
         	let messageError = "El registro del testimonio no se pudo completar, revise y corrija cada uno de los errores que pueden aparecer en cada pestaña.";
 
         	if(this.isUpdate)
@@ -555,7 +560,7 @@ class FormTestimony extends Component {
         }
 
         return (
-        	<Segment basic className="no-padding" loading={loading}>
+        	<Segment basic className="no-padding">
         		<GeneralMessage error messages={errors} onDismiss={()=>this.setState({errors:[]})}/>
         		<Step.Group stackable='tablet' fluid>
 					{steps}
@@ -599,7 +604,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-
+		openLoader:(message = "Cargando.") => {
+			return dispatch(actOpenFullLoader(message));
+		},
+		closeLoader:() => {
+			return dispatch(actCloseFullLoader());
+		}
 	}
 }
 

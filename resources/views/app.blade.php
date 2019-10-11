@@ -72,6 +72,7 @@
                 <Image src="/images/logo_xl.png" width="30%" />
                 <div class="loading-divider"></div>
                 <h2>Cargando <Image class="animate-loading" src="/images/icon_loading.png" width="30px" /></h2>
+                <p>Si es la primera vez que ingrea al sitio esto puede durar más de 20 segundos.</p>
             </div>
         </div>
     </div>

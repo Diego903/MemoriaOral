@@ -592,9 +592,15 @@ class Annexes extends Component {
                                         </Segment>
 
 					            		<Segment basic className="no-padding">
-					            			<Valid.Input value={"data_"+el.key in this.state.annexesData?this.state.annexesData["data_"+el.key].name:""} onTrueValid={this.evaluateStateAnnexes} onFalseValid={this.evaluateStateAnnexes} required min_length={5} max_length={60} name={"name_"+el.key} label="Nombre" placeholder="Ingrese el nombre de la imagen" onChange={this.handleChangeInputDataAnnexed}/>
-					            			<Valid.Input value={"data_"+el.key in this.state.annexesData?(this.state.annexesData["data_"+el.key].date?this.state.annexesData["data_"+el.key].date:""):""} max={limiteFechaImagen} onTrueValid={this.evaluateStateAnnexes} onFalseValid={this.evaluateStateAnnexes} type="date" name={"date_"+el.key} label="Fecha" placeholder="Seleccione la fecha de la imagen" onChange={this.handleChangeInputDataAnnexed}/>
-					            			<Valid.Input textArea value={"data_"+el.key in this.state.annexesData?this.state.annexesData["data_"+el.key].description:""} onTrueValid={this.evaluateStateAnnexes} onFalseValid={this.evaluateStateAnnexes} required min_length={30} max_length={500} name={"description_"+el.key} label="Descripción" placeholder="Descripción de la imagen" onChange={this.handleChangeInputDataAnnexed}/>
+					            			<Valid.Input 
+                                                help="Escriba un nombre de pocas palabras que describa la fotografía."
+                                                value={"data_"+el.key in this.state.annexesData?this.state.annexesData["data_"+el.key].name:""} onTrueValid={this.evaluateStateAnnexes} onFalseValid={this.evaluateStateAnnexes} required min_length={5} max_length={60} name={"name_"+el.key} label="Nombre" placeholder="Ingrese el nombre de la imagen" onChange={this.handleChangeInputDataAnnexed}/>
+					            			<Valid.Input 
+                                                help="Seleccione la fecha apróximada en que se tomó la fotografía."
+                                                value={"data_"+el.key in this.state.annexesData?(this.state.annexesData["data_"+el.key].date?this.state.annexesData["data_"+el.key].date:""):""} max={limiteFechaImagen} onTrueValid={this.evaluateStateAnnexes} onFalseValid={this.evaluateStateAnnexes} type="date" name={"date_"+el.key} label="Fecha" placeholder="Seleccione la fecha de la imagen" onChange={this.handleChangeInputDataAnnexed}/>
+					            			<Valid.Input 
+                                                help="Escriba una descripción breve de lo que la imagen representa o contiene."
+                                                textArea value={"data_"+el.key in this.state.annexesData?this.state.annexesData["data_"+el.key].description:""} onTrueValid={this.evaluateStateAnnexes} onFalseValid={this.evaluateStateAnnexes} required min_length={30} max_length={500} name={"description_"+el.key} label="Descripción" placeholder="Descripción de la imagen" onChange={this.handleChangeInputDataAnnexed}/>
                                             <Btn.Delete fluid onClick={(e) => {this.removeAnnexed(e, i)}}/>
 					            		</Segment>
 				            		</Segment>
@@ -616,12 +622,12 @@ class Annexes extends Component {
 					    header='Video del testimonio'
 					    content={<Segment basic className="no-padding">
 						    	<p>A continuación, seleccione el archivo de video que contiene el relato del testimonio.</p>
-						    	<p>El tamaño máximo permitido para el video es de 20 Mb</p>
+						    	<p>El tamaño máximo permitido para el video es de 1 Gb</p>
 					    	</Segment>
 						}
 					  />
                     <Valid.File
-                        maxSize={20}
+                        maxSize={1000}
                         name="video"
                         onChange={this.handleInputChange} 
                         accept=".mp4,.ogg"
@@ -639,12 +645,12 @@ class Annexes extends Component {
 					    header='Audio del testimonio'
 					    content={<Segment basic className="no-padding">
 					    	<p>A continuación, seleccione el archivo de audio que contiene el relato del testimonio.</p>
-					    	<p>El tamaño máximo permitido para el audio es de 10 Mb</p>
+					    	<p>El tamaño máximo permitido para el audio es de 200 Mb</p>
 					    	</Segment>
 						}
 					  />
                     <Valid.File
-                        maxSize={10}
+                        maxSize={200}
                         name="audio"
                         onChange={(e, props) => {
                             this.handleInputChange(e, props);

@@ -75,8 +75,8 @@ class Testimonio extends Model
 	        'municipio' => 'required|exists:municipios,id',
 	        //annexos
 	        'descripcion_detallada' => 'required_without_all:audio,video,anexos',
-	        'audio' => 'file|mimetypes:audio/mpeg,audio/webm,video/webm|max:10240|required_without_all:descripcion_detallada,video,anexos',
-	        'video' => 'file|mimetypes:video/mp4,video/ogg|max:20480|required_without_all:descripcion_detallada,audio,anexos',
+	        'audio' => 'file|mimetypes:audio/mpeg,audio/webm,video/webm|max:204800|required_without_all:descripcion_detallada,video,anexos',
+	        'video' => 'file|mimetypes:video/mp4,video/ogg|max:1024000|required_without_all:descripcion_detallada,audio,anexos',
 	        'anexos' => 'required_without_all:descripcion_detallada,audio,video',
 	    ];
 

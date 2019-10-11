@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 
 import { actSendPassResetRequest } from '../../../redux/app/actions';
 
-import { Grid, Form, Button, Icon } from 'semantic-ui-react';
-import { GeneralMessage, Valid } from '../../Helpers/Helpers';
+import { Grid, Form, Button, Icon, Segment } from 'semantic-ui-react';
+import { GeneralMessage, Valid, Recaptcha_ } from '../../Helpers/Helpers';
 
 class PasswordResetRequest extends React.Component{
 	constructor(props) {
@@ -16,6 +16,7 @@ class PasswordResetRequest extends React.Component{
 				identificationNumber:false
 			},
 			formIsValid:false,
+			recaptchaIsValid:false,
 			loadingForm:false,
             success:[],
             errors:[],	
@@ -101,7 +102,7 @@ class PasswordResetRequest extends React.Component{
 	/*=====  Fin de Manejadores de eventos  ======*/
 
 	render(){
-		const {identificationNumber, formIsValid, loadingForm} = this.state;
+		const {identificationNumber, formIsValid, recaptchaIsValid, loadingForm} = this.state;
 		return (
 			<Grid centered className="margin-top-50 margin-bottom-50">
 				<Grid.Column computer={5} tablet={10} mobile={14}>
@@ -122,10 +123,18 @@ class PasswordResetRequest extends React.Component{
 							max_length={10}
 						/>
 
+						<Grid centered className="margin-bottom-20">
+							<Segment compact>
+								<Recaptcha_ 
+					                onChange={(value) => this.setState({recaptchaIsValid:value?true:false})}
+					            />
+				            </Segment>
+				        </Grid>
+
 						<GeneralMessage error messages={this.state.errors} onDismiss={()=>this.setState({errors:[]})}/>
 						<GeneralMessage success messages={this.state.success} onDismiss={()=>this.setState({success:[]})}/>
 
-						<Button disabled={!formIsValid} primary animated fluid onClick={this.handleSubmitForm}>
+						<Button disabled={!formIsValid || !recaptchaIsValid} primary animated fluid onClick={this.handleSubmitForm}>
 							<Button.Content visible>Enviar</Button.Content>
 							<Button.Content hidden>
 								<Icon name='send' />

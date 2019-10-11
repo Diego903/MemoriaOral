@@ -3497,6 +3497,14 @@ FIN CURSOR
 
 }
 
+.gradient-content-1{
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffffff+0,fcfcfc+61,263238+61,01579b+100 */
+background: rgb(255,255,255); /* Old browsers */ /* FF3.6-15 */ /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(135deg,  rgba(255,255,255,1) 0%,rgba(252,252,252,1) 31%,rgba(38,50,56,1) 61%,rgba(1,87,155,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#01579b',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+}
+
 iframe.fb_iframe_widget_lift{
     width: 100% !important;
 }
@@ -3519,6 +3527,17 @@ iframe.fb_iframe_widget_lift{
 
 .ui.page.modals.dimmer.visible{
     z-index: 10001 !important;
+}
+
+.fullLoader{
+    position: fixed;
+    z-index: 10001 !important;
+    width: 100%;
+    height: 100%;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    top: 0px;
 }.svg_departamento{
 	cursor: pointer;
 	transition: .3s;

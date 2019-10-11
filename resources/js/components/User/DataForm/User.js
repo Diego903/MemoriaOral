@@ -6,7 +6,7 @@ import params from '../../../config/params';
 
 import { Grid, Form, Checkbox, Button, Icon, Segment, Container,Select,Message, Modal, Header, Input } from 'semantic-ui-react';
 import GeneralMessage from '../../Helpers/components/GeneralMessage';
-import { Btn, Valid, SearchServer, Recaptcha_ } from '../../Helpers/Helpers';
+import { Btn, Valid, SearchServer } from '../../Helpers/Helpers';
 
 import {animateScroll} from 'react-scroll';
 
@@ -66,7 +66,7 @@ class User extends Component {
 				fecha_nacimiento:stateFormValidations,
 				direccion:stateFormValidations,
 				municipio_id:stateFormValidations,					
-				certificadoVictima:stateFormValidations,					
+				//certificadoVictima:stateFormValidations,					
 				consentimientoInformado:!("renderConsentimientoInformado" in this.props)?true:stateFormValidations,					
 				terminos_condiciones:("noRenderTyC" in this.props)?true:stateFormValidations					
 			},
@@ -117,7 +117,10 @@ class User extends Component {
 				fecha_nacimiento:"",
 				direccion:"",
 				municipio_id:"",
-				resetFiles:true
+				resetFiles:true,
+				formValidations:Object.assign({}, this.state.formValidations, {
+					terminos_condiciones:("noRenderTyC" in this.props)?true:(("userId" in this.props && this.props.userId)?true:false)					
+				}),
         	})
         }else{
         	this.setState({
@@ -364,7 +367,7 @@ class User extends Component {
 	                    wrapperColumn
 	                />;
 
-	    let fielterminos_condiciones = <Grid.Column width={16}>			               					   
+	    let fielterminos_condiciones = ("resetForm" in this.props && this.props.resetForm)?"":<Grid.Column width={16}>			               					   
 						  					<Form.Checkbox name="terminos_condiciones" inline label='Estoy de acuerdo con los Términos y Condiciones. Vea términos y condiciones con el botón [ Ver términos y condiciones ]' required onChange={this.handleInputChange}/>
 		            					</Grid.Column>;
 
@@ -562,9 +565,6 @@ class User extends Component {
                 {fieldpassword_confirmation}
                 {fieldVictimaMinas}
                 {fielterminos_condiciones}
-                <Recaptcha_ 
-	                onChange={(value) => console.log("PRUEBA RECAPTCHA", value)}
-	            />
             </Grid>  	            
         );
     }
