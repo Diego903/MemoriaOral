@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\GestionTestimonio;
 use App\Models\Municipio;
-use App\Models\Testimonio;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
