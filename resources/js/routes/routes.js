@@ -34,7 +34,7 @@ import ResetPassword from '../components/Auth/ResetPassword/ResetPassword';
 import E404 from '../components/Errors/E404';
 import Footer from '../components/Footer/Footer';
 
-import { Notifications } from '../components/Helpers/Helpers';
+import { Notifications, FullLoader } from '../components/Helpers/Helpers';
 import RegisterAllies from '../components/Allies/RegisterAllies';
 import Allies from '../components/Allies/Allies';
 
@@ -173,6 +173,7 @@ class Routes extends Component
                 </Switch>
                 <Notifications/>
                 <RegisterAllies/>
+                <FullLoader/>
             </div>
             <Footer/>
         </BrowserRouter>;    

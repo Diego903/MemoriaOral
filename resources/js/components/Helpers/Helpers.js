@@ -10,6 +10,7 @@ import RecordAudio from './components/RecordAudio';
 import Comments from './components/Comments';
 import StaticSidebar from './components/StaticSidebar';
 import Recaptcha_ from './components/Recaptcha_';
+import FullLoader from './components/FullLoader';
 
 const getPropertyObject = (object_, property, alternative) => {
 	if(property in object_){
@@ -35,5 +36,6 @@ export {
 	Comments,
 	Recaptcha_,
 	StaticSidebar,
+	FullLoader,
 	getPropertyObject
 }

@@ -59,11 +59,6 @@ class Footer extends Component {
             					<Image src="/images/aliados/sennova.png" centered className="margin-bottom-20"/>
             				</a>
             			</Grid.Column>
-            			<Grid.Column textAlign="center" mobile={6} tablet={4} computer={3}>
-            				<a href="http://www.accioncontraminas.gov.co/accion/desminado/Paginas/Resena-Polus-Center.aspx" target="_blank">
-            					<Image src="/images/aliados/polus.png" centered className="margin-bottom-20"/>
-            				</a>
-            			</Grid.Column>
             		</Grid>
             	</Container>
             	<Segment inverted textAlign="center" className="no-border-radius light-blue darken-4">

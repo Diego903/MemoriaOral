@@ -285,7 +285,7 @@ class Data extends Component {
 	                    min_length={6}
 	                    max_length={250}
 	                    errors={formErrors.titulo}
-	                    help="Este titulo debe describir, en pocas palabras, el hecho ocurrido. Un ejemplo es: 'Una estrategia de supervivencia improvisada.'"
+	                    help="Este titulo debe describir, en pocas palabras, el hecho ocurrido y narrado en el testimonio. Un ejemplo es: 'Una estrategia de supervivencia diferente.'"
 	                />  
 	            </Grid.Column>
 
@@ -304,7 +304,7 @@ class Data extends Component {
 	                    min_length={50}
 	                    max_length={150}
 	                    errors={formErrors.titulo}
-	                    help="Describa o resuma brevemente el tema pricipal del testimonio a registrar, se necesitan 50 caracteres como mínimo y 150 como máximo."
+	                    help="Escriba un resumen muy corto del testimonio que desea registrar o actualizar en el sistema, se necesitan 50 caracteres como mínimo y 150 como máximo."
 	                />  
 	            </Grid.Column>
 
@@ -322,6 +322,7 @@ class Data extends Component {
 	                    required
 	                    errors={formErrors.fechaEvento}
 	                    max={limiteFechaEvento}
+	                    help="Seleccione una fecha que se aproxime a la fecha en que iniciaron los hechos que se narran en el testimonio."
 	                />  
 	            </Grid.Column>
 
@@ -340,6 +341,7 @@ class Data extends Component {
 	                    min_length={20}
 	                    max_length={150}
 	                    errors={formErrors.descripcionLugar}
+	                    help="Describa brevemente como recuerda el lugar donde ocurrieron los hechos, se necesitan 50 caracteres como mínimo y 150 como máximo."
 	                />  
 	            </Grid.Column>
 

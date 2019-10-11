@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { actRegisterUser, actUpdateUser } from '../../redux/RegisterUser/actions';
+import { actOpenFullLoader, actCloseFullLoader } from '../../redux/fullLoader/actions';
 import axios from 'axios';
 import params from '../../config/params';
 
 import { Grid, Form, Checkbox, Button, Icon, Segment, Container,Select,Message, Modal, Header } from 'semantic-ui-react';
 import GeneralMessage from '../Helpers/components/GeneralMessage';
-import { Btn, Valid, SearchServer } from '../Helpers/Helpers';
+import { Btn, Valid, SearchServer, Recaptcha_ } from '../Helpers/Helpers';
 import User from './DataForm/User';
 
 import {animateScroll} from 'react-scroll';
@@ -21,6 +22,7 @@ class FormUser extends Component {
 			loading:false,
 			showModalTyC:false,
 			formIsValid:false,
+			recaptchaIsValid:this.props.userAuth,
 			resetForm:false,
 			formErrors:{}
         };
@@ -33,7 +35,8 @@ class FormUser extends Component {
 	==============================================*/	
 
     handleSubmitFormRegister(){
-    	this.setState({loading:true});
+    	this.setState({loading:true});	
+    	this.props.openLoader("Estamos guardando la información, este proceso puede tardar varios segundos.");
 
     	if(this.props.action == "register"){
     		this.props.sendRegisterUser(this.state.dataUser)
@@ -42,7 +45,9 @@ class FormUser extends Component {
 					this.setState({
 						loading:false,
 						resetForm:true,
+						recaptchaIsValid:false
 					})
+					this.props.closeLoader();
 
 					if("onActionSuccess" in this.props){
 						this.props.onActionSuccess();
@@ -59,7 +64,7 @@ class FormUser extends Component {
 	                    return {
 	                    	formErrors: Object.assign({}, oldState.formErrors, errors),
 			    			loading:false,
-							formIsValid:false
+							//formIsValid:false
 	                    };
 	                })  
 
@@ -74,6 +79,7 @@ class FormUser extends Component {
 						loading:false,
 						errors:{}
 					})
+					this.props.closeLoader();
 
 					if("onActionSuccess" in this.props){
 						this.props.onActionSuccess();
@@ -100,9 +106,16 @@ class FormUser extends Component {
     }
 
     render() {
-    	const { loading , formIsValid, showModalTyC, formErrors, resetForm } = this.state;
+    	const { loading , formIsValid, showModalTyC, formErrors, resetForm, recaptchaIsValid } = this.state;
+    	const { userAuth } = this.props;
+
+    	const  fieldRecaptcha = !userAuth && !resetForm?
+		                <Recaptcha_ 
+			                onChange={(value) => this.setState({recaptchaIsValid:value?true:false})}
+			            />:""
+    		
         return (
-        	<Form loading={loading} className="margin-top-40">
+        	<Form className="margin-top-40">
         		<User 
         			userId={"userId" in this.props?this.props.userId:false}
         			formErrors={formErrors}
@@ -119,6 +132,12 @@ class FormUser extends Component {
         				}
         			}
 				/>
+
+				<Grid centered>
+					<Segment compact>
+						{fieldRecaptcha}
+		            </Segment>
+	            </Grid>
 
 	        	<Grid stackable doubling columns={3}>	
 	          		
@@ -139,7 +158,7 @@ class FormUser extends Component {
 								</Modal.Actions>
 							</Modal>:""
 						}
-						<Btn.Save disabled={(!formIsValid || loading)} onClick={this.handleSubmitFormRegister}/>		                   
+						<Btn.Save disabled={(!formIsValid || !recaptchaIsValid || loading)} onClick={this.handleSubmitFormRegister}/>		                   
 		            </Grid.Column>
 	            </Grid>  	            
             </Form>
@@ -149,6 +168,7 @@ class FormUser extends Component {
 
 const mapStateToProps = (state, props) => {
 	return {
+		userAuth:state.app.userAuth
 	}
 }
 
@@ -159,6 +179,12 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		sendUpdateUser:(data, userId)=>{
 			return dispatch(actUpdateUser(data, userId));
+		},
+		openLoader:(message = "Cargando.") => {
+			return dispatch(actOpenFullLoader(message));
+		},
+		closeLoader:() => {
+			return dispatch(actCloseFullLoader());
 		}
 	}
 }
