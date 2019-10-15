@@ -85,6 +85,12 @@ class Allies extends Component {
                     if (header.name == 'objeto_social') {
                         return <p style={{wordBreak:"Break-all"}}>{value}</p>
                     }
+                    if (header.name == 'facebook') {
+                        return <a href={value} target="_blank">{value}</a>
+                    }
+                    if (header.name == 'sitio_web') {
+                        return <a href={value} target="_blank">{value}</a>
+                    }                    
                     return value;
                 },
                 //assignRow:assignRow,
