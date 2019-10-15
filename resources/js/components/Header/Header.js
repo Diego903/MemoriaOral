@@ -59,7 +59,7 @@ class Header extends React.Component {
 
 		const optionStorieConflict = <Menu.Item
 							  key={3}
-							  name={routes.storie_conflict.name}
+							  content={routes.storie_conflict.name}
 							  item={routes.storie_conflict.item}
 							  path={routes.storie_conflict.path}
 							  active={activeItem === routes.storie_conflict.item}
