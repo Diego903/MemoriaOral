@@ -120,7 +120,7 @@ class Login extends React.Component {
         	<Grid centered>
             	<Grid.Column computer={6} tablet={10} mobile={14}>
                   	<Form loading={loading}>
-
+                        <Btn.Return className="margin-bottom-30" onClick={() => this.props.history.goBack()}/>
                         <Valid.Input 
                             noRenderFails
                             email

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Container, Header, Grid } from 'semantic-ui-react';
 import GeneralMessage from '../Helpers/components/GeneralMessage';
 import FormStories from './FormStories';
+import { Btn } from '../Helpers/Helpers';
 
 class UpdateStories extends Component {
 
@@ -29,6 +30,7 @@ class UpdateStories extends Component {
             <Container>
                 <Grid centered>
                     <Grid.Column mobile={16} tablet={12} computer={10}>
+                        <Btn.Return onClick={() => this.props.history.goBack()}/>
                         <Header as="h2" dividing>Actualización de reseña histórica</Header>
                         <GeneralMessage success messages={success} onDismiss={()=>this.setState({success:[]})}/>
                         <FormStories StorieConflictId={this.props.match.params.id} action="update" onActionSuccess={this.onActionSuccess}/>

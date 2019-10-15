@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-import {Grid, Segment, Header, Button, Icon, Modal, Popup, Form, TextArea } from 'semantic-ui-react';
+import {Grid, Segment, Header, Button, Icon, Modal, Popup, Form, TextArea, Message } from 'semantic-ui-react';
 import GeneralMessage from '../Helpers/components/GeneralMessage';
 import {actRegisterAllies} from '../../redux/Allies/actions';
 import { Btn, Valid, Recaptcha_ } from '../Helpers/Helpers';
@@ -26,8 +26,8 @@ class RegisterAllies extends Component {
 
 			formValidations:{
 				nombre_organizacion:false,	        
-				sitio_web:false,
-				facebook:false,
+				//sitio_web:false,
+				//facebook:false,
 				correo:false,
 				telefonos:false,
 				objeto_social:true
@@ -176,7 +176,6 @@ class RegisterAllies extends Component {
 
 	render() {
 		const {nombre_organizacion, sitio_web, facebook, correo, telefonos, objeto_social, loading, formIsValid, formErrors, success} = this.state;
-		console.log(this.state.formValidations);
 		const {userAuth} = this.props;
 
 		const triggerModa =  <Popup
@@ -198,11 +197,9 @@ class RegisterAllies extends Component {
 	    			size="big"
 	    			color="orange"
 	    		>
-					<Button.Content visible>¿Quieres ser un aliado? <Icon className="margin-left-10" name="handshake outline"/></Button.Content>
-					<Button.Content hidden>Envianos tus datos <Icon className="margin-left-10" name="heart"/></Button.Content>
+					<Button.Content visible>¿Quiere ser un aliado? <Icon className="margin-left-10" name="handshake outline"/></Button.Content>
+					<Button.Content hidden>Envienos sus datos <Icon className="margin-left-10" name="heart"/></Button.Content>
 			    </Button>:"";
-			   console.log(formIsValid);
-			   console.log(this.state.validReChaptcha);
 	
 
 	    return (
@@ -210,14 +207,18 @@ class RegisterAllies extends Component {
 			    <Modal trigger={triggerModal} size="small" closeIcon>
 					<Header>
 						<Icon name="handshake outline" />
-						<Header.Content>
-							Si deseas ser un aliado nuestro y apoyar de alguna forma a las víctimas del
-							conflicto armado en Colombia, dejanos tus datos y los de la organización a la cual
-							perteneces. Pronto nos pondremos en contácto contigo.
-						</Header.Content>
+						Envío de solicitud de aliados
 					</Header>
 					
 					<Modal.Content>
+						<Message info>
+						    <Message.Header>Quiere ser un aliado</Message.Header>
+						    <p>
+						      	Si desea ser un aliado nuestro y apoyar de alguna forma a las víctimas del
+								conflicto armado en Colombia, dejenos los datos de la organización a la cual
+								pertenece. Pronto nos pondremos en contácto.
+						    </p>
+						</Message>
 
 						<Form loading={loading}>
 							<Valid.Input 
