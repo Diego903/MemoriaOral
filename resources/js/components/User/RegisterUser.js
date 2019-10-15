@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Container, Header } from 'semantic-ui-react';
 import GeneralMessage from '../Helpers/components/GeneralMessage';
 import FormUser from './FormUser';
+import { Btn } from '../Helpers/Helpers';
 
 class RegisterUser extends Component {
 
@@ -29,6 +30,7 @@ class RegisterUser extends Component {
 
         return (
         	<Container>
+                <Btn.Return onClick={() => this.props.history.goBack()}/>
                 <Header as="h2" dividing>Registro de usuarios</Header>
         		<GeneralMessage success messages={success} onDismiss={()=>this.setState({success:[]})}/>
 	        	<FormUser action="register" onActionSuccess={this.onActionSuccess}/>

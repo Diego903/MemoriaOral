@@ -146,11 +146,21 @@ class FormUser extends Component {
 							!("userId" in this.props)?
 							<Modal open={showModalTyC} trigger={<Button type="button" icon="certificate" content="Ver términos y condiciones" onClick={() => this.setState({showModalTyC:true})}/>}>
 								<Modal.Header className="text-center">Términos y condiciones</Modal.Header>
-								<Modal.Content image>
+								<Modal.Content>
 									<Modal.Description>
-										<Header>Default Profile Image</Header>
-										<p>We've found the following gravatar image associated with your e-mail address.</p>
-										<p>Is it okay to use this photo?</p>
+										<p>Al aceptar los términos y condiciones y registrarse en este sistema usted 
+										acepta ser participante del proyecto “Recuperación de Memoria Oral en torno a la Vulneración 
+										de Derechos Humanos durante el Conflicto Armado en Colombia: Investigación y creación 
+										de un sistema de información open Data”, con esto usted declara que ha sido víctima del 
+										conflicto armado y acepta participar de manera voluntaria en el proceso de recolección de información 
+										a través del testimonio de las experiencias que he vivido, afectaciones y los proyectos 
+										de vida después de los hechos de violencia ocurridos en el lugar objeto de sus testimonios.
+										</p>
+
+										<p>Se compromete a registrar información verídica, así como a participar, en caso de ser necesario, 
+										en actividades propias del proceso de sistematización y divulgación de información. Autoriza que, los testimonios 
+										que usted registre en el sistema sean analizados, autorizados y divulgados públicamente. 
+										</p>
 									</Modal.Description>
 								</Modal.Content>
 								<Modal.Actions>

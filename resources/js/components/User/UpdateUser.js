@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Container, Header } from 'semantic-ui-react';
 import GeneralMessage from '../Helpers/components/GeneralMessage';
 import FormUser from './FormUser';
+import { Btn } from '../Helpers/Helpers';
 
 class UpdateUser extends Component {
 
@@ -27,6 +28,7 @@ class UpdateUser extends Component {
 
         return (
         	<Container>
+                <Btn.Return onClick={() => this.props.history.goBack()}/>
                 <Header as="h2" dividing>Actualización de usuarios</Header>
         		<GeneralMessage success messages={success} onDismiss={()=>this.setState({success:[]})}/>
 	        	<FormUser action="update" onActionSuccess={this.onActionSuccess} userId={this.props.match.params.id}/>
