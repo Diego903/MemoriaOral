@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 
 import {Grid, Segment, Header, Button, Icon, Modal, Popup, Form, TextArea, Message } from 'semantic-ui-react';
+import { actAddNotification } from '../../redux/notifications/actions';
 import GeneralMessage from '../Helpers/components/GeneralMessage';
 import {actRegisterAllies} from '../../redux/Allies/actions';
 import { Btn, Valid, Recaptcha_ } from '../Helpers/Helpers';
@@ -145,7 +146,7 @@ class RegisterAllies extends Component {
 						formIsValid:false
 					})
 
-					this.onActionSuccess();					
+					this.onActionSuccess();				
 					animateScroll.scrollToTop();
 	    		}else{
 
@@ -170,7 +171,7 @@ class RegisterAllies extends Component {
 
     onActionSuccess(){
         this.setState({
-            success:["Se ha registrado exitosamente."],
+            success:["Se ha registrado una nueva solicitud de aliado exitosamente."],
         })
     }       
 
@@ -219,6 +220,7 @@ class RegisterAllies extends Component {
 								pertenece. Pronto nos pondremos en contácto.
 						    </p>
 						</Message>
+						<GeneralMessage success messages={success} onDismiss={()=>this.setState({success:[]})}/>
 
 						<Form loading={loading}>
 							<Valid.Input 
@@ -347,6 +349,9 @@ const mapDispatchToProps = (dispatch) => {
 		sendRegisterAllies:(data) => {
 			return dispatch(actRegisterAllies(data));
 		},
+		messageUserState:() => {
+            return dispatch(actAddNotification({message:"Se registro una nueva solicitud de aliado con éxito", closeIn:6, showButtonClose:true}));
+        },
 	}
 }
 

@@ -65,7 +65,9 @@ class AlliesController extends Controller
 
     		$estado_anterior = $solicitudesAliados->estado;
     		$estado_nuevo = $request->estado;
-			$solicitudesAliados->update(["estado"=>$request->estado]);
+			$solicitudesAliados->estado = $request->estado;
+
+			$solicitudesAliados->save();
 
 			$log = new BitacorasSolicitudesAliados();
 
