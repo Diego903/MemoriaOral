@@ -323,7 +323,8 @@ class User extends Component {
 
     render() {
     	const {numero_identificacion, nombres, apellidos, email,genero,password,password_confirmation,telefono,nivel_estudio,fecha_nacimiento,direccion,municipio_id,terminos_condiciones,loading, formIsValid, formErrors, success, resetFiles, victima_minas } = this.state;
-    	
+
+
     	let limiteFechaNacimiento = new Date();
     	limiteFechaNacimiento.setFullYear(limiteFechaNacimiento.getFullYear() - 18);
 
@@ -417,7 +418,8 @@ class User extends Component {
 	    if("noRenderVictimaMinas" in this.props)fieldVictimaMinas = "";
     	
         return (
-        	<Grid stackable doubling columns={3}>	
+        	
+        	<Grid stackable doubling columns={3}>       		
           		<Valid.Input 		                    
 	                    type="text" 
 	                    name="numero_identificacion" 

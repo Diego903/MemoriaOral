@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import { Container, Header } from 'semantic-ui-react';
+import { Container, Header, Button, Segment, Modal, Form,Grid, Icon } from 'semantic-ui-react';
 import GeneralMessage from '../Helpers/components/GeneralMessage';
 import FormUser from './FormUser';
 import { Btn } from '../Helpers/Helpers';
@@ -27,13 +27,29 @@ class RegisterUser extends Component {
 
     render() {    	
     	const {success} = this.state;
-
+                                    
+        const triggerModal=
+                <Button color="blue" >¿Quiere seber como se hace?<Icon className="margin-left-10" name="video"/></Button>
+                        
         return (
         	<Container>
-                <Btn.Return onClick={() => this.props.history.goBack()}/>
+                <Btn.Return onClick={() => this.props.history.goBack()}/>             
+                <Segment basic style={this.state.styles} floated='right'>
+                    <Modal trigger={triggerModal} size="small" closeIcon>                    
+                        <Modal.Content>
+                            <Form>
+                                <div className="demo-content">                                                                                                                
+                                    <video width="680" height="480" autoPlay controls controlsList="nodownload">
+                                        <source src="../videos/RegistroUsuario.mp4" type="video/mp4"/>
+                                    </video>                                                                          
+                                </div>                                                                                              
+                            </Form>
+                        </Modal.Content>
+                    </Modal>
+                </Segment>
                 <Header as="h2" dividing>Registro de usuarios</Header>
         		<GeneralMessage success messages={success} onDismiss={()=>this.setState({success:[]})}/>
-	        	<FormUser action="register" onActionSuccess={this.onActionSuccess}/>
+	        	<FormUser action="register" onActionSuccess={this.onActionSuccess}/>                
             </Container>
         );
     }

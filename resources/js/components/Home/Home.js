@@ -63,7 +63,7 @@ class Home extends Component
                                   <Segment textAlign="left" basic vertical={true} style={{backgroundColor:"rgba(0,0,0,.5)", padding:"20px"}}>
                                       <Header as="p" inverted className="font-large">
                                         <i>“La palabra sin acción es vacía, la acción sin la palabra es ciega, la palabra y la acción por fuera del espíritu de la comunidad son la muerte” </i>  
-                                         Alvaro Ulcue Chocue, primer Sacerdote Indígenaen Colombia.
+                                         Alvaro Ulcue Chocue, primer Sacerdote Indígena en Colombia.
                                       </Header>
                                   </Segment>
                               </Grid.Column>

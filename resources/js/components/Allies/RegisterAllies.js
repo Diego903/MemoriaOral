@@ -178,20 +178,7 @@ class RegisterAllies extends Component {
 	render() {
 		const {nombre_organizacion, sitio_web, facebook, correo, telefonos, objeto_social, loading, formIsValid, formErrors, success} = this.state;
 		const {userAuth} = this.props;
-
-		const triggerModa =  <Popup
-					trigger={<Button 
-			    			animated='vertical'
-			    			size="big"
-			    			color="orange"
-			    		>
-							<Button.Content visible>¿Quieres ser un aliado? <Icon className="margin-left-10" name="handshake outline"/></Button.Content>
-							<Button.Content hidden>Envianos tus datos <Icon className="margin-left-10" name="heart"/></Button.Content>
-					    </Button>}	
-					    content="Quienes son nuestros aliados. Nuestros aliados son organizaciónes dispuestas a resacir a las victimas del conflicto armado en colombia."					    
-    					basic							  
-				    />				    				
-
+				    				
 		const triggerModal =!userAuth?
 		 		<Button 
 	    			animated='vertical'
@@ -243,7 +230,7 @@ class RegisterAllies extends Component {
 					    		<Grid stackable doubling columns={2}>            
 
 						   				<Valid.Input 
-						                    type="url" 
+						                    type="text" 
 						                    name="sitio_web" 
 						                    id="sitio_web" 
 						                    value={sitio_web} 
@@ -256,11 +243,11 @@ class RegisterAllies extends Component {
 						                	max_length={60}			                
 						                    wrapperColumn
 						                    errors={formErrors.sitio_web}
-						                    help="En este campo podrá escribir la url de su titio web. Un ejemplo es: 'http://www.google.com'"						                    
+						                    help="En este campo podrá escribir la url de su sitio web. Un ejemplo es: 'http://www.memoriaoral.com.co'"						                    
 						                />
 						                
 						    			<Valid.Input 
-						                    type="url" 
+						                    type="text" 
 						                    name="facebook" 
 						                    id="facebook" 
 						                    value={facebook} 
@@ -273,7 +260,7 @@ class RegisterAllies extends Component {
 						                	max_length={60}			                
 						                    wrapperColumn
 						                    errors={formErrors.facebook}
-						                    help="En este campo podrá escribir la url de su Facebook. Un ejemplo es: 'https://www.facebook.com'"						                   
+						                    help="En este campo podrá escribir la url de su Facebook. Un ejemplo es: 'https://www.facebook.com/diego.ojeda'"						                   
 						                />                        
 
 						            	<Valid.Input	

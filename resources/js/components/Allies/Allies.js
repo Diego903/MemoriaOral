@@ -137,6 +137,7 @@ class Allies extends Component {
             {name:'observacion',label:'Observaciones'/*,textAlign:'center',textAlignContent:'center'*/},    
             {name:'estado_anterior',label:'Estado anterior'},
             {name:'estado_nuevo',label:'Estado nuevo'},
+            {name:'fecha',label:'Fecha'},
             
         ];
         return {

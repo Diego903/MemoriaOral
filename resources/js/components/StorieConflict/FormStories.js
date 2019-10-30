@@ -26,7 +26,7 @@ class FormStories extends Component {
 			annexesRemove:[],//almacena los anexos que se van a eliminar
 			annexesLoaded:[],
 			open:false,
-			msjConfirm:"StorieConflictId" in this.props?"¿Está seguro de actualizar la historia del conflicto armado?":"¿Está seguro de registrar la historia del conflicto armado?",
+			msjConfirm:"StorieConflictId" in this.props?"¿Está seguro de actualizar la reseña histórica?":"¿Está seguro de registrar una reseña histórica?",
 
 			formValidations:{
 	        	titulo:("StorieConflictId" in this.props)?true:false,

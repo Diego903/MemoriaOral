@@ -378,7 +378,7 @@ class Testimony extends React.Component {
 				    header='¿Quiere contarle al mundo su testimonio?'
 				    content={
 				    	<Segment basic className="no-padding">
-					    	Si usted ha sido víctima del comflicto armado en Colombia y desea que las personas que visitan
+					    	Si usted ha sido víctima del conflicto armado en Colombia y desea que las personas que visitan
 					    	nuestro sistema de información conozcan su historia, puede registrarla desde el siguiente botòn 
 					    	y esperar que sea autorizada para ser pública en el sistema.
 					    	<Button onClick={() => this.props.history.push(config_routes.register_testimony.path)} positive type="button" className="margin-left-10">Registrar testimonio</Button>
